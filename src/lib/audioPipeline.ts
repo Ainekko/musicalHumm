@@ -260,3 +260,14 @@ function writeString(view: DataView, offset: number, string: string) {
     view.setUint8(offset + i, string.charCodeAt(i));
   }
 }
+
+/**
+ * Shifts a musical note string (e.g. "C4", "A#3") by a specific number of octaves.
+ */
+export function shiftNoteOctave(noteName: string, octaves: number): string {
+  const match = noteName.match(/^([A-G]#?)(\d+)$/);
+  if (!match) return noteName;
+  const pitch = match[1];
+  const octave = parseInt(match[2], 10);
+  return pitch + (octave + octaves);
+}

@@ -4,6 +4,7 @@
   import {
     notesToMidi,
     audioBufferToWav,
+    shiftNoteOctave,
     type TranscribedNote
   } from '$lib/audioPipeline';
 
@@ -19,6 +20,26 @@
   let exportingMidi = false;
   let exportingWav = false;
 
+  let octaveShift = 0;
+
+  // Auto-detect optimal octave placement to prevent low-pitch synthetic buzzer sounds
+  $: {
+    if (transcribedNotes.length > 0) {
+      const avgMidi = transcribedNotes.reduce((sum, n) => sum + n.midi, 0) / transcribedNotes.length;
+      // Violin sweet spot is G3 (55) to E6 (88). Ideal center is A4 (midi 69).
+      if (avgMidi < 55) {
+        octaveShift = 1;
+        if (avgMidi < 43) {
+          octaveShift = 2; // Shift up two octaves if extremely low
+        }
+      } else if (avgMidi > 76) {
+        octaveShift = -1; // Shift down an octave if extremely high
+      } else {
+        octaveShift = 0;
+      }
+    }
+  }
+
   async function playMelody() {
     if (isPlaying) {
       stopMelody();
@@ -33,8 +54,9 @@
 
     const now = Tone.now();
     transcribedNotes.forEach((note) => {
+      const shiftedPitch = shiftNoteOctave(note.note, octaveShift);
       sampler!.triggerAttackRelease(
-        note.note,
+        shiftedPitch,
         note.duration,
         now + note.time,
         note.velocity
@@ -76,7 +98,11 @@
     if (transcribedNotes.length === 0) return;
     exportingMidi = true;
     try {
-      const midiData = notesToMidi(transcribedNotes);
+      const shiftedNotes = transcribedNotes.map(n => ({
+        ...n,
+        note: shiftNoteOctave(n.note, octaveShift)
+      }));
+      const midiData = notesToMidi(shiftedNotes);
       const blob = new Blob([midiData], { type: 'audio/midi' });
       const url = URL.createObjectURL(blob);
 
@@ -100,30 +126,32 @@
     exportingWav = true;
     try {
       const maxTime = Math.max(...transcribedNotes.map((n) => n.time + n.duration), 0);
-      const totalDuration = maxTime + 0.8; // Release tail buffer
+      const totalDuration = maxTime + 1.2; // Release tail buffer
 
       // Offline AudioContext render
       const renderedBuffer = await Tone.Offline(async () => {
         const offlineSampler = new Tone.Sampler(sampler!.buffers);
         
-        const vibrato = new Tone.Vibrato({
-          frequency: 5.8,
-          depth: 0.12
+        const lowpass = new Tone.Filter({
+          frequency: 2200,
+          type: 'lowpass'
         });
 
-        const reverb = new Tone.JCReverb({
-          roomSize: 0.78,
-          wet: 0.4
+        const delay = new Tone.FeedbackDelay({
+          delayTime: '8n.',
+          feedback: 0.28,
+          wet: 0.16
         });
 
-        offlineSampler.attack = 0.18;
-        offlineSampler.release = 1.2;
+        offlineSampler.attack = 0.22;
+        offlineSampler.release = 1.4;
 
-        offlineSampler.chain(vibrato, reverb, Tone.Destination);
+        offlineSampler.chain(lowpass, delay, Tone.Destination);
 
         transcribedNotes.forEach((note) => {
+          const shiftedPitch = shiftNoteOctave(note.note, octaveShift);
           offlineSampler.triggerAttackRelease(
-            note.note,
+            shiftedPitch,
             note.duration,
             note.time,
             note.velocity
@@ -147,6 +175,54 @@
     } finally {
       exportingWav = false;
     }
+  }
+
+  let selectedNoteIndex: number | null = null;
+
+  function selectNote(index: number) {
+    selectedNoteIndex = index;
+    if (sampler && index !== null) {
+      const note = transcribedNotes[index];
+      const shifted = shiftNoteOctave(note.note, octaveShift);
+      sampler.triggerAttackRelease(shifted, 0.4);
+    }
+  }
+
+  const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  function midiNoteToName(midi: number): string {
+    const octave = Math.floor(midi / 12) - 1;
+    const noteIndex = midi % 12;
+    return NOTE_NAMES[noteIndex] + octave;
+  }
+
+  function adjustSelectedNotePitch(semitones: number) {
+    if (selectedNoteIndex === null) return;
+    const note = transcribedNotes[selectedNoteIndex];
+    const newMidi = note.midi + semitones;
+    if (newMidi < 12 || newMidi > 127) return;
+    note.midi = newMidi;
+    note.note = midiNoteToName(newMidi);
+    transcribedNotes = [...transcribedNotes];
+    
+    // Play adjusted pitch
+    if (sampler) {
+      const shifted = shiftNoteOctave(note.note, octaveShift);
+      sampler.triggerAttackRelease(shifted, 0.45);
+    }
+  }
+
+  function adjustSelectedNoteDuration(delta: number) {
+    if (selectedNoteIndex === null) return;
+    const note = transcribedNotes[selectedNoteIndex];
+    note.duration = Math.max(0.1, note.duration + delta);
+    transcribedNotes = [...transcribedNotes];
+  }
+
+  function deleteSelectedNote() {
+    if (selectedNoteIndex === null) return;
+    transcribedNotes.splice(selectedNoteIndex, 1);
+    transcribedNotes = [...transcribedNotes];
+    selectedNoteIndex = null;
   }
 
   function tryAgain() {
@@ -184,27 +260,32 @@
         {#if transcribedNotes.length > 0}
           <div class="relative w-full bg-zinc-950/80 rounded-xl border border-zinc-800/60 p-4 h-36 overflow-x-auto overflow-y-hidden flex items-end gap-1.5 scroll-smooth">
             {#each transcribedNotes as note, index}
-              <div
+              <button
+                on:click={() => selectNote(index)}
                 class="relative rounded-lg flex flex-col items-center justify-end p-2 transition-all shrink-0 select-none cursor-pointer"
                 style="
                   width: {Math.max(60, note.duration * 100)}px;
                   height: {Math.min(100, Math.max(30, (note.midi - 40) * 2.5))}px;
-                  background: {activeNoteIndex === index
-                    ? 'linear-gradient(to top, rgba(244, 63, 94, 0.4), rgba(139, 92, 246, 0.4))'
-                    : 'rgba(255, 255, 255, 0.03)'};
-                  border: 1px solid {activeNoteIndex === index
-                    ? 'rgba(244, 63, 94, 0.7)'
-                    : 'rgba(255, 255, 255, 0.08)'};
+                  background: {selectedNoteIndex === index
+                    ? 'linear-gradient(to top, rgba(139, 92, 246, 0.25), rgba(217, 70, 239, 0.25))'
+                    : activeNoteIndex === index
+                      ? 'linear-gradient(to top, rgba(244, 63, 94, 0.25), rgba(139, 92, 246, 0.25))'
+                      : 'rgba(255, 255, 255, 0.03)'};
+                  border: {selectedNoteIndex === index
+                    ? '2px solid #a855f7'
+                    : activeNoteIndex === index
+                      ? '1px solid rgba(244, 63, 94, 0.7)'
+                      : '1px solid rgba(255, 255, 255, 0.08)'};
                 "
-                title="Note: {note.note}, Duration: {note.duration.toFixed(2)}s"
+                title="Note: {note.note}, Duration: {note.duration.toFixed(2)}s. Click to edit."
               >
                 {#if activeNoteIndex === index}
                   <div class="absolute inset-0 bg-rose-500/10 rounded-lg blur-md animate-pulse"></div>
                 {/if}
-                <span class="text-xs font-bold font-mono tracking-tight {activeNoteIndex === index ? 'text-rose-300' : 'text-zinc-500'}">
+                <span class="text-xs font-bold font-mono tracking-tight {selectedNoteIndex === index ? 'text-violet-300' : activeNoteIndex === index ? 'text-rose-300' : 'text-zinc-500'}">
                   {note.note}
                 </span>
-              </div>
+              </button>
             {/each}
           </div>
         {:else}
@@ -212,6 +293,104 @@
             No notes transcribed. Try humming closer to the microphone.
           </div>
         {/if}
+
+        <!-- Edit Selected Note Panel -->
+        {#if selectedNoteIndex !== null && transcribedNotes[selectedNoteIndex]}
+          {@const selNote = transcribedNotes[selectedNoteIndex]}
+          <div class="mt-4 p-4 rounded-xl bg-zinc-950/80 border border-violet-500/30 text-left space-y-4 animate-fade-in">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-violet-400 uppercase tracking-wider">
+                Edit Note #{selectedNoteIndex + 1}
+              </span>
+              <button
+                on:click={() => selectedNoteIndex = null}
+                class="text-xs text-zinc-500 hover:text-zinc-300 underline font-medium"
+              >
+                Done Editing
+              </button>
+            </div>
+            
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <!-- Pitch adjustment -->
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-zinc-400 font-medium">Pitch:</span>
+                <span class="text-xs font-bold font-mono text-white bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-800">
+                  {selNote.note} (MIDI {selNote.midi})
+                </span>
+                <div class="flex gap-1">
+                  <button
+                    on:click={() => adjustSelectedNotePitch(1)}
+                    class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 active:scale-95 transition-all"
+                    title="Move up 1 semitone"
+                  >
+                    <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                  <button
+                    on:click={() => adjustSelectedNotePitch(-1)}
+                    class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 active:scale-95 transition-all"
+                    title="Move down 1 semitone"
+                  >
+                    <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Duration adjustment -->
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-zinc-400 font-medium">Length:</span>
+                <span class="text-xs font-bold font-mono text-white bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-800">
+                  {selNote.duration.toFixed(2)}s
+                </span>
+                <div class="flex gap-1">
+                  <button
+                    on:click={() => adjustSelectedNoteDuration(-0.1)}
+                    class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold active:scale-95"
+                    title="Shorter"
+                  >
+                    -0.1s
+                  </button>
+                  <button
+                    on:click={() => adjustSelectedNoteDuration(0.1)}
+                    class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold active:scale-95"
+                    title="Longer"
+                  >
+                    +0.1s
+                  </button>
+                </div>
+              </div>
+
+              <!-- Delete note -->
+              <button
+                on:click={deleteSelectedNote}
+                class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-bold border border-rose-500/20 transition-all active:scale-95"
+              >
+                Delete Note
+              </button>
+            </div>
+          </div>
+        {/if}
+
+        <!-- Transpose controls -->
+        <div class="mt-4 flex items-center justify-between p-3.5 rounded-xl bg-zinc-950/40 border border-zinc-800/40">
+          <div class="space-y-0.5 text-left">
+            <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Octave Transpose</span>
+            <p class="text-[11px] text-zinc-500">Auto-tuned to fit the sweet spot of the Violin.</p>
+          </div>
+          <select
+            bind:value={octaveShift}
+            class="bg-zinc-900 border border-zinc-700/60 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-rose-500"
+          >
+            <option value={-2}>-2 Octaves (Low)</option>
+            <option value={-1}>-1 Octave</option>
+            <option value={0}>No Shift (0)</option>
+            <option value={1}>+1 Octave (Auto)</option>
+            <option value={2}>+2 Octaves (High)</option>
+          </select>
+        </div>
       </div>
 
       <div class="flex items-center justify-between pt-2 border-t border-zinc-800/50">

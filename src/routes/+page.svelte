@@ -61,22 +61,24 @@
         'G6': 'G6.mp3'
       };
 
-      // Create effects chain to smooth the dry violin and add ambient space
-      const vibrato = new Tone.Vibrato({
-        frequency: 5.8,
-        depth: 0.12
+      // High-cut filter at 2200Hz to remove harsh synthetic buzzing transients
+      const lowpass = new Tone.Filter({
+        frequency: 2200,
+        type: 'lowpass'
       });
 
-      const reverb = new Tone.JCReverb({
-        roomSize: 0.78,
-        wet: 0.4
+      // Subtle, clean feedback delay to add space without muddy reverb
+      const delay = new Tone.FeedbackDelay({
+        delayTime: '8n.',
+        feedback: 0.28,
+        wet: 0.16
       });
 
       sampler = new Tone.Sampler({
         urls: violinSamples,
         baseUrl: 'https://cdn.jsdelivr.net/gh/nbrosowsky/tonejs-instruments@master/samples/violin/',
-        attack: 0.18,  // Softer attack to smooth out initial transients
-        release: 1.2,  // Natural release decay tail
+        attack: 0.22,  // Softer bowed attack
+        release: 1.4,  // Long, natural violin body decay
         onload: () => {
           samplerLoaded = true;
           samplerLoading = false;
@@ -89,7 +91,7 @@
         }
       });
 
-      sampler.chain(vibrato, reverb, Tone.Destination);
+      sampler.chain(lowpass, delay, Tone.Destination);
     } catch (err) {
       console.error('Failed to load sampler:', err);
       samplerLoading = false;
