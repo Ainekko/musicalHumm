@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy } from 'svelte';
   import * as Tone from 'tone';
+  import PianoRoll from './PianoRoll.svelte';
   import {
     notesToMidi,
     audioBufferToWav,
@@ -177,54 +178,6 @@
     }
   }
 
-  let selectedNoteIndex: number | null = null;
-
-  function selectNote(index: number) {
-    selectedNoteIndex = index;
-    if (sampler && index !== null) {
-      const note = transcribedNotes[index];
-      const shifted = shiftNoteOctave(note.note, octaveShift);
-      sampler.triggerAttackRelease(shifted, 0.4);
-    }
-  }
-
-  const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-  function midiNoteToName(midi: number): string {
-    const octave = Math.floor(midi / 12) - 1;
-    const noteIndex = midi % 12;
-    return NOTE_NAMES[noteIndex] + octave;
-  }
-
-  function adjustSelectedNotePitch(semitones: number) {
-    if (selectedNoteIndex === null) return;
-    const note = transcribedNotes[selectedNoteIndex];
-    const newMidi = note.midi + semitones;
-    if (newMidi < 12 || newMidi > 127) return;
-    note.midi = newMidi;
-    note.note = midiNoteToName(newMidi);
-    transcribedNotes = [...transcribedNotes];
-    
-    // Play adjusted pitch
-    if (sampler) {
-      const shifted = shiftNoteOctave(note.note, octaveShift);
-      sampler.triggerAttackRelease(shifted, 0.45);
-    }
-  }
-
-  function adjustSelectedNoteDuration(delta: number) {
-    if (selectedNoteIndex === null) return;
-    const note = transcribedNotes[selectedNoteIndex];
-    note.duration = Math.max(0.1, note.duration + delta);
-    transcribedNotes = [...transcribedNotes];
-  }
-
-  function deleteSelectedNote() {
-    if (selectedNoteIndex === null) return;
-    transcribedNotes.splice(selectedNoteIndex, 1);
-    transcribedNotes = [...transcribedNotes];
-    selectedNoteIndex = null;
-  }
-
   function tryAgain() {
     stopMelody();
     dispatch('retry');
@@ -244,135 +197,25 @@
       Your Transcribed Melody
     </h1>
     <p class="text-zinc-400 text-sm max-w-sm mx-auto leading-relaxed">
-      Listen to your humming played back by the Violin, and download the MIDI or rendered WAV.
+      Tweak, transpose, and adjust notes inside the interactive piano roll before exporting.
     </p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Playback/Visualizer Card -->
-    <div class="md:col-span-2 p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 backdrop-blur-md flex flex-col justify-between space-y-6 glow-box-violet">
+    <div class="lg:col-span-2 p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 backdrop-blur-md flex flex-col justify-between space-y-6 glow-box-violet">
       <div>
         <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">
           Melody Playback
         </h3>
         
-        <!-- Timeline Note visualizer -->
-        {#if transcribedNotes.length > 0}
-          <div class="relative w-full bg-zinc-950/80 rounded-xl border border-zinc-800/60 p-4 h-36 overflow-x-auto overflow-y-hidden flex items-end gap-1.5 scroll-smooth">
-            {#each transcribedNotes as note, index}
-              <button
-                on:click={() => selectNote(index)}
-                class="relative rounded-lg flex flex-col items-center justify-end p-2 transition-all shrink-0 select-none cursor-pointer"
-                style="
-                  width: {Math.max(60, note.duration * 100)}px;
-                  height: {Math.min(100, Math.max(30, (note.midi - 40) * 2.5))}px;
-                  background: {selectedNoteIndex === index
-                    ? 'linear-gradient(to top, rgba(139, 92, 246, 0.25), rgba(217, 70, 239, 0.25))'
-                    : activeNoteIndex === index
-                      ? 'linear-gradient(to top, rgba(244, 63, 94, 0.25), rgba(139, 92, 246, 0.25))'
-                      : 'rgba(255, 255, 255, 0.03)'};
-                  border: {selectedNoteIndex === index
-                    ? '2px solid #a855f7'
-                    : activeNoteIndex === index
-                      ? '1px solid rgba(244, 63, 94, 0.7)'
-                      : '1px solid rgba(255, 255, 255, 0.08)'};
-                "
-                title="Note: {note.note}, Duration: {note.duration.toFixed(2)}s. Click to edit."
-              >
-                {#if activeNoteIndex === index}
-                  <div class="absolute inset-0 bg-rose-500/10 rounded-lg blur-md animate-pulse"></div>
-                {/if}
-                <span class="text-xs font-bold font-mono tracking-tight {selectedNoteIndex === index ? 'text-violet-300' : activeNoteIndex === index ? 'text-rose-300' : 'text-zinc-500'}">
-                  {note.note}
-                </span>
-              </button>
-            {/each}
-          </div>
-        {:else}
-          <div class="w-full bg-zinc-950/80 rounded-xl border border-zinc-800/60 h-36 flex items-center justify-center text-xs text-zinc-500">
-            No notes transcribed. Try humming closer to the microphone.
-          </div>
-        {/if}
-
-        <!-- Edit Selected Note Panel -->
-        {#if selectedNoteIndex !== null && transcribedNotes[selectedNoteIndex]}
-          {@const selNote = transcribedNotes[selectedNoteIndex]}
-          <div class="mt-4 p-4 rounded-xl bg-zinc-950/80 border border-violet-500/30 text-left space-y-4 animate-fade-in">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-violet-400 uppercase tracking-wider">
-                Edit Note #{selectedNoteIndex + 1}
-              </span>
-              <button
-                on:click={() => selectedNoteIndex = null}
-                class="text-xs text-zinc-500 hover:text-zinc-300 underline font-medium"
-              >
-                Done Editing
-              </button>
-            </div>
-            
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              <!-- Pitch adjustment -->
-              <div class="flex items-center gap-3">
-                <span class="text-xs text-zinc-400 font-medium">Pitch:</span>
-                <span class="text-xs font-bold font-mono text-white bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-800">
-                  {selNote.note} (MIDI {selNote.midi})
-                </span>
-                <div class="flex gap-1">
-                  <button
-                    on:click={() => adjustSelectedNotePitch(1)}
-                    class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 active:scale-95 transition-all"
-                    title="Move up 1 semitone"
-                  >
-                    <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-                    </svg>
-                  </button>
-                  <button
-                    on:click={() => adjustSelectedNotePitch(-1)}
-                    class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 active:scale-95 transition-all"
-                    title="Move down 1 semitone"
-                  >
-                    <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Duration adjustment -->
-              <div class="flex items-center gap-3">
-                <span class="text-xs text-zinc-400 font-medium">Length:</span>
-                <span class="text-xs font-bold font-mono text-white bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-800">
-                  {selNote.duration.toFixed(2)}s
-                </span>
-                <div class="flex gap-1">
-                  <button
-                    on:click={() => adjustSelectedNoteDuration(-0.1)}
-                    class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold active:scale-95"
-                    title="Shorter"
-                  >
-                    -0.1s
-                  </button>
-                  <button
-                    on:click={() => adjustSelectedNoteDuration(0.1)}
-                    class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold active:scale-95"
-                    title="Longer"
-                  >
-                    +0.1s
-                  </button>
-                </div>
-              </div>
-
-              <!-- Delete note -->
-              <button
-                on:click={deleteSelectedNote}
-                class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-bold border border-rose-500/20 transition-all active:scale-95"
-              >
-                Delete Note
-              </button>
-            </div>
-          </div>
-        {/if}
+        <!-- Interactive Svelte Piano Roll -->
+        <PianoRoll
+          bind:transcribedNotes={transcribedNotes}
+          {sampler}
+          {octaveShift}
+          {activeNoteIndex}
+        />
 
         <!-- Transpose controls -->
         <div class="mt-4 flex items-center justify-between p-3.5 rounded-xl bg-zinc-950/40 border border-zinc-800/40">
@@ -413,7 +256,7 @@
         </button>
         
         <div class="text-xs text-zinc-500 font-mono">
-          Notes: {transcribedNotes.length}
+          Total Notes: {transcribedNotes.length}
         </div>
       </div>
     </div>
