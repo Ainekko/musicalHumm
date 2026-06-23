@@ -61,9 +61,22 @@
         'G6': 'G6.mp3'
       };
 
+      // Create effects chain to smooth the dry violin and add ambient space
+      const vibrato = new Tone.Vibrato({
+        frequency: 5.8,
+        depth: 0.12
+      });
+
+      const reverb = new Tone.JCReverb({
+        roomSize: 0.78,
+        wet: 0.4
+      });
+
       sampler = new Tone.Sampler({
         urls: violinSamples,
         baseUrl: 'https://cdn.jsdelivr.net/gh/nbrosowsky/tonejs-instruments@master/samples/violin/',
+        attack: 0.18,  // Softer attack to smooth out initial transients
+        release: 1.2,  // Natural release decay tail
         onload: () => {
           samplerLoaded = true;
           samplerLoading = false;
@@ -74,7 +87,9 @@
           alert('Failed to load instrument samples. Please check your internet connection.');
           samplerLoading = false;
         }
-      }).toDestination();
+      });
+
+      sampler.chain(vibrato, reverb, Tone.Destination);
     } catch (err) {
       console.error('Failed to load sampler:', err);
       samplerLoading = false;

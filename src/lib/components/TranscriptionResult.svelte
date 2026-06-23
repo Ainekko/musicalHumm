@@ -104,7 +104,23 @@
 
       // Offline AudioContext render
       const renderedBuffer = await Tone.Offline(async () => {
-        const offlineSampler = new Tone.Sampler(sampler!.buffers).toDestination();
+        const offlineSampler = new Tone.Sampler(sampler!.buffers);
+        
+        const vibrato = new Tone.Vibrato({
+          frequency: 5.8,
+          depth: 0.12
+        });
+
+        const reverb = new Tone.JCReverb({
+          roomSize: 0.78,
+          wet: 0.4
+        });
+
+        offlineSampler.attack = 0.18;
+        offlineSampler.release = 1.2;
+
+        offlineSampler.chain(vibrato, reverb, Tone.Destination);
+
         transcribedNotes.forEach((note) => {
           offlineSampler.triggerAttackRelease(
             note.note,
