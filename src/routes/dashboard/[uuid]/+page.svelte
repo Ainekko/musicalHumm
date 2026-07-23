@@ -144,6 +144,38 @@
         return 'neutral';
     }
   }
+  function exportToCSV() {
+    if (!leads || leads.length === 0) {
+      alert('Aucun lead à exporter.');
+      return;
+    }
+
+    const headers = ['ID', 'Nom', 'Email', 'Téléphone', 'Entreprise', 'Budget', 'Statut', 'Description Projet', 'Date de création'];
+    
+    const rows = leads.map(lead => [
+      lead.id,
+      `"${(lead.name || '').replace(/"/g, '""')}"`,
+      `"${(lead.email || '').replace(/"/g, '""')}"`,
+      `"${(lead.phone || '').replace(/"/g, '""')}"`,
+      `"${(lead.company || '').replace(/"/g, '""')}"`,
+      `"${(lead.budget || '').replace(/"/g, '""')}"`,
+      `"${(translateStatus(lead.status) || '').replace(/"/g, '""')}"`,
+      `"${(lead.project_description || '').replace(/"/g, '""')}"`,
+      `"${(lead.created_at || '').replace(/"/g, '""')}"`
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `bordprod-leads-${dateStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 </script>
 
 <svelte:head>
@@ -218,9 +250,17 @@
 
       <!-- Leads List Card -->
       <Card padding="p-0">
-        <div class="px-6 py-5 border-b border-zinc-100 flex items-center justify-between bg-white">
-          <h3 class="text-sm font-bold text-zinc-700">Registre des Contacts</h3>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-150 text-zinc-650">{leads.length} soumissions</span>
+        <div class="px-6 py-5 border-b border-zinc-100 flex items-center justify-between bg-white flex-wrap gap-3">
+          <div class="flex items-center gap-3">
+            <h3 class="text-sm font-bold text-zinc-700">Registre des Contacts</h3>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-150 text-zinc-650">{leads.length} soumissions</span>
+          </div>
+          <Button variant="secondary" size="sm" on:click={exportToCSV} disabled={leads.length === 0}>
+            <svg class="w-4 h-4 mr-2 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Exporter en CSV
+          </Button>
         </div>
 
         {#if leads.length === 0}
