@@ -1,9 +1,9 @@
 <script lang="ts">
   /**
-   * BordProd Landing Page - High-End Kinetic GSAP Animations & i18n
-   * ================================================================
-   * Clean white theme with Apple / Awwwards kinetic word typography,
-   * 3D perspective tilt micro-interactions, and bulletproof scroll reveals.
+   * BordProd Landing Page - Designjoy-Inspired Aesthetic & i18n & GSAP
+   * =================================================================
+   * Off-white textured canvas (#f5f4f0), vibrant multi-color mesh gradients,
+   * film grain overlays, kinetic word typography, and 3D mouse tilt.
    */
   import { onMount } from 'svelte';
   import { gsap } from 'gsap';
@@ -23,7 +23,6 @@
   let success = false;
   let errorMessage = '';
 
-  // Simple client-side errors
   let nameError = '';
   let emailError = '';
   let projectDescriptionError = '';
@@ -101,6 +100,35 @@
   function splitTextIntoWords(str: string) {
     return str.split(' ').map(w => w.trim()).filter(Boolean);
   }
+
+  // Designjoy Feature Cards Gradient Specifications
+  const featureCards = [
+    {
+      keyPrefix: 'f1',
+      bgGradient: 'from-[#ffaa00] via-[#ff5500] to-[#e6005c]',
+      icon: 'M13 10V3L4 14h7v7l9-11h-7z' // Lightning bolt
+    },
+    {
+      keyPrefix: 'f2',
+      bgGradient: 'from-[#0066ff] via-[#7a00ff] to-[#ff00cc]',
+      icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z' // Camera
+    },
+    {
+      keyPrefix: 'f3',
+      bgGradient: 'from-[#ff3300] via-[#ff6600] to-[#ffcc00]',
+      icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z' // Mobile 9:16
+    },
+    {
+      keyPrefix: 'f4',
+      bgGradient: 'from-[#ff007f] via-[#7928ca] to-[#0070f3]',
+      icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' // Clock
+    },
+    {
+      keyPrefix: 'f5',
+      bgGradient: 'from-[#00c6ff] via-[#0072ff] to-[#7928ca]',
+      icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' // Growth arrow chart
+    }
+  ];
 
   // Vertical Reels Showcase
   const verticalVideos = [
@@ -180,7 +208,7 @@
       '-=0.5'
     );
 
-    // 2. Ambient Floating Motion for Background SVG Elements
+    // 2. Ambient Floating Motion
     gsap.to('.gsap-float-slow', {
       y: -15,
       duration: 3.5,
@@ -189,7 +217,7 @@
       ease: 'power1.inOut'
     });
 
-    // Helper for robust scroll reveals with guaranteed visibility (clearProps)
+    // Scroll reveal helper
     function setupScrollReveal(triggerSelector: string, targetSelector: string, fromVars: gsap.TweenVars, toVars: gsap.TweenVars) {
       const triggerEl = document.querySelector(triggerSelector);
       if (!triggerEl) return;
@@ -212,6 +240,13 @@
     }
 
     // 3. Section Scroll Reveals
+    setupScrollReveal(
+      '#features', 
+      '.gsap-feature-card', 
+      { opacity: 0, y: 40, scale: 0.92 }, 
+      { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.8, ease: 'power3.out' }
+    );
+
     setupScrollReveal(
       '#who-we-are', 
       '.gsap-about-card', 
@@ -246,8 +281,10 @@
       { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: 'power3.out' }
     );
 
-    // 4. 3D Perspective Tilt Micro-Interactions on Showreel & Reel Cards
+    // 4. 3D Perspective Tilt Micro-Interactions
     init3DTilt('.gsap-hero-video');
+    init3DTilt('.gsap-feature-card');
+    init3DTilt('.gsap-booking-card');
     init3DTilt('.gsap-reel-card');
   });
 
@@ -261,11 +298,11 @@
           const x = e.clientX - rect.left - rect.width / 2;
           const y = e.clientY - rect.top - rect.height / 2;
           gsap.to(target, {
-            rotateY: x / 16,
-            rotateX: -y / 16,
+            rotateY: x / 18,
+            rotateX: -y / 18,
             transformPerspective: 1000,
             ease: 'power2.out',
-            duration: 0.3
+            duration: 0.35
           });
         });
 
@@ -288,63 +325,47 @@
 
 <main 
   dir={$locale === 'ar' ? 'rtl' : 'ltr'} 
-  class="min-h-screen flex flex-col items-center justify-between bg-white text-[#2a3b50] relative overflow-hidden font-sans"
+  class="min-h-screen flex flex-col items-center justify-between bg-[#f5f4f0] text-[#1a1a1a] relative overflow-hidden font-sans"
 >
   
-  <!-- Floating background decorations -->
-  <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
-    <div class="absolute top-[15%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#00abbd]/5 blur-[120px]"></div>
-    <div class="absolute bottom-[20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#ffbe1a]/5 blur-[120px]"></div>
-    
-    <svg class="absolute top-[25%] {$locale === 'ar' ? 'left-[5%]' : 'right-[5%]'} w-48 h-32 text-zinc-100 gsap-float-slow" fill="none" viewBox="0 0 100 50" stroke="currentColor" stroke-width="1">
-      <path d="M0,25 L30,25 L35,15 L40,35 L45,20 L50,28 L55,25 L100,25" />
-    </svg>
-    <svg class="absolute top-[60%] {$locale === 'ar' ? 'right-[2%]' : 'left-[2%]'} w-48 h-32 text-zinc-100 gsap-float-slow" fill="none" viewBox="0 0 100 50" stroke="currentColor" stroke-width="1">
-      <path d="M0,25 L30,25 L35,10 L42,40 L47,15 L52,30 L57,25 L100,25" />
-    </svg>
+  <!-- Subtle SVG Noise Grain Overlay (Designjoy style) -->
+  <div class="fixed inset-0 pointer-events-none z-0 opacity-[0.035]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
 
-    <div class="absolute top-[18%] {$locale === 'ar' ? 'right-[8%]' : 'left-[8%]'} text-[#00abbd]/15 gsap-float-slow">
-      <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-      </svg>
-    </div>
-    <div class="absolute top-[45%] {$locale === 'ar' ? 'left-[10%]' : 'right-[10%]'} text-[#ffbe1a]/15 gsap-float-slow">
-      <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10" />
-        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
-      </svg>
-    </div>
+  <!-- Floating background colorful gradient blur orbs -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute top-[10%] left-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#ffaa00]/15 via-[#ff3366]/15 to-[#7928ca]/15 blur-[140px]"></div>
+    <div class="absolute bottom-[15%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#00c6ff]/15 via-[#0072ff]/15 to-[#7928ca]/15 blur-[140px]"></div>
   </div>
 
   <!-- Header -->
-  <header class="w-full max-w-6xl flex justify-between items-center z-10 py-4 px-6 border-b border-zinc-100 bg-white/90 backdrop-blur-md sticky top-0">
+  <header class="w-full max-w-6xl flex justify-between items-center z-10 py-5 px-6 border-b border-zinc-200/60 bg-[#f5f4f0]/85 backdrop-blur-md sticky top-0">
     <div class="flex items-center gap-2">
       <img src="/logo/logo.png" alt="BordProd Logo" class="h-9 md:h-11 object-contain" />
     </div>
-    <nav class="hidden lg:flex items-center gap-8 text-sm font-bold text-zinc-500">
+    <nav class="hidden lg:flex items-center gap-8 text-sm font-bold text-zinc-600">
       <a href="#who-we-are" class="hover:text-[#00abbd] transition-colors">{$t('nav_about')}</a>
+      <a href="#features" class="hover:text-[#00abbd] transition-colors">{$t('nav_features')}</a>
       <a href="#testimonials" class="hover:text-[#00abbd] transition-colors">{$t('nav_testimonials')}</a>
       <a href="#portfolio" class="hover:text-[#00abbd] transition-colors">{$t('nav_portfolio')}</a>
-      <a href="#contact-form" class="hover:text-[#00abbd] transition-colors">{$t('nav_quote')}</a>
     </nav>
     <div class="flex items-center gap-4">
       <!-- Language Selector -->
-      <div class="flex items-center bg-zinc-100 rounded-full p-1 border border-zinc-200">
+      <div class="flex items-center bg-zinc-200/70 rounded-full p-1 border border-zinc-300/60">
         <button 
           on:click={() => locale.set('fr')} 
-          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'fr' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-950'}"
+          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'fr' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-950'}"
         >
           FR
         </button>
         <button 
           on:click={() => locale.set('en')} 
-          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'en' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-950'}"
+          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'en' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-950'}"
         >
           EN
         </button>
         <button 
           on:click={() => locale.set('ar')} 
-          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'ar' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-950'}"
+          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'ar' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-600 hover:text-zinc-950'}"
         >
           العربية
         </button>
@@ -352,27 +373,27 @@
 
       <button 
         on:click={scrollToForm}
-        class="text-xs font-bold px-5 py-2.5 rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 transition-all shadow-md shadow-[#00abbd]/15 cursor-pointer border border-[#00abbd]/10"
+        class="text-xs font-black px-5 py-2.5 rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 transition-all shadow-md cursor-pointer"
       >
         {$t('nav_cta')}
       </button>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="w-full max-w-5xl px-6 pt-16 pb-12 text-center z-10 flex flex-col items-center">
-    <div class="gsap-hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10 text-xs text-[#008ba3] font-bold mb-6">
-      <span class="w-2 h-2 rounded-full bg-[#00abbd] animate-pulse"></span>
+  <!-- Hero Section (Designjoy Style Typography) -->
+  <section class="w-full max-w-5xl px-6 pt-16 pb-14 text-center z-10 flex flex-col items-center">
+    <div class="gsap-hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-zinc-200 text-xs text-zinc-800 font-bold mb-6 shadow-sm">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#00abbd] animate-pulse"></span>
       {$t('hero_badge')}
     </div>
     
     <!-- Kinetic Word-by-Word Staggered Title -->
-    <h1 class="gsap-hero-title text-4xl md:text-6xl font-black tracking-tight leading-tight text-[#0a2f4c] max-w-4xl mb-6 flex flex-wrap justify-center gap-x-2.5 gap-y-1">
+    <h1 class="gsap-hero-title text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-none text-zinc-900 max-w-4xl mb-6 flex flex-wrap justify-center gap-x-3 gap-y-1">
       {#each splitTextIntoWords($t('hero_title')) as word}
         <span class="inline-block overflow-hidden py-1">
           <span class="gsap-word inline-block origin-bottom-left">
-            {#if word === $t('hero_highlight')}
-              <span class="font-serif italic text-[#00abbd] font-semibold">{word}</span>
+            {#if word.includes('possibilités') || word.includes('possibilities') || word.includes('حصر')}
+              <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff5500] via-[#e6005c] to-[#7928ca]">{word}</span>
             {:else}
               {word}
             {/if}
@@ -381,31 +402,32 @@
       {/each}
     </h1>
 
-    <p class="gsap-hero-sub text-base md:text-lg text-zinc-500 max-w-2xl font-medium leading-relaxed mb-10">
+    <p class="gsap-hero-sub text-base md:text-lg text-zinc-600 max-w-2xl font-medium leading-relaxed mb-10">
       {$t('hero_subtitle')}
     </p>
+    
     <div class="flex flex-col sm:flex-row gap-4 mb-16">
       <button 
         on:click={scrollToForm}
-        class="gsap-hero-btn px-6 py-3.5 text-sm font-bold rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 shadow-lg shadow-[#00abbd]/25 transition-all cursor-pointer hover:shadow-xl hover:shadow-[#00abbd]/30"
+        class="gsap-hero-btn px-7 py-4 text-sm font-black rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-xl transition-all cursor-pointer"
       >
         {$t('hero_cta')}
       </button>
       <a 
         href="#portfolio"
-        class="gsap-hero-btn px-6 py-3.5 text-sm font-bold rounded-full bg-white border border-zinc-200 text-zinc-650 hover:bg-zinc-50 active:scale-95 transition-all text-center hover:border-zinc-300"
+        class="gsap-hero-btn px-7 py-4 text-sm font-black rounded-full bg-white border border-zinc-300 text-zinc-800 hover:bg-zinc-50 active:scale-95 transition-all text-center shadow-sm"
       >
         {$t('hero_secondary')}
       </a>
     </div>
 
     <!-- 3D Perspective Interactive Showreel Video Frame -->
-    <div class="gsap-hero-video w-full max-w-4xl rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl relative group transition-shadow duration-300 hover:shadow-2xl">
-      <div class="w-full aspect-video rounded-xl bg-zinc-950 flex flex-col items-center justify-center relative overflow-hidden">
+    <div class="gsap-hero-video w-full max-w-4xl rounded-3xl border border-zinc-300/80 bg-white p-3.5 shadow-2xl relative group transition-shadow duration-300">
+      <div class="w-full aspect-video rounded-2xl bg-zinc-950 flex flex-col items-center justify-center relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-tr from-[#004e57]/40 via-zinc-950 to-[#5c4a16]/30 opacity-85 z-0"></div>
         
         <div class="z-10 flex flex-col items-center gap-4 cursor-pointer">
-          <div class="w-20 h-20 rounded-full bg-white/10 border border-white/20 hover:border-white/40 hover:bg-white/25 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-2xl group-hover:scale-110">
+          <div class="w-20 h-20 rounded-full bg-white/15 border border-white/30 hover:border-white/50 hover:bg-white/30 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-2xl group-hover:scale-110">
             <svg class="w-7 h-7 text-white fill-white {$locale === 'ar' ? '-translate-x-0.5 rotate-180' : 'translate-x-0.5'}" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
@@ -414,20 +436,87 @@
         </div>
 
         <div class="absolute bottom-4 {$locale === 'ar' ? 'right-4' : 'left-4'} z-10 flex gap-2">
-          <span class="px-2.5 py-1 rounded bg-black/60 backdrop-blur-md text-[10px] font-bold text-[#00abbd] border border-[#00abbd]/20">{$t('hero_player_badge')}</span>
+          <span class="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-black text-[#00abbd] border border-[#00abbd]/20">{$t('hero_player_badge')}</span>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Designjoy-Style Mesh Gradient Features Section -->
+  <section id="features" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
+    <div class="text-center mb-16">
+      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('features_badge')}</span>
+      
+      <h2 class="text-4xl md:text-5xl font-black text-zinc-900 mt-4 mb-3">
+        {$t('features_title').split($t('features_highlight'))[0]}
+        <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] via-[#7928ca] to-[#0070f3]">{$t('features_highlight')}</span>
+      </h2>
+      <p class="text-sm text-zinc-500 font-semibold max-w-lg mx-auto">
+        {$t('features_subtitle')}
+      </p>
+    </div>
+
+    <!-- 5 Vibrant Designjoy Mesh Gradient Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+      {#each featureCards as card}
+        <div class="gsap-feature-card bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <!-- Top Gradient Box with Icon -->
+          <div class="w-full aspect-square rounded-2xl bg-gradient-to-br {card.bgGradient} p-6 flex items-center justify-center relative overflow-hidden shadow-lg mb-4 group-hover:scale-[1.02] transition-transform">
+            <!-- Overlay noise texture -->
+            <div class="absolute inset-0 bg-black/5"></div>
+            
+            <svg class="w-10 h-10 text-white drop-shadow-md z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d={card.icon} />
+            </svg>
+          </div>
+
+          <!-- Bottom Text Content -->
+          <div class="space-y-1.5 text-center sm:text-left">
+            <h3 class="text-base font-black text-zinc-900">{$t(`${card.keyPrefix}_title` as any)}</h3>
+            <p class="text-xs text-zinc-500 font-medium leading-relaxed">{$t(`${card.keyPrefix}_desc` as any)}</p>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </section>
+
+  <!-- Featured Designjoy Booking Card Section -->
+  <section class="w-full max-w-5xl px-6 py-12 z-10">
+    <div class="gsap-booking-card w-full rounded-3xl bg-gradient-to-br from-[#ffaa00] via-[#ff3366] to-[#7928ca] p-8 md:p-12 shadow-2xl text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-8">
+      <!-- Noise texture -->
+      <div class="absolute inset-0 bg-black/10"></div>
+
+      <div class="z-10 space-y-3 max-w-xl text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-black border border-white/20">
+          <span>⚡</span> {$t('booking_card_note')}
+        </div>
+        <h3 class="text-3xl md:text-4xl font-black leading-tight drop-shadow-sm">
+          {$t('booking_card_title')}
+        </h3>
+        <p class="text-sm font-medium text-white/90 leading-relaxed">
+          {$t('booking_card_sub')}
+        </p>
+      </div>
+
+      <div class="z-10 shrink-0">
+        <button 
+          on:click={scrollToForm}
+          class="px-8 py-4 rounded-2xl bg-white text-zinc-900 hover:bg-zinc-100 font-black text-sm shadow-xl active:scale-95 transition-all cursor-pointer border border-white/20"
+        >
+          {$t('booking_card_btn')}
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- Who We Are Section -->
-  <section id="who-we-are" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-100">
+  <section id="who-we-are" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
       <!-- Left Experience Card -->
       <div class="gsap-about-card lg:col-span-5 relative flex justify-center">
-        <div class="w-72 h-72 rounded-3xl bg-gradient-to-tr from-[#00abbd] to-[#ffbe1a] p-8 flex flex-col justify-between shadow-xl relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300">
-          <div class="absolute inset-0 bg-black/5"></div>
-          <div class="z-10 w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center border border-white/25">
+        <div class="w-72 h-72 rounded-3xl bg-gradient-to-tr from-[#ffaa00] via-[#ff3366] to-[#7928ca] p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300">
+          <div class="absolute inset-0 bg-black/10"></div>
+          <div class="z-10 w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30">
             <img src="/logo/logo-icon.png" alt="BordProd Mark" class="w-8 h-8 object-contain" />
           </div>
           <div class="z-10 text-white">
@@ -435,19 +524,19 @@
             <p class="text-xs font-black uppercase tracking-wider text-white/95">{$t('about_experience')}</p>
           </div>
         </div>
-        <div class="absolute -inset-4 border border-dashed border-[#00abbd]/25 rounded-3xl -z-10 transform rotate-3"></div>
+        <div class="absolute -inset-4 border border-dashed border-zinc-400/30 rounded-3xl -z-10 transform rotate-3"></div>
       </div>
 
       <!-- Right Content -->
       <div class="gsap-about-content lg:col-span-7 space-y-6 {$locale === 'ar' ? 'text-right' : 'text-left'}">
         <div>
-          <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3 py-1 bg-[#e0f7f8] rounded-full">{$t('about_badge')}</span>
+          <span class="text-xs font-black text-zinc-600 uppercase tracking-widest px-3.5 py-1 bg-white rounded-full border border-zinc-200 shadow-sm">{$t('about_badge')}</span>
         </div>
-        <h3 class="text-3xl md:text-4xl font-extrabold text-[#0a2f4c] leading-tight">
+        <h3 class="text-3xl md:text-4xl font-extrabold text-zinc-900 leading-tight">
           {$t('about_title')}
         </h3>
         
-        <div class="space-y-4 text-zinc-500 text-sm md:text-base font-medium leading-relaxed">
+        <div class="space-y-4 text-zinc-600 text-sm md:text-base font-medium leading-relaxed">
           <p>
             {$t('about_p1').split('BordProd')[0]}
             <strong class="text-[#00abbd] font-bold">BordProd</strong>
@@ -465,23 +554,23 @@
   </section>
 
   <!-- Testimonials Section -->
-  <section id="testimonials" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-100 bg-zinc-50/30">
+  <section id="testimonials" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
     <div class="text-center mb-16">
-      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">{$t('testimonials_badge')}</span>
+      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('testimonials_badge')}</span>
       
       {#if $locale === 'ar'}
-        <h2 class="text-3xl md:text-4xl font-black text-[#0a2f4c] mt-4 mb-2">
-          ماذا يقول <span class="font-serif italic text-[#00abbd] font-medium">شركاؤنا</span>
+        <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mt-4 mb-2">
+          ماذا يقول <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] to-[#7928ca]">شركاؤنا</span>
         </h2>
       {:else}
-        <h2 class="text-3xl md:text-4xl font-black text-[#0a2f4c] mt-4 mb-2">
+        <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mt-4 mb-2">
           {$t('testimonials_title').split($t('testimonials_highlight'))[0]}
-          <span class="font-serif italic text-[#00abbd] font-medium">{$t('testimonials_highlight')}</span>
+          <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] to-[#7928ca]">{$t('testimonials_highlight')}</span>
           {$t('testimonials_title').split($t('testimonials_highlight'))[1] || ''}
         </h2>
       {/if}
 
-      <p class="text-sm text-zinc-400 font-semibold max-w-md mx-auto">
+      <p class="text-sm text-zinc-500 font-semibold max-w-md mx-auto">
         {$t('testimonials_subtitle')}
       </p>
     </div>
@@ -489,13 +578,7 @@
     <!-- Testimonial Grid -->
     <div class="gsap-testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {#each testimonials as tItem, i}
-        <div class="gsap-testimonial-card bg-white rounded-2xl border border-zinc-200/50 p-6 shadow-sm flex flex-col justify-between hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 relative">
-          <div class="absolute top-4 {$locale === 'ar' ? 'left-4' : 'right-4'} text-[#00abbd]/5">
-            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14 17h3l2-4V7h-6v6h3M6 17h3l2-4V7H5v6h3l-2 4z" />
-            </svg>
-          </div>
-
+        <div class="gsap-testimonial-card bg-white rounded-3xl border border-zinc-200/80 p-6 shadow-md flex flex-col justify-between hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative">
           <div class="space-y-4">
             <!-- Author Header -->
             <div class="flex items-center gap-3">
@@ -509,14 +592,14 @@
             </div>
 
             <!-- Quote text -->
-            <p class="text-xs text-zinc-500 font-semibold leading-relaxed italic">
+            <p class="text-xs text-zinc-600 font-semibold leading-relaxed italic">
               "{$t(`t${i+1}_quote`)}"
             </p>
           </div>
 
           <!-- Bottom key metric pill -->
           <div class="mt-6 pt-4 border-t border-zinc-100 self-start">
-            <span class="text-[10px] font-bold px-3 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/20 text-[#008ba3] shadow-sm shadow-[#00abbd]/5">
+            <span class="text-[10px] font-bold px-3 py-1.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 shadow-sm">
               {$t(`t${i+1}_metric`)}
             </span>
           </div>
@@ -526,23 +609,23 @@
   </section>
 
   <!-- Video Portfolio Section -->
-  <section id="portfolio" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-100">
+  <section id="portfolio" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
     <div class="text-center mb-12">
-      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">{$t('portfolio_badge')}</span>
+      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('portfolio_badge')}</span>
       
       {#if $locale === 'ar'}
-        <h2 class="text-3xl font-black text-[#0a2f4c] mt-4 mb-2">
-          لقد <span class="font-serif italic text-[#00abbd] font-medium">غيروا</span> حضورهم الرقمي
+        <h2 class="text-3xl font-black text-zinc-900 mt-4 mb-2">
+          لقد <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ffaa00] to-[#ff3366]">غيروا</span> حضورهم الرقمي
         </h2>
       {:else}
-        <h2 class="text-3xl font-black text-[#0a2f4c] mt-4 mb-2">
+        <h2 class="text-3xl font-black text-zinc-900 mt-4 mb-2">
           {$t('portfolio_title').split($t('portfolio_highlight'))[0]}
-          <span class="font-serif italic text-[#00abbd] font-medium">{$t('portfolio_highlight')}</span>
+          <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ffaa00] to-[#ff3366]">{$t('portfolio_highlight')}</span>
           {$t('portfolio_title').split($t('portfolio_highlight'))[1] || ''}
         </h2>
       {/if}
 
-      <p class="text-xs text-zinc-400 font-semibold max-w-md mx-auto">
+      <p class="text-xs text-zinc-500 font-semibold max-w-md mx-auto">
         {$t('portfolio_subtitle')}
       </p>
     </div>
@@ -550,14 +633,14 @@
     <!-- Portrait 9:16 Grid of Reels -->
     <div class="gsap-reels-grid grid grid-cols-2 md:grid-cols-5 gap-4">
       {#each verticalVideos as video, i}
-        <div class="gsap-reel-card aspect-[9/16] rounded-2xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.04] hover:shadow-2xl hover:border-[#00abbd]/60 transition-all duration-300 cursor-pointer">
+        <div class="gsap-reel-card aspect-[9/16] rounded-3xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.04] hover:shadow-2xl hover:border-zinc-400 transition-all duration-300 cursor-pointer">
           <div class="absolute inset-0 bg-gradient-to-tr {video.bgGradient} opacity-85 z-0"></div>
           <div class="absolute inset-0 bg-black/10 z-0"></div>
           
           <!-- Top Row: Handle and Views -->
           <div class="z-10 flex justify-between items-center text-[10px] font-bold text-white">
-            <span class="bg-black/40 px-1.5 py-0.5 rounded border border-white/5 backdrop-blur-sm">{video.client}</span>
-            <span class="bg-[#00abbd]/85 px-1.5 py-0.5 rounded backdrop-blur-sm">{video.views}</span>
+            <span class="bg-black/40 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">{video.client}</span>
+            <span class="bg-white/25 px-2 py-0.5 rounded-full backdrop-blur-sm">{video.views}</span>
           </div>
 
           <!-- Center Play Icon -->
@@ -570,7 +653,7 @@
           <!-- Bottom: Title and Metric Badge -->
           <div class="z-10 space-y-2">
             <p class="text-xs font-black text-white leading-tight drop-shadow-sm">{$t(`p${i+1}_title`)}</p>
-            <div class="inline-block bg-white text-[#008ba3] text-[9px] font-black px-2 py-1 rounded-full border border-white/10">
+            <div class="inline-block bg-white text-zinc-900 text-[9px] font-black px-2.5 py-1 rounded-full border border-white/10 shadow-sm">
               {$t(`p${i+1}_metric`)}
             </div>
           </div>
@@ -582,7 +665,7 @@
     <div class="text-center mt-12">
       <button 
         on:click={scrollToForm}
-        class="inline-flex items-center gap-2 text-xs font-black px-6 py-3.5 rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 transition-all shadow-lg shadow-[#00abbd]/15 cursor-pointer border border-[#00abbd]/10 hover:shadow-xl hover:shadow-[#00abbd]/25"
+        class="inline-flex items-center gap-2 text-xs font-black px-7 py-4 rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 transition-all shadow-xl cursor-pointer"
       >
         {$t('portfolio_cta')}
         <svg class="w-4 h-4 {$locale === 'ar' ? 'rotate-180' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -593,14 +676,14 @@
   </section>
 
   <!-- Lead Capture Form Section -->
-  <section id="contact-form" class="w-full max-w-3xl px-6 py-20 z-10 border-t border-zinc-150">
+  <section id="contact-form" class="w-full max-w-3xl px-6 py-20 z-10 border-t border-zinc-200/60">
     <div class="text-center mb-10">
-      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">{$t('contact_badge')}</span>
-      <h3 class="text-3xl font-extrabold text-[#0a2f4c] mt-4 mb-3">{$t('contact_title')}</h3>
-      <p class="text-xs text-zinc-400 font-semibold max-w-sm mx-auto">{$t('contact_subtitle')}</p>
+      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('contact_badge')}</span>
+      <h3 class="text-3xl font-extrabold text-zinc-900 mt-4 mb-3">{$t('contact_title')}</h3>
+      <p class="text-xs text-zinc-500 font-semibold max-w-sm mx-auto">{$t('contact_subtitle')}</p>
     </div>
 
-    <div class="gsap-form-card rounded-2xl border border-zinc-200 bg-white p-6 md:p-8 shadow-xl">
+    <div class="gsap-form-card rounded-3xl border border-zinc-200/80 bg-white p-6 md:p-10 shadow-xl">
       {#if success}
         <div class="gsap-success-box text-center py-12 space-y-4">
           <div class="w-16 h-16 rounded-full bg-[#e8f5e9] text-[#2e7d32] border border-[#2e7d32]/20 flex items-center justify-center mx-auto">
@@ -608,8 +691,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h4 class="text-lg font-bold text-[#0a2f4c]">{$t('form_success_title')}</h4>
-          <p class="text-xs text-zinc-450 max-w-md mx-auto leading-relaxed font-semibold">
+          <h4 class="text-lg font-bold text-zinc-900">{$t('form_success_title')}</h4>
+          <p class="text-xs text-zinc-500 max-w-md mx-auto leading-relaxed font-semibold">
             {$t('form_success_desc')}
           </p>
           <button 
@@ -624,13 +707,13 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Name -->
             <div class="space-y-1.5">
-              <label for="name" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_name')}</label>
+              <label for="name" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_name')}</label>
               <input 
                 id="name"
                 type="text"
                 placeholder={$t('form_name_placeholder')}
                 bind:value={name}
-                class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all {nameError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
+                class="w-full bg-zinc-50 border border-zinc-200/80 rounded-2xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 transition-all {nameError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
               />
               {#if nameError}
                 <p class="text-xs text-red-500 font-semibold">{nameError}</p>
@@ -639,13 +722,13 @@
 
             <!-- Email -->
             <div class="space-y-1.5">
-              <label for="email" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_email')}</label>
+              <label for="email" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_email')}</label>
               <input 
                 id="email"
                 type="email"
                 placeholder={$t('form_email_placeholder')}
                 bind:value={email}
-                class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all {emailError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
+                class="w-full bg-zinc-50 border border-zinc-200/80 rounded-2xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 transition-all {emailError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
               />
               {#if emailError}
                 <p class="text-xs text-red-500 font-semibold">{emailError}</p>
@@ -656,38 +739,38 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Phone -->
             <div class="space-y-1.5">
-              <label for="phone" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_phone')}</label>
+              <label for="phone" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_phone')}</label>
               <input 
                 id="phone"
                 type="text"
                 placeholder={$t('form_phone_placeholder')}
                 bind:value={phone}
-                class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all"
+                class="w-full bg-zinc-50 border border-zinc-200/80 rounded-2xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 transition-all"
               />
             </div>
 
             <!-- Company -->
             <div class="space-y-1.5">
-              <label for="company" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_company')}</label>
+              <label for="company" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_company')}</label>
               <input 
                 id="company"
                 type="text"
                 placeholder={$t('form_company_placeholder')}
                 bind:value={company}
-                class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all"
+                class="w-full bg-zinc-50 border border-zinc-200/80 rounded-2xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 transition-all"
               />
             </div>
           </div>
 
           <!-- Budget Range -->
           <div class="space-y-2">
-            <span class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_budget')}</span>
+            <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_budget')}</span>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               {#each ['< 2 000 €', '2 000 - 5 000 €', '5 000 - 10 000 €', '10 000 €+'] as bRange}
                 <button
                   type="button"
                   on:click={() => budget = bRange}
-                  class="px-3 py-3 text-xs font-bold rounded-xl border text-center transition-all cursor-pointer {budget === bRange ? 'bg-[#00abbd] text-white border-[#00abbd] shadow-md shadow-[#00abbd]/15' : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:bg-zinc-100'}"
+                  class="px-3 py-3 text-xs font-bold rounded-2xl border text-center transition-all cursor-pointer {budget === bRange ? 'bg-zinc-900 text-white border-zinc-900 shadow-md' : 'bg-zinc-50 text-zinc-700 border-zinc-200 hover:bg-zinc-100'}"
                 >
                   {bRange}
                 </button>
@@ -697,13 +780,13 @@
 
           <!-- Project Description -->
           <div class="space-y-1.5">
-            <label for="desc" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_desc')}</label>
+            <label for="desc" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_desc')}</label>
             <textarea 
               id="desc"
               rows="4"
               placeholder={$t('form_desc_placeholder')}
               bind:value={projectDescription}
-              class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all resize-none {projectDescriptionError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
+              class="w-full bg-zinc-50 border border-zinc-200/80 rounded-2xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 transition-all resize-none {projectDescriptionError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
             ></textarea>
             {#if projectDescriptionError}
               <p class="text-xs text-red-500 font-semibold">{projectDescriptionError}</p>
@@ -711,7 +794,7 @@
           </div>
 
           {#if errorMessage}
-            <div class="p-4 rounded-xl bg-red-50 border border-red-150 text-red-500 text-xs font-bold text-center">
+            <div class="p-4 rounded-2xl bg-red-50 border border-red-150 text-red-500 text-xs font-bold text-center">
               {errorMessage}
             </div>
           {/if}
@@ -720,7 +803,7 @@
           <button 
             type="submit"
             disabled={loading}
-            class="w-full py-4 rounded-xl bg-[#00abbd] text-white font-bold text-sm tracking-wider uppercase hover:bg-[#0091a1] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#00abbd]/15 disabled:opacity-50"
+            class="w-full py-4 rounded-2xl bg-zinc-900 text-white font-bold text-sm tracking-wider uppercase hover:bg-zinc-800 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xl disabled:opacity-50"
           >
             {#if loading}
               <Spinner size="sm" />
@@ -735,15 +818,15 @@
   </section>
 
   <!-- Footer -->
-  <footer class="w-full max-w-6xl flex flex-col md:flex-row justify-between items-center py-8 px-6 border-t border-zinc-150 z-10 text-xs text-zinc-450 gap-4 bg-transparent">
+  <footer class="w-full max-w-6xl flex flex-col md:flex-row justify-between items-center py-8 px-6 border-t border-zinc-200/60 z-10 text-xs text-zinc-500 gap-4 bg-transparent">
     <div class="flex items-center gap-2">
       <img src="/logo/logo-icon.png" alt="BordProd Icon" class="h-6 object-contain" />
       <span>&copy; 2026 BordProd. {$t('footer_copy')}</span>
     </div>
     <div class="flex items-center gap-4">
-      <a href="#showcase" class="hover:text-zinc-650">{$t('footer_legal')}</a>
+      <a href="#showcase" class="hover:text-zinc-900">{$t('footer_legal')}</a>
       <span>&middot;</span>
-      <a href="#showcase" class="hover:text-zinc-650">{$t('footer_privacy')}</a>
+      <a href="#showcase" class="hover:text-zinc-900">{$t('footer_privacy')}</a>
       <span>&middot;</span>
       <a href="/dashboard/85e8d89e-4b47-49d7-84bc-79f9435b0b2e" class="text-[#00abbd] font-bold hover:underline">{$t('footer_crm')}</a>
     </div>

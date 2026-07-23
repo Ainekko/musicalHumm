@@ -18,19 +18,41 @@ if (typeof window !== 'undefined') {
 export const translations = {
   fr: {
     nav_about: "Qui Sommes-Nous",
+    nav_features: "Pourquoi BordProd",
     nav_testimonials: "Avis Partenaires",
     nav_portfolio: "Nos Réalisations",
     nav_quote: "Devis gratuit",
     nav_cta: "Lancer un projet",
     
     hero_badge: "Agence de Production Vidéo Performance",
-    hero_title: "Créer des vidéos qui propulsent votre marque vers le haut.",
-    hero_highlight: "votre marque",
+    hero_title: "Une souscription, des possibilités infinies.",
+    hero_highlight: "possibilités infinies.",
     hero_subtitle: "Nous combinons l'art de l'image de qualité cinéma et l'efficacité des stratégies d'acquisition. Donnez vie à vos idées grâce à des formats optimisés pour convertir.",
     hero_cta: "Demander ma stratégie vidéo",
     hero_secondary: "Découvrir nos formats",
     hero_player_badge: "BORDPROD 2026",
     hero_player_cta: "Découvrir notre showreel",
+
+    features_badge: "POURQUOI BORDPROD",
+    features_title: "C'est l'expérience vidéo réinventée.",
+    features_highlight: "réinventée.",
+    features_subtitle: "BordProd remplace les agences lentes et coûteuses par un abonnement vidéo agile et orienté conversion.",
+
+    f1_title: "Stratégie sur-mesure",
+    f1_desc: "Chaque vidéo est pensée pour captiver votre cible et maximiser le taux de conversion.",
+    f2_title: "Qualité Cinéma",
+    f2_desc: "Matériel de pointe, étalonnage professionnel et sound design immersif.",
+    f3_title: "Formats Viraux 9:16",
+    f3_desc: "Optimisé pour TikTok, Instagram Reels et YouTube Shorts.",
+    f4_title: "Livraison Rapide",
+    f4_desc: "Premiers rendus livrés en quelques jours seulement pour garder votre rythme.",
+    f5_title: "Performance Mesurée",
+    f5_desc: "Suivi des statistiques et optimisation continue de votre contenu vidéo.",
+
+    booking_card_title: "Réserver un appel stratégique de 15 min",
+    booking_card_sub: "Discutons de vos objectifs et définissons la meilleure stratégie pour propulser votre marque.",
+    booking_card_btn: "Réserver mon appel",
+    booking_card_note: "Sans engagement — Plan d'action offert",
     
     about_badge: "QUI SOMMES-NOUS",
     about_title: "Donner de la hauteur à votre message de marque.",
@@ -82,7 +104,6 @@ export const translations = {
     footer_privacy: "Confidentialité",
     footer_crm: "Accès CRM Interne",
 
-    // Testimonial Specific Data
     t1_author: "Julie Rinaldi",
     t1_role: "Responsable Marketing, NeoBank",
     t1_quote: "L'équipe de BordProd a su comprendre notre besoin instantanément. Les vidéos produites ont dépassé toutes nos attentes et ont transformé notre communication.",
@@ -103,7 +124,6 @@ export const translations = {
     t4_quote: "Grâce à leur accompagnement stratégique, nous avons modernisé notre image de marque et instauré une vraie relation de confiance avec notre audience.",
     t4_metric: "🩺 +600 nouveaux patients",
 
-    // Portfolio items
     p1_title: "Hook Publicitaire App",
     p1_metric: "+120% Téléchargements",
     p2_title: "Vidéo Pitch Fondateur",
@@ -117,20 +137,42 @@ export const translations = {
   },
   en: {
     nav_about: "About Us",
+    nav_features: "Why BordProd",
     nav_testimonials: "Testimonials",
     nav_portfolio: "Our Portfolio",
     nav_quote: "Free Quote",
     nav_cta: "Start a Project",
     
     hero_badge: "Performance Video Production Agency",
-    hero_title: "Create videos that propel your brand to the top.",
-    hero_highlight: "your brand",
+    hero_title: "One subscription, endless possibilities.",
+    hero_highlight: "endless possibilities.",
     hero_subtitle: "We combine the art of cinema-quality visuals with the efficiency of acquisition strategies. Bring your ideas to life with formats optimized for conversion.",
     hero_cta: "Get My Video Strategy",
     hero_secondary: "Discover Our Formats",
     hero_player_badge: "BORDPROD 2026",
     hero_player_cta: "Discover our showreel",
-    
+
+    features_badge: "WHY BORDPROD",
+    features_title: "It's video experience reinvented.",
+    features_highlight: "reinvented.",
+    features_subtitle: "BordProd replaces slow, expensive agencies with a fast, conversion-driven video subscription.",
+
+    f1_title: "Custom Strategy",
+    f1_desc: "Every video is crafted to captivate your audience and maximize conversion rates.",
+    f2_title: "Cinema Quality",
+    f2_desc: "Cutting-edge equipment, pro color grading, and immersive sound design.",
+    f3_title: "Viral 9:16 Formats",
+    f3_desc: "Optimized for TikTok, Instagram Reels, and YouTube Shorts.",
+    f4_title: "Fast Delivery",
+    f4_desc: "First drafts delivered in just a few days to keep up your momentum.",
+    f5_title: "Measured Performance",
+    f5_desc: "Analytics tracking and continuous optimization of your video content.",
+
+    booking_card_title: "Book a 15-min strategy call",
+    booking_card_sub: "Let's discuss your goals and define the best strategy to propel your brand.",
+    booking_card_btn: "Book My Call",
+    booking_card_note: "No commitment — Free action plan",
+
     about_badge: "ABOUT US",
     about_title: "Elevate your brand message.",
     about_p1: "At BordProd, we believe that every brand has a story worth telling.",
@@ -214,20 +256,42 @@ export const translations = {
   },
   ar: {
     nav_about: "من نحن",
+    nav_features: "لماذا BordProd",
     nav_testimonials: "آراء شركائنا",
     nav_portfolio: "أعمالنا",
     nav_quote: "طلب عرض سعر",
     nav_cta: "ابدأ مشروعاً",
     
     hero_badge: "وكالة إنتاج فيديو تركز على الأداء",
-    hero_title: "إنشاء فيديوهات تدفع علامتك التجارية نحو القمة.",
-    hero_highlight: "علامتك التجارية",
+    hero_title: "اشتراك واحد، إمكانيات لا حصر لها.",
+    hero_highlight: "إمكانيات لا حصر لها.",
     hero_subtitle: "نحن نجمع بين فن الصورة بجودة السينما وفعالية استراتيجيات الاستحواذ. جسد أفكارك من خلال تنسيقات فيديوهات محسنة لزيادة التحويلات.",
     hero_cta: "اطلب استراتيجية الفيديو الخاصة بي",
     hero_secondary: "اكتشف تنسيقاتنا",
     hero_player_badge: "BORDPROD 2026",
     hero_player_cta: "اكتشف عرض أعمالنا",
-    
+
+    features_badge: "لماذا BORDPROD",
+    features_title: "إنها تجربة فيديو معاد ابتكارها.",
+    features_highlight: "معاد ابتكارها.",
+    features_subtitle: "تستبدل BordProd الوكالات البطئية والمكلفة باشتراك فيديو مرن وموجه لتحقيق التحويلات.",
+
+    f1_title: "استراتيجية مخصصة",
+    f1_desc: "كل فيديو مصمم لجذب جمهورك وزيادة نسبة التحويل بفاعلية.",
+    f2_title: "جودة سينمائية",
+    f2_desc: "معدات متطورة، تعديل ألوان احترافي، وهندسة صوتية مذهلة.",
+    f3_title: "تنسيقات 9:16 انتشاراتية",
+    f3_desc: "محسنة لتيك توك، إنستغرام ريلز، ويوتيوب شورتس.",
+    f4_title: "تسليم سريع",
+    f4_desc: "تسليم مسودات العمل الأولى خلال أيام معدودة للحفاظ على زخم نموك.",
+    f5_title: "أداء مقاس ومثبت",
+    f5_desc: "تتبع الإحصائيات وتحسين مستمر لمحتوى الفيديو لضمان النتائج.",
+
+    booking_card_title: "احجز مكالمة استراتيجية لمدة 15 دقيقة",
+    booking_card_sub: "دعنا نناقش أهدافك ونحدد أفضل استراتيجية لدفـع علامتك التجارية.",
+    booking_card_btn: "احجز المكالمة الآن",
+    booking_card_note: "بدون أي التزام — خطة عمل مجانية",
+
     about_badge: "من نحن",
     about_title: "الارتقاء برسالة علامتك التجارية.",
     about_p1: "في BordProd، نؤمن بأن كل علامة تجارية لديها قصة فريدة تستحق أن تروى بقوة وأصالة.",
@@ -311,7 +375,6 @@ export const translations = {
   }
 };
 
-// Derived store to fetch translations easily
 export const t = derived(locale, ($locale) => {
   return (key: keyof typeof translations['fr']) => {
     return translations[$locale][key] || translations['fr'][key] || key;
