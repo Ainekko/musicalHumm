@@ -1,9 +1,9 @@
 <script lang="ts">
   /**
-   * BordProd Landing Page - Designjoy-Inspired Aesthetic & i18n & GSAP
-   * =================================================================
-   * Off-white textured canvas (#f5f4f0), vibrant multi-color mesh gradients,
-   * film grain overlays, kinetic word typography, and 3D mouse tilt.
+   * BordProd Landing Page - Subtle Tastful Animations & Designjoy Aesthetic
+   * =====================================================================
+   * Clean off-white canvas (#f5f4f0), vibrant mesh gradient accent cards,
+   * subtle text staggers (no 3D tilts/gimmicks), and internationalization.
    */
   import { onMount } from 'svelte';
   import { gsap } from 'gsap';
@@ -78,8 +78,8 @@
 
       setTimeout(() => {
         gsap.fromTo('.gsap-success-box', 
-          { opacity: 0, scale: 0.85, y: 20 }, 
-          { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)', clearProps: 'all' }
+          { opacity: 0, y: 15 }, 
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', clearProps: 'all' }
         );
       }, 50);
     } catch (err: any) {
@@ -101,32 +101,40 @@
     return str.split(' ').map(w => w.trim()).filter(Boolean);
   }
 
+  function getCardTitle(keyPrefix: string) {
+    return $t(`${keyPrefix}_title` as any);
+  }
+
+  function getCardDesc(keyPrefix: string) {
+    return $t(`${keyPrefix}_desc` as any);
+  }
+
   // Designjoy Feature Cards Gradient Specifications
   const featureCards = [
     {
       keyPrefix: 'f1',
       bgGradient: 'from-[#ffaa00] via-[#ff5500] to-[#e6005c]',
-      icon: 'M13 10V3L4 14h7v7l9-11h-7z' // Lightning bolt
+      icon: 'M13 10V3L4 14h7v7l9-11h-7z'
     },
     {
       keyPrefix: 'f2',
       bgGradient: 'from-[#0066ff] via-[#7a00ff] to-[#ff00cc]',
-      icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z' // Camera
+      icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'
     },
     {
       keyPrefix: 'f3',
       bgGradient: 'from-[#ff3300] via-[#ff6600] to-[#ffcc00]',
-      icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z' // Mobile 9:16
+      icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'
     },
     {
       keyPrefix: 'f4',
       bgGradient: 'from-[#ff007f] via-[#7928ca] to-[#0070f3]',
-      icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' // Clock
+      icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
     },
     {
       keyPrefix: 'f5',
       bgGradient: 'from-[#00c6ff] via-[#0072ff] to-[#7928ca]',
-      icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' // Growth arrow chart
+      icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
     }
   ];
 
@@ -180,143 +188,71 @@
   ];
 
   onMount(() => {
-    // 1. Kinetic Hero Word Entrance Animation
-    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    // 1. Tasteful Hero Entrance Animation (Subtle Y-slide & Fade)
+    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 
     tl.fromTo('.gsap-hero-badge', 
-      { opacity: 0, y: -25, scale: 0.9 }, 
-      { opacity: 1, y: 0, scale: 1, duration: 0.8, clearProps: 'all' }
+      { opacity: 0, y: -10 }, 
+      { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }
     )
     .fromTo('.gsap-word', 
-      { opacity: 0, y: 45, rotateX: -60 }, 
-      { opacity: 1, y: 0, rotateX: 0, stagger: 0.03, duration: 0.85, clearProps: 'all' },
-      '-=0.4'
+      { opacity: 0, y: 14 }, 
+      { opacity: 1, y: 0, stagger: 0.035, duration: 0.55, clearProps: 'all' },
+      '-=0.3'
     )
     .fromTo('.gsap-hero-sub', 
-      { opacity: 0, y: 25 }, 
-      { opacity: 1, y: 0, duration: 0.8, clearProps: 'all' }, 
-      '-=0.5'
-    )
-    .fromTo('.gsap-hero-btn', 
-      { opacity: 0, y: 20, scale: 0.9 }, 
-      { opacity: 1, y: 0, scale: 1, stagger: 0.12, duration: 0.7, ease: 'back.out(1.6)', clearProps: 'all' }, 
+      { opacity: 0, y: 10 }, 
+      { opacity: 1, y: 0, duration: 0.5, clearProps: 'all' }, 
       '-=0.4'
     )
+    .fromTo('.gsap-hero-btn', 
+      { opacity: 0, y: 10 }, 
+      { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, clearProps: 'all' }, 
+      '-=0.3'
+    )
     .fromTo('.gsap-hero-video', 
-      { opacity: 0, y: 50, scale: 0.95 }, 
-      { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out', clearProps: 'all' }, 
-      '-=0.5'
+      { opacity: 0, y: 15 }, 
+      { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }, 
+      '-=0.4'
     );
 
-    // 2. Ambient Floating Motion
-    gsap.to('.gsap-float-slow', {
-      y: -15,
-      duration: 3.5,
-      repeat: -1,
-      yoyo: true,
-      ease: 'power1.inOut'
-    });
-
-    // Scroll reveal helper
-    function setupScrollReveal(triggerSelector: string, targetSelector: string, fromVars: gsap.TweenVars, toVars: gsap.TweenVars) {
+    // Helper for subtle scroll reveals with guaranteed clean layout
+    function setupScrollReveal(triggerSelector: string, targetSelector: string, stagger: number = 0) {
       const triggerEl = document.querySelector(triggerSelector);
       if (!triggerEl) return;
 
       const obs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            gsap.fromTo(targetSelector, fromVars, {
-              ...toVars,
-              onComplete: () => {
-                gsap.set(targetSelector, { clearProps: 'all' });
+            gsap.fromTo(targetSelector, 
+              { opacity: 0, y: 16 }, 
+              {
+                opacity: 1,
+                y: 0,
+                stagger: stagger,
+                duration: 0.55,
+                ease: 'power2.out',
+                onComplete: () => {
+                  gsap.set(targetSelector, { clearProps: 'all' });
+                }
               }
-            });
+            );
             obs.disconnect();
           }
         });
-      }, { threshold: 0.02, rootMargin: '0px 0px -20px 0px' });
+      }, { threshold: 0.01, rootMargin: '0px 0px -10px 0px' });
 
       obs.observe(triggerEl);
     }
 
-    // 3. Section Scroll Reveals
-    setupScrollReveal(
-      '#features', 
-      '.gsap-feature-card', 
-      { opacity: 0, y: 40, scale: 0.92 }, 
-      { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.8, ease: 'power3.out' }
-    );
-
-    setupScrollReveal(
-      '#who-we-are', 
-      '.gsap-about-card', 
-      { opacity: 0, x: -45, scale: 0.95 }, 
-      { opacity: 1, x: 0, scale: 1, duration: 0.9, ease: 'power3.out' }
-    );
-    setupScrollReveal(
-      '#who-we-are', 
-      '.gsap-about-content', 
-      { opacity: 0, x: 45 }, 
-      { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' }
-    );
-
-    setupScrollReveal(
-      '#testimonials', 
-      '.gsap-testimonial-card', 
-      { opacity: 0, y: 45, scale: 0.93 }, 
-      { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.8, ease: 'back.out(1.4)' }
-    );
-
-    setupScrollReveal(
-      '#portfolio', 
-      '.gsap-reel-card', 
-      { opacity: 0, y: 55, scale: 0.88 }, 
-      { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.75, ease: 'power3.out' }
-    );
-
-    setupScrollReveal(
-      '#contact-form', 
-      '.gsap-form-card', 
-      { opacity: 0, y: 45, scale: 0.96 }, 
-      { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: 'power3.out' }
-    );
-
-    // 4. 3D Perspective Tilt Micro-Interactions
-    init3DTilt('.gsap-hero-video');
-    init3DTilt('.gsap-feature-card');
-    init3DTilt('.gsap-booking-card');
-    init3DTilt('.gsap-reel-card');
+    // 2. Section Scroll Reveals
+    setupScrollReveal('#features', '.gsap-feature-card', 0.06);
+    setupScrollReveal('#who-we-are', '.gsap-about-card', 0);
+    setupScrollReveal('#who-we-are', '.gsap-about-content', 0);
+    setupScrollReveal('#testimonials', '.gsap-testimonial-card', 0.07);
+    setupScrollReveal('#portfolio', '.gsap-reel-card', 0.06);
+    setupScrollReveal('#contact-form', '.gsap-form-card', 0);
   });
-
-  function init3DTilt(elementSelector: string) {
-    setTimeout(() => {
-      const elements = document.querySelectorAll(elementSelector);
-      elements.forEach((el) => {
-        const target = el as HTMLElement;
-        target.addEventListener('mousemove', (e) => {
-          const rect = target.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-          gsap.to(target, {
-            rotateY: x / 18,
-            rotateX: -y / 18,
-            transformPerspective: 1000,
-            ease: 'power2.out',
-            duration: 0.35
-          });
-        });
-
-        target.addEventListener('mouseleave', () => {
-          gsap.to(target, {
-            rotateY: 0,
-            rotateX: 0,
-            ease: 'power2.out',
-            duration: 0.5
-          });
-        });
-      });
-    }, 100);
-  }
 </script>
 
 <svelte:head>
@@ -328,13 +264,13 @@
   class="min-h-screen flex flex-col items-center justify-between bg-[#f5f4f0] text-[#1a1a1a] relative overflow-hidden font-sans"
 >
   
-  <!-- Subtle SVG Noise Grain Overlay (Designjoy style) -->
+  <!-- Subtle SVG Noise Grain Overlay -->
   <div class="fixed inset-0 pointer-events-none z-0 opacity-[0.035]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
 
   <!-- Floating background colorful gradient blur orbs -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
-    <div class="absolute top-[10%] left-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#ffaa00]/15 via-[#ff3366]/15 to-[#7928ca]/15 blur-[140px]"></div>
-    <div class="absolute bottom-[15%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#00c6ff]/15 via-[#0072ff]/15 to-[#7928ca]/15 blur-[140px]"></div>
+    <div class="absolute top-[10%] left-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#ffaa00]/12 via-[#ff3366]/12 to-[#7928ca]/12 blur-[140px]"></div>
+    <div class="absolute bottom-[15%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#00c6ff]/12 via-[#0072ff]/12 to-[#7928ca]/12 blur-[140px]"></div>
   </div>
 
   <!-- Header -->
@@ -380,18 +316,18 @@
     </div>
   </header>
 
-  <!-- Hero Section (Designjoy Style Typography) -->
+  <!-- Hero Section -->
   <section class="w-full max-w-5xl px-6 pt-16 pb-14 text-center z-10 flex flex-col items-center">
     <div class="gsap-hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-zinc-200 text-xs text-zinc-800 font-bold mb-6 shadow-sm">
       <span class="w-2.5 h-2.5 rounded-full bg-[#00abbd] animate-pulse"></span>
       {$t('hero_badge')}
     </div>
     
-    <!-- Kinetic Word-by-Word Staggered Title -->
+    <!-- Tasteful Word-by-Word Staggered Title -->
     <h1 class="gsap-hero-title text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-none text-zinc-900 max-w-4xl mb-6 flex flex-wrap justify-center gap-x-3 gap-y-1">
       {#each splitTextIntoWords($t('hero_title')) as word}
-        <span class="inline-block overflow-hidden py-1">
-          <span class="gsap-word inline-block origin-bottom-left">
+        <span class="inline-block">
+          <span class="gsap-word inline-block">
             {#if word.includes('possibilités') || word.includes('possibilities') || word.includes('حصر')}
               <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff5500] via-[#e6005c] to-[#7928ca]">{word}</span>
             {:else}
@@ -421,13 +357,13 @@
       </a>
     </div>
 
-    <!-- 3D Perspective Interactive Showreel Video Frame -->
+    <!-- Showreel Video Frame -->
     <div class="gsap-hero-video w-full max-w-4xl rounded-3xl border border-zinc-300/80 bg-white p-3.5 shadow-2xl relative group transition-shadow duration-300">
       <div class="w-full aspect-video rounded-2xl bg-zinc-950 flex flex-col items-center justify-center relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-tr from-[#004e57]/40 via-zinc-950 to-[#5c4a16]/30 opacity-85 z-0"></div>
         
         <div class="z-10 flex flex-col items-center gap-4 cursor-pointer">
-          <div class="w-20 h-20 rounded-full bg-white/15 border border-white/30 hover:border-white/50 hover:bg-white/30 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-2xl group-hover:scale-110">
+          <div class="w-20 h-20 rounded-full bg-white/15 border border-white/30 hover:border-white/50 hover:bg-white/30 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-2xl group-hover:scale-105">
             <svg class="w-7 h-7 text-white fill-white {$locale === 'ar' ? '-translate-x-0.5 rotate-180' : 'translate-x-0.5'}" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
@@ -456,13 +392,12 @@
       </p>
     </div>
 
-    <!-- 5 Vibrant Designjoy Mesh Gradient Cards -->
+    <!-- 5 Designjoy Mesh Gradient Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
       {#each featureCards as card}
         <div class="gsap-feature-card bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
           <!-- Top Gradient Box with Icon -->
           <div class="w-full aspect-square rounded-2xl bg-gradient-to-br {card.bgGradient} p-6 flex items-center justify-center relative overflow-hidden shadow-lg mb-4 group-hover:scale-[1.02] transition-transform">
-            <!-- Overlay noise texture -->
             <div class="absolute inset-0 bg-black/5"></div>
             
             <svg class="w-10 h-10 text-white drop-shadow-md z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -472,8 +407,8 @@
 
           <!-- Bottom Text Content -->
           <div class="space-y-1.5 text-center sm:text-left">
-            <h3 class="text-base font-black text-zinc-900">{$t(`${card.keyPrefix}_title` as any)}</h3>
-            <p class="text-xs text-zinc-500 font-medium leading-relaxed">{$t(`${card.keyPrefix}_desc` as any)}</p>
+            <h3 class="text-base font-black text-zinc-900">{getCardTitle(card.keyPrefix)}</h3>
+            <p class="text-xs text-zinc-500 font-medium leading-relaxed">{getCardDesc(card.keyPrefix)}</p>
           </div>
         </div>
       {/each}
@@ -483,7 +418,6 @@
   <!-- Featured Designjoy Booking Card Section -->
   <section class="w-full max-w-5xl px-6 py-12 z-10">
     <div class="gsap-booking-card w-full rounded-3xl bg-gradient-to-br from-[#ffaa00] via-[#ff3366] to-[#7928ca] p-8 md:p-12 shadow-2xl text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-8">
-      <!-- Noise texture -->
       <div class="absolute inset-0 bg-black/10"></div>
 
       <div class="z-10 space-y-3 max-w-xl text-center md:text-left">
@@ -514,7 +448,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
       <!-- Left Experience Card -->
       <div class="gsap-about-card lg:col-span-5 relative flex justify-center">
-        <div class="w-72 h-72 rounded-3xl bg-gradient-to-tr from-[#ffaa00] via-[#ff3366] to-[#7928ca] p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300">
+        <div class="w-72 h-72 rounded-3xl bg-gradient-to-tr from-[#ffaa00] via-[#ff3366] to-[#7928ca] p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
           <div class="absolute inset-0 bg-black/10"></div>
           <div class="z-10 w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30">
             <img src="/logo/logo-icon.png" alt="BordProd Mark" class="w-8 h-8 object-contain" />
@@ -578,7 +512,7 @@
     <!-- Testimonial Grid -->
     <div class="gsap-testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {#each testimonials as tItem, i}
-        <div class="gsap-testimonial-card bg-white rounded-3xl border border-zinc-200/80 p-6 shadow-md flex flex-col justify-between hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative">
+        <div class="gsap-testimonial-card bg-white rounded-3xl border border-zinc-200/80 p-6 shadow-md flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative">
           <div class="space-y-4">
             <!-- Author Header -->
             <div class="flex items-center gap-3">
@@ -633,7 +567,7 @@
     <!-- Portrait 9:16 Grid of Reels -->
     <div class="gsap-reels-grid grid grid-cols-2 md:grid-cols-5 gap-4">
       {#each verticalVideos as video, i}
-        <div class="gsap-reel-card aspect-[9/16] rounded-3xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.04] hover:shadow-2xl hover:border-zinc-400 transition-all duration-300 cursor-pointer">
+        <div class="gsap-reel-card aspect-[9/16] rounded-3xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 cursor-pointer">
           <div class="absolute inset-0 bg-gradient-to-tr {video.bgGradient} opacity-85 z-0"></div>
           <div class="absolute inset-0 bg-black/10 z-0"></div>
           
