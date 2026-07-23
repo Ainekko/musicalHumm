@@ -1,12 +1,16 @@
 <script lang="ts">
   /**
-   * BordProd Landing Page - Light Theme (Inspiration)
-   * ===============================================
+   * BordProd Landing Page - Internationalized (FR / EN / AR) with GSAP Animations
+   * =========================================================================
    * Clean white theme matching the doctor inspiration.
-   * Teal (#00abbd) and gold (#ffbe1a) branding.
+   * Dynamic i18n store integration with automatic RTL support.
+   * Smooth GSAP staggered entrances, reveals, and micro-interactions.
    */
+  import { onMount } from 'svelte';
+  import { gsap } from 'gsap';
   import { api } from '$lib/api/base';
   import Spinner from '$lib/components/ui/Spinner.svelte';
+  import { locale, t } from '$lib/i18n';
 
   // Lead Form State
   let name = '';
@@ -37,21 +41,21 @@
     emailError = '';
     projectDescriptionError = '';
 
-    // Validations
+    // Validations using dynamic messages
     let isValid = true;
     if (!name.trim()) {
-      nameError = 'Le nom est requis';
+      nameError = $t('validation_name');
       isValid = false;
     }
     if (!email.trim()) {
-      emailError = "L'email est requis";
+      emailError = $t('validation_email');
       isValid = false;
     } else if (!validateEmail(email)) {
-      emailError = 'Veuillez entrer une adresse email valide';
+      emailError = $t('validation_email_invalid');
       isValid = false;
     }
     if (!projectDescription.trim()) {
-      projectDescriptionError = 'Les détails du projet sont requis';
+      projectDescriptionError = $t('validation_desc');
       isValid = false;
     }
 
@@ -75,9 +79,14 @@
       company = '';
       budget = '';
       projectDescription = '';
+
+      // Success animation
+      setTimeout(() => {
+        gsap.from('.gsap-success-box', { opacity: 0, scale: 0.9, duration: 0.6, ease: 'back.out(1.5)' });
+      }, 50);
     } catch (err: any) {
       console.error('Lead submission failed:', err);
-      errorMessage = err.message || 'Une erreur est survenue. Veuillez réessayer.';
+      errorMessage = err.message || $t('validation_error');
     } finally {
       loading = false;
     }
@@ -90,110 +99,176 @@
     }
   }
 
-  // Vertical Reels Showcase (TikTok / Reels / Shorts style)
+  // Vertical Reels Showcase
   const verticalVideos = [
     {
       client: '@Julie_Fintech',
-      views: '1.2M vues',
-      bgGradient: 'from-cyan-400 to-blue-500',
-      title: 'Hook Publicitaire App',
-      metric: '+120% Téléchargements'
+      views: '1.2M',
+      bgGradient: 'from-cyan-400 to-blue-500'
     },
     {
       client: '@Hugo_B2B',
-      views: '450K vues',
-      bgGradient: 'from-teal-400 to-emerald-500',
-      title: 'Vidéo Pitch Fondateur',
-      metric: '18 Leads Qualifiés'
+      views: '450K',
+      bgGradient: 'from-teal-400 to-emerald-500'
     },
     {
       client: '@Elena_Lifestyle',
-      views: '2.8M vues',
-      bgGradient: 'from-amber-300 to-orange-500',
-      title: 'Publicité Produit D2C',
-      metric: '3.4x ROAS Validé'
+      views: '2.8M',
+      bgGradient: 'from-amber-300 to-orange-500'
     },
     {
       client: '@Docteur_Malik',
-      views: '890K vues',
-      bgGradient: 'from-indigo-400 to-purple-550',
-      title: 'Vulgarisation Santé',
-      metric: '+22K Abonnés'
+      views: '890K',
+      bgGradient: 'from-indigo-400 to-purple-550'
     },
     {
       client: '@Alice_Agency',
-      views: '1.5M vues',
-      bgGradient: 'from-rose-450 to-pink-500',
-      title: 'UGC Commercial',
-      metric: '+45% Taux de Clic'
+      views: '1.5M',
+      bgGradient: 'from-rose-450 to-pink-500'
     }
   ];
 
-  // Testimonials with metrics
+  // Testimonial Meta Details
   const testimonials = [
     {
-      quote: "L'équipe de BordProd a su comprendre notre besoin instantanément. Les vidéos produites ont dépassé toutes nos attentes et ont transformé notre communication.",
-      author: "Julie Rinaldi",
-      role: "Responsable Marketing, NeoBank",
-      metric: "🚀 +120K abonnés organiques",
       avatarInitials: "JR",
       bgAvatar: "bg-[#e0f7f8] text-[#008ba3]"
     },
     {
-      quote: "BordProd combine une réactivité sans faille et une créativité débordante. Nos campagnes publicitaires vidéo affichent des performances exceptionnelles.",
-      author: "Thomas Lemoine",
-      role: "Fondateur, Velo D2C",
-      metric: "📈 ROAS moyen de 3.2x",
       avatarInitials: "TL",
       bgAvatar: "bg-[#fff8e1] text-[#b38f00]"
     },
     {
-      quote: "Un travail d'orfèvre sur l'écriture et le montage. Le pitch fondateur nous a permis d'attirer des leads de haute qualité en moins de deux semaines.",
-      author: "Hugo Martinez",
-      role: "CEO, LeadFlow",
-      metric: "🎯 +45% de leads qualifiés",
       avatarInitials: "HM",
       bgAvatar: "bg-[#e8f5e9] text-[#2e7d32]"
     },
     {
-      quote: "Grâce à leur accompagnement stratégique, nous avons modernisé notre image de marque et instauré une vraie relation de confiance avec notre audience.",
-      author: "Dr. Sofia Samadi",
-      role: "Directrice, Centre Clinique",
-      metric: "🩺 +600 nouveaux patients",
       avatarInitials: "SS",
       bgAvatar: "bg-[#e8eaf6] text-[#3f51b5]"
     }
   ];
+
+  onMount(() => {
+    // 1. Initial Hero Entrance Animation
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    tl.from('.gsap-hero-badge', { opacity: 0, y: -20, duration: 0.8, delay: 0.1 })
+      .from('.gsap-hero-title', { opacity: 0, y: 30, scale: 0.98, duration: 0.9 }, '-=0.5')
+      .from('.gsap-hero-sub', { opacity: 0, y: 20, duration: 0.8 }, '-=0.6')
+      .from('.gsap-hero-btn', { opacity: 0, y: 15, stagger: 0.15, duration: 0.7, ease: 'back.out(1.6)' }, '-=0.5')
+      .from('.gsap-hero-video', { opacity: 0, y: 40, scale: 0.96, duration: 1 }, '-=0.5');
+
+    // Floating Ambient Animation for Decorative Icons
+    gsap.to('.gsap-float-slow', {
+      y: -12,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'power1.inOut'
+    });
+
+    const observerOptions = { threshold: 0.15 };
+
+    // 2. About Us Section Observer
+    const aboutEl = document.querySelector('#who-we-are');
+    if (aboutEl) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            gsap.from('.gsap-about-card', { opacity: 0, x: -40, duration: 1, ease: 'power3.out' });
+            gsap.from('.gsap-about-content', { opacity: 0, x: 40, duration: 1, ease: 'power3.out' });
+            obs.disconnect();
+          }
+        });
+      }, observerOptions);
+      obs.observe(aboutEl);
+    }
+
+    // 3. Testimonials Grid Observer
+    const testimonialsEl = document.querySelector('.gsap-testimonials-grid');
+    if (testimonialsEl) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            gsap.from('.gsap-testimonial-card', {
+              opacity: 0,
+              y: 40,
+              scale: 0.93,
+              stagger: 0.12,
+              duration: 0.85,
+              ease: 'back.out(1.4)'
+            });
+            obs.disconnect();
+          }
+        });
+      }, observerOptions);
+      obs.observe(testimonialsEl);
+    }
+
+    // 4. Portfolio / Reels Grid Observer
+    const reelsEl = document.querySelector('.gsap-reels-grid');
+    if (reelsEl) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            gsap.from('.gsap-reel-card', {
+              opacity: 0,
+              y: 50,
+              scale: 0.9,
+              stagger: 0.1,
+              duration: 0.8,
+              ease: 'power3.out'
+            });
+            obs.disconnect();
+          }
+        });
+      }, observerOptions);
+      obs.observe(reelsEl);
+    }
+
+    // 5. Contact Form Observer
+    const formEl = document.querySelector('#contact-form');
+    if (formEl) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            gsap.from('.gsap-form-card', { opacity: 0, y: 40, scale: 0.97, duration: 0.9, ease: 'power3.out' });
+            obs.disconnect();
+          }
+        });
+      }, observerOptions);
+      obs.observe(formEl);
+    }
+  });
 </script>
 
 <svelte:head>
-  <title>BordProd | Agence de Production Vidéo</title>
+  <title>BordProd | {$t('hero_badge')}</title>
 </svelte:head>
 
-<main class="min-h-screen flex flex-col items-center justify-between bg-white text-[#2a3b50] relative overflow-hidden font-sans">
+<main 
+  dir={$locale === 'ar' ? 'rtl' : 'ltr'} 
+  class="min-h-screen flex flex-col items-center justify-between bg-white text-[#2a3b50] relative overflow-hidden font-sans"
+>
   
-  <!-- Floating background decorations inspired by the doctor template -->
+  <!-- Floating background decorations -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
-    <!-- Light glowing orbs -->
     <div class="absolute top-[15%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#00abbd]/5 blur-[120px]"></div>
     <div class="absolute bottom-[20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#ffbe1a]/5 blur-[120px]"></div>
     
-    <!-- Outline SVG Icons floating around (Camera, Play, clapboard, heartbeat lines) -->
-    <!-- Heartbeat wave style decorative lines -->
-    <svg class="absolute top-[25%] right-[5%] w-48 h-32 text-zinc-100" fill="none" viewBox="0 0 100 50" stroke="currentColor" stroke-width="1">
+    <svg class="absolute top-[25%] {$locale === 'ar' ? 'left-[5%]' : 'right-[5%]'} w-48 h-32 text-zinc-100 gsap-float-slow" fill="none" viewBox="0 0 100 50" stroke="currentColor" stroke-width="1">
       <path d="M0,25 L30,25 L35,15 L40,35 L45,20 L50,28 L55,25 L100,25" />
     </svg>
-    <svg class="absolute top-[60%] left-[2%] w-48 h-32 text-zinc-100" fill="none" viewBox="0 0 100 50" stroke="currentColor" stroke-width="1">
+    <svg class="absolute top-[60%] {$locale === 'ar' ? 'right-[2%]' : 'left-[2%]'} w-48 h-32 text-zinc-100 gsap-float-slow" fill="none" viewBox="0 0 100 50" stroke="currentColor" stroke-width="1">
       <path d="M0,25 L30,25 L35,10 L42,40 L47,15 L52,30 L57,25 L100,25" />
     </svg>
 
-    <!-- Floating medical-themed clean cross/video shapes -->
-    <div class="absolute top-[18%] left-[8%] text-[#00abbd]/15 animate-bounce" style="animation-duration: 6s;">
+    <div class="absolute top-[18%] {$locale === 'ar' ? 'right-[8%]' : 'left-[8%]'} text-[#00abbd]/15 gsap-float-slow">
       <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
       </svg>
     </div>
-    <div class="absolute top-[45%] right-[10%] text-[#ffbe1a]/15 animate-bounce" style="animation-duration: 8s;">
+    <div class="absolute top-[45%] {$locale === 'ar' ? 'left-[10%]' : 'right-[10%]'} text-[#ffbe1a]/15 gsap-float-slow">
       <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10" />
         <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
@@ -206,68 +281,97 @@
     <div class="flex items-center gap-2">
       <img src="/logo/logo.png" alt="BordProd Logo" class="h-9 md:h-11 object-contain" />
     </div>
-    <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-zinc-500">
-      <a href="#who-we-are" class="hover:text-[#00abbd] transition-colors">Qui Sommes-Nous</a>
-      <a href="#testimonials" class="hover:text-[#00abbd] transition-colors">Avis Partenaires</a>
-      <a href="#portfolio" class="hover:text-[#00abbd] transition-colors">Nos Réalisations</a>
-      <a href="#contact-form" class="hover:text-[#00abbd] transition-colors">Devis gratuit</a>
+    <nav class="hidden lg:flex items-center gap-8 text-sm font-bold text-zinc-500">
+      <a href="#who-we-are" class="hover:text-[#00abbd] transition-colors">{$t('nav_about')}</a>
+      <a href="#testimonials" class="hover:text-[#00abbd] transition-colors">{$t('nav_testimonials')}</a>
+      <a href="#portfolio" class="hover:text-[#00abbd] transition-colors">{$t('nav_portfolio')}</a>
+      <a href="#contact-form" class="hover:text-[#00abbd] transition-colors">{$t('nav_quote')}</a>
     </nav>
-    <div>
+    <div class="flex items-center gap-4">
+      <!-- Language Selector -->
+      <div class="flex items-center bg-zinc-100 rounded-full p-1 border border-zinc-200">
+        <button 
+          on:click={() => locale.set('fr')} 
+          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'fr' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-950'}"
+        >
+          FR
+        </button>
+        <button 
+          on:click={() => locale.set('en')} 
+          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'en' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-950'}"
+        >
+          EN
+        </button>
+        <button 
+          on:click={() => locale.set('ar')} 
+          class="text-[10px] font-black px-2.5 py-1 rounded-full transition-colors {$locale === 'ar' ? 'bg-[#00abbd] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-950'}"
+        >
+          العربية
+        </button>
+      </div>
+
       <button 
         on:click={scrollToForm}
         class="text-xs font-bold px-5 py-2.5 rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 transition-all shadow-md shadow-[#00abbd]/15 cursor-pointer border border-[#00abbd]/10"
       >
-        Lancer un projet
+        {$t('nav_cta')}
       </button>
     </div>
   </header>
 
   <!-- Hero Section -->
   <section class="w-full max-w-5xl px-6 pt-16 pb-12 text-center z-10 flex flex-col items-center">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10 text-xs text-[#008ba3] font-bold mb-6">
+    <div class="gsap-hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10 text-xs text-[#008ba3] font-bold mb-6">
       <span class="w-2 h-2 rounded-full bg-[#00abbd] animate-pulse"></span>
-      Agence de Production Vidéo Performance
+      {$t('hero_badge')}
     </div>
-    <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight text-[#0a2f4c] max-w-4xl mb-6">
-      Créer des vidéos qui propulsent <br class="hidden md:inline"/>
-      <span class="font-serif italic text-[#00abbd] font-semibold">votre marque</span> vers le haut.
-    </h1>
-    <p class="text-base md:text-lg text-zinc-500 max-w-2xl font-medium leading-relaxed mb-10">
-      Nous combinons l'art de l'image de qualité cinéma et l'efficacité des stratégies d'acquisition. Donnez vie à vos idées grâce à des formats optimisés pour convertir.
+    
+    {#if $locale === 'ar'}
+      <h1 class="gsap-hero-title text-4xl md:text-6xl font-black tracking-tight leading-tight text-[#0a2f4c] max-w-4xl mb-6">
+        فيديوهات تدفع <span class="font-serif italic text-[#00abbd] font-semibold">علامتك التجارية</span> نحو القمة.
+      </h1>
+    {:else}
+      <h1 class="gsap-hero-title text-4xl md:text-6xl font-black tracking-tight leading-tight text-[#0a2f4c] max-w-4xl mb-6">
+        {$t('hero_title').split($t('hero_highlight'))[0]}
+        <span class="font-serif italic text-[#00abbd] font-semibold">{$t('hero_highlight')}</span>
+        {$t('hero_title').split($t('hero_highlight'))[1]}
+      </h1>
+    {/if}
+
+    <p class="gsap-hero-sub text-base md:text-lg text-zinc-500 max-w-2xl font-medium leading-relaxed mb-10">
+      {$t('hero_subtitle')}
     </p>
     <div class="flex flex-col sm:flex-row gap-4 mb-16">
       <button 
         on:click={scrollToForm}
-        class="px-6 py-3.5 text-sm font-bold rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 shadow-lg shadow-[#00abbd]/25 transition-all cursor-pointer"
+        class="gsap-hero-btn px-6 py-3.5 text-sm font-bold rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 shadow-lg shadow-[#00abbd]/25 transition-all cursor-pointer hover:shadow-xl hover:shadow-[#00abbd]/30"
       >
-        Demander ma stratégie vidéo
+        {$t('hero_cta')}
       </button>
       <a 
         href="#portfolio"
-        class="px-6 py-3.5 text-sm font-bold rounded-full bg-white border border-zinc-200 text-zinc-650 hover:bg-zinc-50 active:scale-95 transition-all text-center"
+        class="gsap-hero-btn px-6 py-3.5 text-sm font-bold rounded-full bg-white border border-zinc-200 text-zinc-650 hover:bg-zinc-50 active:scale-95 transition-all text-center hover:border-zinc-300"
       >
-        Découvrir nos formats
+        {$t('hero_secondary')}
       </a>
     </div>
 
-    <!-- Video Showcase frame (as top header of testimonials area in template) -->
-    <div class="w-full max-w-4xl rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl relative group">
+    <!-- Video Showcase frame -->
+    <div class="gsap-hero-video w-full max-w-4xl rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl relative group">
       <div class="w-full aspect-video rounded-xl bg-zinc-950 flex flex-col items-center justify-center relative overflow-hidden">
-        <!-- Abstract gradient overlay -->
         <div class="absolute inset-0 bg-gradient-to-tr from-[#004e57]/40 via-zinc-950 to-[#5c4a16]/30 opacity-80 z-0"></div>
         
-        <!-- Play overlay -->
         <div class="z-10 flex flex-col items-center gap-4 cursor-pointer">
-          <div class="w-20 h-20 rounded-full bg-white/10 border border-white/20 hover:border-white/40 hover:bg-white/20 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-xl group-hover:scale-105">
-            <svg class="w-7 h-7 text-white fill-white translate-x-0.5" viewBox="0 0 24 24">
+          <div class="w-20 h-20 rounded-full bg-white/10 border border-white/20 hover:border-white/40 hover:bg-white/20 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-xl group-hover:scale-110">
+            <svg class="w-7 h-7 text-white fill-white {$locale === 'ar' ? '-translate-x-0.5 rotate-180' : 'translate-x-0.5'}" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
-          <span class="text-xs font-black tracking-widest uppercase text-zinc-300 group-hover:text-white transition-colors">Découvrir notre showreel</span>
+          <span class="text-xs font-black tracking-widest uppercase text-zinc-300 group-hover:text-white transition-colors">{$t('hero_player_cta')}</span>
         </div>
 
-        <div class="absolute bottom-4 left-4 z-10 flex gap-2">
-          <span class="px-2.5 py-1 rounded bg-black/60 backdrop-blur-md text-[10px] font-bold text-[#00abbd] border border-[#00abbd]/20">BORDPROD 2026</span>
+        <div class="absolute bottom-4 {$locale === 'ar' ? 'right-4' : 'left-4'} z-10 flex gap-2">
+          <span class="px-2.5 py-1 rounded bg-black/60 backdrop-blur-md text-[10px] font-bold text-[#00abbd] border border-[#00abbd]/20">{$t('hero_player_badge')}</span>
         </div>
       </div>
     </div>
@@ -277,62 +381,73 @@
   <section id="who-we-are" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-100">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
       <!-- Left Experience Card -->
-      <div class="lg:col-span-5 relative flex justify-center">
-        <div class="w-72 h-72 rounded-3xl bg-gradient-to-tr from-[#00abbd] to-[#ffbe1a] p-8 flex flex-col justify-between shadow-xl relative overflow-hidden">
+      <div class="gsap-about-card lg:col-span-5 relative flex justify-center">
+        <div class="w-72 h-72 rounded-3xl bg-gradient-to-tr from-[#00abbd] to-[#ffbe1a] p-8 flex flex-col justify-between shadow-xl relative overflow-hidden group hover:scale-[1.03] transition-transform duration-300">
           <div class="absolute inset-0 bg-black/5"></div>
           <div class="z-10 w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center border border-white/25">
             <img src="/logo/logo-icon.png" alt="BordProd Mark" class="w-8 h-8 object-contain" />
           </div>
           <div class="z-10 text-white">
             <p class="text-5xl font-black mb-1">3+</p>
-            <p class="text-xs font-black uppercase tracking-wider text-white/95">Années d'Expérience</p>
+            <p class="text-xs font-black uppercase tracking-wider text-white/95">{$t('about_experience')}</p>
           </div>
         </div>
-        <!-- Decorative frame -->
         <div class="absolute -inset-4 border border-dashed border-[#00abbd]/25 rounded-3xl -z-10 transform rotate-3"></div>
       </div>
 
       <!-- Right Content -->
-      <div class="lg:col-span-7 space-y-6">
-        <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3 py-1 bg-[#e0f7f8] rounded-full">QUI SOMMES-NOUS</span>
+      <div class="gsap-about-content lg:col-span-7 space-y-6 {$locale === 'ar' ? 'text-right' : 'text-left'}">
+        <div>
+          <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3 py-1 bg-[#e0f7f8] rounded-full">{$t('about_badge')}</span>
+        </div>
         <h3 class="text-3xl md:text-4xl font-extrabold text-[#0a2f4c] leading-tight">
-          Donner de la hauteur à <br class="hidden sm:inline"/>
-          votre message de marque.
+          {$t('about_title')}
         </h3>
         
         <div class="space-y-4 text-zinc-500 text-sm md:text-base font-medium leading-relaxed">
           <p>
-            Chez <strong class="text-[#00abbd] font-bold">BordProd</strong>, nous pensons que chaque marque a une histoire qui mérite d'être racontée.
+            {$t('about_p1').split('BordProd')[0]}
+            <strong class="text-[#00abbd] font-bold">BordProd</strong>
+            {$t('about_p1').split('BordProd')[1] || ''}
           </p>
           <p>
-            Nous combinons créativité, stratégie et production pour créer du contenu qui ne se contente pas d'être beau — il génère des résultats.
+            {$t('about_p2')}
           </p>
           <p>
-            Avec plus de 3 ans d'expérience, nous avons aidé des entreprises, des créateurs et des entrepreneurs à renforcer leur image et à développer leur présence grâce à une communication visuelle professionnelle.
+            {$t('about_p3')}
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Testimonials Section - Pure White & Cyan Accent (Doctor Inspiration Style) -->
+  <!-- Testimonials Section -->
   <section id="testimonials" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-100 bg-zinc-50/30">
     <div class="text-center mb-16">
-      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">TÉMOIGNAGES</span>
-      <h2 class="text-3xl md:text-4xl font-black text-[#0a2f4c] mt-4 mb-2">
-        Ce que disent <span class="font-serif italic text-[#00abbd] font-medium">nos partenaires</span>
-      </h2>
+      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">{$t('testimonials_badge')}</span>
+      
+      {#if $locale === 'ar'}
+        <h2 class="text-3xl md:text-4xl font-black text-[#0a2f4c] mt-4 mb-2">
+          ماذا يقول <span class="font-serif italic text-[#00abbd] font-medium">شركاؤنا</span>
+        </h2>
+      {:else}
+        <h2 class="text-3xl md:text-4xl font-black text-[#0a2f4c] mt-4 mb-2">
+          {$t('testimonials_title').split($t('testimonials_highlight'))[0]}
+          <span class="font-serif italic text-[#00abbd] font-medium">{$t('testimonials_highlight')}</span>
+          {$t('testimonials_title').split($t('testimonials_highlight'))[1] || ''}
+        </h2>
+      {/if}
+
       <p class="text-sm text-zinc-400 font-semibold max-w-md mx-auto">
-        Plus de 30+ professionnels et créateurs nous font confiance pour développer leur image de marque.
+        {$t('testimonials_subtitle')}
       </p>
     </div>
 
-    <!-- Doctor-like Testimonial Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {#each testimonials as t}
-        <div class="bg-white rounded-2xl border border-zinc-200/50 p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative">
-          <!-- Quote Icon top-right decoration -->
-          <div class="absolute top-4 right-4 text-[#00abbd]/5">
+    <!-- Testimonial Grid -->
+    <div class="gsap-testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {#each testimonials as tItem, i}
+        <div class="gsap-testimonial-card bg-white rounded-2xl border border-zinc-200/50 p-6 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative">
+          <div class="absolute top-4 {$locale === 'ar' ? 'left-4' : 'right-4'} text-[#00abbd]/5">
             <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
               <path d="M14 17h3l2-4V7h-6v6h3M6 17h3l2-4V7H5v6h3l-2 4z" />
             </svg>
@@ -341,25 +456,25 @@
           <div class="space-y-4">
             <!-- Author Header -->
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 {t.bgAvatar}">
-                {t.avatarInitials}
+              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 {tItem.bgAvatar}">
+                {tItem.avatarInitials}
               </div>
               <div class="flex flex-col">
-                <span class="text-xs font-black text-zinc-900 leading-tight">{t.author}</span>
-                <span class="text-[10px] text-zinc-400 font-semibold">{t.role}</span>
+                <span class="text-xs font-black text-zinc-900 leading-tight">{$t(`t${i+1}_author`)}</span>
+                <span class="text-[10px] text-zinc-400 font-semibold">{$t(`t${i+1}_role`)}</span>
               </div>
             </div>
 
             <!-- Quote text -->
             <p class="text-xs text-zinc-500 font-semibold leading-relaxed italic">
-              "{t.quote}"
+              "{$t(`t${i+1}_quote`)}"
             </p>
           </div>
 
-          <!-- Bottom key metric pill button matching doctor style -->
+          <!-- Bottom key metric pill -->
           <div class="mt-6 pt-4 border-t border-zinc-100 self-start">
             <span class="text-[10px] font-bold px-3 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/20 text-[#008ba3] shadow-sm shadow-[#00abbd]/5">
-              {t.metric}
+              {$t(`t${i+1}_metric`)}
             </span>
           </div>
         </div>
@@ -367,23 +482,32 @@
     </div>
   </section>
 
-  <!-- Video Portfolio Section - Vertical short-form 9:16 reels -->
+  <!-- Video Portfolio Section -->
   <section id="portfolio" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-100">
     <div class="text-center mb-12">
-      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">NOS RÉALISATIONS</span>
-      <h2 class="text-3xl font-black text-[#0a2f4c] mt-4 mb-2">
-        Ils ont <span class="font-serif italic text-[#00abbd] font-medium">transformé</span> leur présence
-      </h2>
+      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">{$t('portfolio_badge')}</span>
+      
+      {#if $locale === 'ar'}
+        <h2 class="text-3xl font-black text-[#0a2f4c] mt-4 mb-2">
+          لقد <span class="font-serif italic text-[#00abbd] font-medium">غيروا</span> حضورهم الرقمي
+        </h2>
+      {:else}
+        <h2 class="text-3xl font-black text-[#0a2f4c] mt-4 mb-2">
+          {$t('portfolio_title').split($t('portfolio_highlight'))[0]}
+          <span class="font-serif italic text-[#00abbd] font-medium">{$t('portfolio_highlight')}</span>
+          {$t('portfolio_title').split($t('portfolio_highlight'))[1] || ''}
+        </h2>
+      {/if}
+
       <p class="text-xs text-zinc-400 font-semibold max-w-md mx-auto">
-        Des vidéos qui font des millions de vues et qui remplissent les agendas de rendez-vous.
+        {$t('portfolio_subtitle')}
       </p>
     </div>
 
     <!-- Portrait 9:16 Grid of Reels -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-      {#each verticalVideos as video}
-        <div class="aspect-[9/16] rounded-2xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.02] hover:border-[#00abbd]/40 transition-all duration-300">
-          <!-- Video thumb simulation gradient -->
+    <div class="gsap-reels-grid grid grid-cols-2 md:grid-cols-5 gap-4">
+      {#each verticalVideos as video, i}
+        <div class="gsap-reel-card aspect-[9/16] rounded-2xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.04] hover:shadow-xl hover:border-[#00abbd]/50 transition-all duration-300 cursor-pointer">
           <div class="absolute inset-0 bg-gradient-to-tr {video.bgGradient} opacity-85 z-0"></div>
           <div class="absolute inset-0 bg-black/10 z-0"></div>
           
@@ -394,17 +518,17 @@
           </div>
 
           <!-- Center Play Icon -->
-          <div class="z-10 w-11 h-11 rounded-full bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center self-center opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-white fill-white translate-x-0.5" viewBox="0 0 24 24">
+          <div class="z-10 w-11 h-11 rounded-full bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center self-center opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all">
+            <svg class="w-4 h-4 text-white fill-white {$locale === 'ar' ? '-translate-x-0.5 rotate-180' : 'translate-x-0.5'}" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
 
           <!-- Bottom: Title and Metric Badge -->
           <div class="z-10 space-y-2">
-            <p class="text-xs font-black text-white leading-tight drop-shadow-sm">{video.title}</p>
+            <p class="text-xs font-black text-white leading-tight drop-shadow-sm">{$t(`p${i+1}_title`)}</p>
             <div class="inline-block bg-white text-[#008ba3] text-[9px] font-black px-2 py-1 rounded-full border border-white/10">
-              {video.metric}
+              {$t(`p${i+1}_metric`)}
             </div>
           </div>
         </div>
@@ -415,41 +539,41 @@
     <div class="text-center mt-12">
       <button 
         on:click={scrollToForm}
-        class="inline-flex items-center gap-2 text-xs font-black px-6 py-3.5 rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 transition-all shadow-lg shadow-[#00abbd]/15 cursor-pointer border border-[#00abbd]/10"
+        class="inline-flex items-center gap-2 text-xs font-black px-6 py-3.5 rounded-full bg-[#00abbd] text-white hover:bg-[#0091a1] active:scale-95 transition-all shadow-lg shadow-[#00abbd]/15 cursor-pointer border border-[#00abbd]/10 hover:shadow-xl hover:shadow-[#00abbd]/25"
       >
-        REJOINDRE L'APPEL / CRÉER MA VIDÉO
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        {$t('portfolio_cta')}
+        <svg class="w-4 h-4 {$locale === 'ar' ? 'rotate-180' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
         </svg>
       </button>
     </div>
   </section>
 
-  <!-- Lead Capture Form Section (in French) - Clean Light Card -->
+  <!-- Lead Capture Form Section -->
   <section id="contact-form" class="w-full max-w-3xl px-6 py-20 z-10 border-t border-zinc-150">
     <div class="text-center mb-10">
-      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">CONTACT</span>
-      <h3 class="text-3xl font-extrabold text-[#0a2f4c] mt-4 mb-3">Démarrez votre projet vidéo</h3>
-      <p class="text-xs text-zinc-400 font-semibold max-w-sm mx-auto">Complétez le formulaire ci-dessous. Nous analyserons vos besoins et vous recontacterons sous 24h avec un plan d'action.</p>
+      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-[#e0f7f8] border border-[#00abbd]/10">{$t('contact_badge')}</span>
+      <h3 class="text-3xl font-extrabold text-[#0a2f4c] mt-4 mb-3">{$t('contact_title')}</h3>
+      <p class="text-xs text-zinc-400 font-semibold max-w-sm mx-auto">{$t('contact_subtitle')}</p>
     </div>
 
-    <div class="rounded-2xl border border-zinc-200 bg-white p-6 md:p-8 shadow-xl">
+    <div class="gsap-form-card rounded-2xl border border-zinc-200 bg-white p-6 md:p-8 shadow-xl">
       {#if success}
-        <div class="text-center py-12 space-y-4">
+        <div class="gsap-success-box text-center py-12 space-y-4">
           <div class="w-16 h-16 rounded-full bg-[#e8f5e9] text-[#2e7d32] border border-[#2e7d32]/20 flex items-center justify-center mx-auto">
             <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h4 class="text-lg font-bold text-[#0a2f4c]">Demande enregistrée avec succès !</h4>
+          <h4 class="text-lg font-bold text-[#0a2f4c]">{$t('form_success_title')}</h4>
           <p class="text-xs text-zinc-450 max-w-md mx-auto leading-relaxed font-semibold">
-            Merci de votre confiance. Vos informations ont été transmises à notre équipe dans notre CRM interne. Un conseiller BordProd va étudier votre projet et prendra contact avec vous rapidement.
+            {$t('form_success_desc')}
           </p>
           <button 
             on:click={() => success = false}
             class="px-4 py-2 text-xs font-bold bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 rounded-xl text-zinc-600 transition-colors"
           >
-            Faire une autre demande
+            {$t('form_success_btn')}
           </button>
         </div>
       {:else}
@@ -457,11 +581,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Name -->
             <div class="space-y-1.5">
-              <label for="name" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Nom Complet *</label>
+              <label for="name" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_name')}</label>
               <input 
                 id="name"
                 type="text"
-                placeholder="Ex: Jean Dupont"
+                placeholder={$t('form_name_placeholder')}
                 bind:value={name}
                 class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all {nameError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
               />
@@ -472,11 +596,11 @@
 
             <!-- Email -->
             <div class="space-y-1.5">
-              <label for="email" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Adresse E-mail *</label>
+              <label for="email" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_email')}</label>
               <input 
                 id="email"
                 type="email"
-                placeholder="Ex: jean@entreprise.com"
+                placeholder={$t('form_email_placeholder')}
                 bind:value={email}
                 class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all {emailError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
               />
@@ -489,11 +613,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Phone -->
             <div class="space-y-1.5">
-              <label for="phone" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Téléphone</label>
+              <label for="phone" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_phone')}</label>
               <input 
                 id="phone"
                 type="text"
-                placeholder="Ex: +33 6 12 34 56 78"
+                placeholder={$t('form_phone_placeholder')}
                 bind:value={phone}
                 class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all"
               />
@@ -501,11 +625,11 @@
 
             <!-- Company -->
             <div class="space-y-1.5">
-              <label for="company" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Entreprise</label>
+              <label for="company" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_company')}</label>
               <input 
                 id="company"
                 type="text"
-                placeholder="Ex: My Startup"
+                placeholder={$t('form_company_placeholder')}
                 bind:value={company}
                 class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all"
               />
@@ -514,7 +638,7 @@
 
           <!-- Budget Range -->
           <div class="space-y-2">
-            <span class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Budget Estimé</span>
+            <span class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_budget')}</span>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               {#each ['< 2 000 €', '2 000 - 5 000 €', '5 000 - 10 000 €', '10 000 €+'] as bRange}
                 <button
@@ -530,11 +654,11 @@
 
           <!-- Project Description -->
           <div class="space-y-1.5">
-            <label for="desc" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Objectifs & Détails du Projet *</label>
+            <label for="desc" class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">{$t('form_desc')}</label>
             <textarea 
               id="desc"
               rows="4"
-              placeholder="Décrivez votre besoin : objectifs de la vidéo, cible, durée souhaitée, exemples inspirants..."
+              placeholder={$t('form_desc_placeholder')}
               bind:value={projectDescription}
               class="w-full bg-zinc-50/50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-450 focus:outline-none focus:ring-2 focus:ring-[#00abbd]/20 focus:border-[#00abbd] transition-all resize-none {projectDescriptionError ? 'border-red-400 ring-2 ring-red-400/10' : ''}"
             ></textarea>
@@ -557,9 +681,9 @@
           >
             {#if loading}
               <Spinner size="sm" />
-              Traitement en cours...
+              {$t('form_loading')}
             {:else}
-              Envoyer ma demande
+              {$t('form_submit')}
             {/if}
           </button>
         </form>
@@ -571,14 +695,14 @@
   <footer class="w-full max-w-6xl flex flex-col md:flex-row justify-between items-center py-8 px-6 border-t border-zinc-150 z-10 text-xs text-zinc-450 gap-4 bg-transparent">
     <div class="flex items-center gap-2">
       <img src="/logo/logo-icon.png" alt="BordProd Icon" class="h-6 object-contain" />
-      <span>&copy; 2026 BordProd. Tous droits réservés.</span>
+      <span>&copy; 2026 BordProd. {$t('footer_copy')}</span>
     </div>
     <div class="flex items-center gap-4">
-      <a href="#showcase" class="hover:text-zinc-600">Mentions Légales</a>
+      <a href="#showcase" class="hover:text-zinc-650">{$t('footer_legal')}</a>
       <span>&middot;</span>
-      <a href="#showcase" class="hover:text-zinc-600">Confidentialité</a>
+      <a href="#showcase" class="hover:text-zinc-650">{$t('footer_privacy')}</a>
       <span>&middot;</span>
-      <a href="/dashboard/85e8d89e-4b47-49d7-84bc-79f9435b0b2e" class="text-[#00abbd] font-bold hover:underline">Accès CRM Interne</a>
+      <a href="/dashboard/85e8d89e-4b47-49d7-84bc-79f9435b0b2e" class="text-[#00abbd] font-bold hover:underline">{$t('footer_crm')}</a>
     </div>
   </footer>
 </main>
