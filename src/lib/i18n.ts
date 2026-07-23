@@ -4,7 +4,6 @@ export type Locale = 'fr' | 'en' | 'ar';
 
 export const locale = writable<Locale>('fr');
 
-// Simple persistent locale storage in browser
 if (typeof window !== 'undefined') {
   const savedLocale = localStorage.getItem('bordprod_locale') as Locale;
   if (savedLocale && ['fr', 'en', 'ar'].includes(savedLocale)) {
@@ -18,9 +17,8 @@ if (typeof window !== 'undefined') {
 export const translations = {
   fr: {
     nav_about: "Qui Sommes-Nous",
-    nav_features: "Pourquoi BordProd",
-    nav_testimonials: "Avis Partenaires",
     nav_portfolio: "Nos Réalisations",
+    nav_testimonials: "Avis Partenaires",
     nav_quote: "Devis gratuit",
     nav_cta: "Lancer un projet",
     
@@ -29,25 +27,19 @@ export const translations = {
     hero_highlight: "résultat.",
     hero_subtitle: "Nous combinons l'art de l'image de qualité cinéma et l'efficacité des stratégies d'acquisition. Donnez vie à vos projets vidéo grâce à des productions optimisées pour convertir.",
     hero_cta: "Demander ma stratégie vidéo",
-    hero_secondary: "Découvrir nos formats",
+    hero_secondary: "Découvrir notre Instagram",
     hero_player_badge: "BORDPROD 2026",
     hero_player_cta: "Découvrir notre showreel",
 
-    features_badge: "POURQUOI BORDPROD",
-    features_title: "C'est l'expérience vidéo réinventée.",
-    features_highlight: "réinventée.",
-    features_subtitle: "BordProd remplace les agences lentes et coûteuses par un accompagnement vidéo sur-mesure, agile et orienté conversion.",
-
-    f1_title: "Stratégie sur-mesure",
-    f1_desc: "Chaque vidéo est pensée pour captiver votre cible et maximiser le taux de conversion.",
-    f2_title: "Qualité Cinéma",
-    f2_desc: "Matériel de pointe, étalonnage professionnel et sound design immersif.",
-    f3_title: "Formats Viraux 9:16",
-    f3_desc: "Optimisé pour TikTok, Instagram Reels et YouTube Shorts.",
-    f4_title: "Livraison Rapide",
-    f4_desc: "Premiers rendus livrés en quelques jours seulement pour garder votre rythme.",
-    f5_title: "Performance Mesurée",
-    f5_desc: "Suivi des statistiques et optimisation continue de votre contenu vidéo.",
+    ig_badge: "FLUX INSTAGRAM OFFICIEL",
+    ig_title: "Nos dernières créations sur @bord_prodagency",
+    ig_highlight: "@bord_prodagency",
+    ig_subtitle: "Retrouvez nos reels viraux, coulisses de tournage et contenus créatifs produits pour nos clients.",
+    ig_follow_btn: "Suivre @bord_prodagency ↗",
+    ig_view_post: "Voir la vidéo sur Instagram ↗",
+    ig_stats_posts: "Publications",
+    ig_stats_followers: "Abonnés",
+    ig_stats_views: "Vues cumulées",
 
     booking_card_title: "Réserver un appel stratégique de 15 min",
     booking_card_sub: "Discutons de vos objectifs et définissons la meilleure stratégie pour propulser votre marque.",
@@ -70,7 +62,7 @@ export const translations = {
     portfolio_title: "Ils ont transformé leur présence",
     portfolio_highlight: "transformé",
     portfolio_subtitle: "Des vidéos qui font des millions de vues et qui remplissent les agendas de rendez-vous.",
-    portfolio_cta: "REJOINDRE L'APPEL / CRÉER MA VIDÉO",
+    portfolio_cta: "DISCUTER DE MON PROJET",
     
     contact_badge: "CONTACT",
     contact_title: "Démarrez votre projet vidéo",
@@ -124,22 +116,21 @@ export const translations = {
     t4_quote: "Grâce à leur accompagnement stratégique, nous avons modernisé notre image de marque et instauré une vraie relation de confiance avec notre audience.",
     t4_metric: "🩺 +600 nouveaux patients",
 
-    p1_title: "Hook Publicitaire App",
-    p1_metric: "+120% Téléchargements",
-    p2_title: "Vidéo Pitch Fondateur",
-    p2_metric: "18 Leads Qualifiés",
-    p3_title: "Publicité Produit D2C",
-    p3_metric: "3.4x ROAS Validé",
-    p4_title: "Vulgarisation Santé",
-    p4_metric: "+22K Abonnés",
-    p5_title: "UGC Commercial",
-    p5_metric: "+45% Taux de Clic"
+    p1_title: "Reel 1: Production Commerciale",
+    p1_metric: "Vue sur IG ↗",
+    p2_title: "Reel 2: Pitch Marque & Storytelling",
+    p2_metric: "Vue sur IG ↗",
+    p3_title: "Reel 3: Format Viral & Conversion",
+    p3_metric: "Vue sur IG ↗",
+    p4_title: "Reel 4: Direction Artistique",
+    p4_metric: "Vue sur IG ↗",
+    p5_title: "Reel 5: Campagne UGC & Studio",
+    p5_metric: "Vue sur IG ↗"
   },
   en: {
     nav_about: "About Us",
-    nav_features: "Why BordProd",
+    nav_portfolio: "Portfolio",
     nav_testimonials: "Testimonials",
-    nav_portfolio: "Our Portfolio",
     nav_quote: "Free Quote",
     nav_cta: "Start a Project",
     
@@ -148,25 +139,19 @@ export const translations = {
     hero_highlight: "convert.",
     hero_subtitle: "We combine cinema-quality visual storytelling with high-converting acquisition strategies. Bring your video projects to life.",
     hero_cta: "Get My Video Strategy",
-    hero_secondary: "Discover Our Formats",
+    hero_secondary: "Discover Our Instagram",
     hero_player_badge: "BORDPROD 2026",
     hero_player_cta: "Discover our showreel",
 
-    features_badge: "WHY BORDPROD",
-    features_title: "It's video experience reinvented.",
-    features_highlight: "reinvented.",
-    features_subtitle: "BordProd replaces slow, expensive agencies with a fast, project-based video production workflow.",
-
-    f1_title: "Custom Strategy",
-    f1_desc: "Every video is crafted to captivate your audience and maximize conversion rates.",
-    f2_title: "Cinema Quality",
-    f2_desc: "Cutting-edge equipment, pro color grading, and immersive sound design.",
-    f3_title: "Viral 9:16 Formats",
-    f3_desc: "Optimized for TikTok, Instagram Reels, and YouTube Shorts.",
-    f4_title: "Fast Delivery",
-    f4_desc: "First drafts delivered in just a few days to keep up your momentum.",
-    f5_title: "Measured Performance",
-    f5_desc: "Analytics tracking and continuous optimization of your video content.",
+    ig_badge: "OFFICIAL INSTAGRAM FEED",
+    ig_title: "Our latest work on @bord_prodagency",
+    ig_highlight: "@bord_prodagency",
+    ig_subtitle: "Explore our viral reels, behind-the-scenes action, and high-impact client productions.",
+    ig_follow_btn: "Follow @bord_prodagency ↗",
+    ig_view_post: "View Reel on Instagram ↗",
+    ig_stats_posts: "Posts",
+    ig_stats_followers: "Followers",
+    ig_stats_views: "Combined Views",
 
     booking_card_title: "Book a 15-min strategy call",
     booking_card_sub: "Let's discuss your goals and define the best strategy to propel your brand.",
@@ -189,7 +174,7 @@ export const translations = {
     portfolio_title: "They transformed their presence",
     portfolio_highlight: "transformed",
     portfolio_subtitle: "Videos that generate millions of views and fill up appointment schedules.",
-    portfolio_cta: "JOIN THE CALL / CREATE MY VIDEO",
+    portfolio_cta: "DISCUSS MY PROJECT",
     
     contact_badge: "CONTACT",
     contact_title: "Start your video project",
@@ -243,22 +228,21 @@ export const translations = {
     t4_quote: "Thanks to their strategic guidance, we modernized our brand image and established a real bond of trust with our audience.",
     t4_metric: "🩺 +600 new patients",
 
-    p1_title: "Ad Hook App",
-    p1_metric: "+120% Downloads",
-    p2_title: "Founder Pitch Video",
-    p2_metric: "18 Qualified Leads",
-    p3_title: "D2C Product Ad",
-    p3_metric: "3.4x ROAS Confirmed",
-    p4_title: "Health Education",
-    p4_metric: "+22K Followers",
-    p5_title: "Commercial UGC",
-    p5_metric: "+45% CTR"
+    p1_title: "Reel 1: Commercial Production",
+    p1_metric: "View on IG ↗",
+    p2_title: "Reel 2: Brand Storytelling",
+    p2_metric: "View on IG ↗",
+    p3_title: "Reel 3: Viral & Conversion",
+    p3_metric: "View on IG ↗",
+    p4_title: "Reel 4: Art Direction",
+    p4_metric: "View on IG ↗",
+    p5_title: "Reel 5: UGC & Studio Campaign",
+    p5_metric: "View on IG ↗"
   },
   ar: {
     nav_about: "من نحن",
-    nav_features: "لماذا BordProd",
+    nav_portfolio: "معرض الأعمال",
     nav_testimonials: "آراء شركائنا",
-    nav_portfolio: "أعمالنا",
     nav_quote: "طلب عرض سعر",
     nav_cta: "ابدأ مشروعاً",
     
@@ -267,25 +251,19 @@ export const translations = {
     hero_highlight: "النتائج.",
     hero_subtitle: "نحن نجمع بين فن الصورة بجودة السينما وفعالية استراتيجيات الاستحواذ. جسد مشاريع الفيديو الخاصة بك من خلال إنتاجات محسنة للتحويل.",
     hero_cta: "اطلب استراتيجية الفيديو الخاصة بي",
-    hero_secondary: "اكتشف تنسيقاتنا",
+    hero_secondary: "استكشف إنستغرام الخاص بنا",
     hero_player_badge: "BORDPROD 2026",
     hero_player_cta: "اكتشف عرض أعمالنا",
 
-    features_badge: "لماذا BORDPROD",
-    features_title: "إنها تجربة فيديو معاد ابتكارها.",
-    features_highlight: "معاد ابتكارها.",
-    features_subtitle: "تستبدل BordProd الوكالات البطيئة والمكلفة بإنتاج فيديو مخصص لكل مشروع، مرن وموجه لتحقيق النتائج.",
-
-    f1_title: "استراتيجية مخصصة",
-    f1_desc: "كل فيديو مصمم لجذب جمهورك وزيادة نسبة التحويل بفاعلية.",
-    f2_title: "جودة سينمائية",
-    f2_desc: "معدات متطورة، تعديل ألوان احترافي، وهندسة صوتية مذهلة.",
-    f3_title: "تنسيقات 9:16 انتشاراتية",
-    f3_desc: "محسنة لتيك توك، إنستغرام ريلز، ويوتيوب شورتس.",
-    f4_title: "تسليم سريع",
-    f4_desc: "تسليم مسودات العمل الأولى خلال أيام معدودة للحفاظ على زخم نموك.",
-    f5_title: "أداء مقاس ومثبت",
-    f5_desc: "تتبع الإحصائيات وتحسين مستمر لمحتوى الفيديو لضمان النتائج.",
+    ig_badge: "خلاصة إنستغرام الرسمية",
+    ig_title: "أحدث أعمالنا على bord_prodagency@",
+    ig_highlight: "bord_prodagency@",
+    ig_subtitle: "استكشف مقاطع الريلز الأكثر انتشاراً وكواليس التصوير والإنتاجات عالية التأثير لعملائنا.",
+    ig_follow_btn: "متابعة bord_prodagency@ ↗",
+    ig_view_post: "شاهد الريل على إنستغرام ↗",
+    ig_stats_posts: "منشورات",
+    ig_stats_followers: "متابعون",
+    ig_stats_views: "مجموع المشاهدات",
 
     booking_card_title: "احجز مكالمة استراتيجية لمدة 15 دقيقة",
     booking_card_sub: "دعنا نناقش أهدافك ونحدد أفضل استراتيجية لدفـع علامتك التجارية.",
@@ -308,7 +286,7 @@ export const translations = {
     portfolio_title: "لقد غيروا حضورهم الرقمي",
     portfolio_highlight: "غيروا",
     portfolio_subtitle: "فيديوهات قصيرة وديناميكية ومؤثرة تولد ملايين المشاهدات وتملأ جداول المواعيد.",
-    portfolio_cta: "انضم للاتصال / أنشئ فيديوهاتك",
+    portfolio_cta: "مناقشة مشروعي",
     
     contact_badge: "اتصل بنا",
     contact_title: "ابدأ مشروع الفيديو الخاص بك",
@@ -363,15 +341,15 @@ export const translations = {
     t4_metric: "🩺 +600 مريض جديد",
 
     p1_title: "خطاف إعلان تطبيق",
-    p1_metric: "تحميلات +120%",
+    p1_metric: "مشاهدة على IG ↗",
     p2_title: "فيديو عرض المؤسس",
-    p2_metric: "18 عميل مؤهل",
+    p2_metric: "مشاهدة على IG ↗",
     p3_title: "إعلان منتج مباشر",
-    p3_metric: "عائد إعلان مؤكد 3.4x",
+    p3_metric: "مشاهدة على IG ↗",
     p4_title: "تبسيط الوعي الصحي",
-    p4_metric: "+22ألف متابع",
+    p4_metric: "مشاهدة على IG ↗",
     p5_title: "محتوى UGC تجاري",
-    p5_metric: "معدل نقر +45%"
+    p5_metric: "مشاهدة على IG ↗"
   }
 };
 

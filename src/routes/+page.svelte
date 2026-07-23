@@ -1,9 +1,8 @@
 <script lang="ts">
   /**
-   * BordProd Landing Page - Subtle Tastful Animations & Designjoy Aesthetic
-   * =====================================================================
-   * Clean off-white canvas (#f5f4f0), vibrant mesh gradient accent cards,
-   * subtle text staggers (no 3D tilts/gimmicks), and internationalization.
+   * BordProd Landing Page - Playable Instagram Reels & Show Don't Tell Portfolio
+   * =========================================================================
+   * Embedded playable Instagram Reels in grid + interactive video modal player.
    */
   import { onMount } from 'svelte';
   import { gsap } from 'gsap';
@@ -26,6 +25,11 @@
   let nameError = '';
   let emailError = '';
   let projectDescriptionError = '';
+
+  // Active Playable Reel Modal
+  let activeReelId: string | null = null;
+
+  const INSTAGRAM_PROFILE = "https://www.instagram.com/bord_prodagency?igsh=amxueGN3aXhiYWt6";
 
   function validateEmail(emailStr: string) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -101,73 +105,51 @@
     return str.split(' ').map(w => w.trim()).filter(Boolean);
   }
 
-  function getCardTitle(keyPrefix: string) {
-    return $t(`${keyPrefix}_title` as any);
+  function openReel(id: string) {
+    activeReelId = id;
   }
 
-  function getCardDesc(keyPrefix: string) {
-    return $t(`${keyPrefix}_desc` as any);
+  function closeReel() {
+    activeReelId = null;
   }
 
-  // Designjoy Feature Cards Gradient Specifications
-  const featureCards = [
+  // Real Instagram Posts Provided by User
+  const instagramReels = [
     {
-      keyPrefix: 'f1',
-      bgGradient: 'from-[#ffaa00] via-[#ff5500] to-[#e6005c]',
-      icon: 'M13 10V3L4 14h7v7l9-11h-7z'
+      id: 'DOWQAHcDMQt',
+      url: 'https://www.instagram.com/p/DOWQAHcDMQt/',
+      embedUrl: 'https://www.instagram.com/p/DOWQAHcDMQt/embed',
+      title: 'Direction Artistique & Studio',
+      category: 'Brand Pitch',
+      bgGradient: 'from-amber-400 via-rose-500 to-purple-600'
     },
     {
-      keyPrefix: 'f2',
-      bgGradient: 'from-[#0066ff] via-[#7a00ff] to-[#ff00cc]',
-      icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'
+      id: 'DOeIeUHjDcb',
+      url: 'https://www.instagram.com/p/DOeIeUHjDcb/',
+      embedUrl: 'https://www.instagram.com/p/DOeIeUHjDcb/embed',
+      title: 'Hook Publicitaire Performance',
+      category: 'Performance Ad',
+      bgGradient: 'from-cyan-400 via-blue-500 to-indigo-600'
     },
     {
-      keyPrefix: 'f3',
-      bgGradient: 'from-[#ff3300] via-[#ff6600] to-[#ffcc00]',
-      icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'
+      id: 'DPzZIWNjJIw',
+      url: 'https://www.instagram.com/p/DPzZIWNjJIw/',
+      embedUrl: 'https://www.instagram.com/p/DPzZIWNjJIw/embed',
+      title: 'Reel Cinéma & Sound Design',
+      category: 'Cinema Reel',
+      bgGradient: 'from-emerald-400 via-teal-500 to-cyan-600'
     },
     {
-      keyPrefix: 'f4',
-      bgGradient: 'from-[#ff007f] via-[#7928ca] to-[#0070f3]',
-      icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
-    },
-    {
-      keyPrefix: 'f5',
-      bgGradient: 'from-[#00c6ff] via-[#0072ff] to-[#7928ca]',
-      icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
+      id: 'DO6lfHEDHEk',
+      url: 'https://www.instagram.com/p/DO6lfHEDHEk/',
+      embedUrl: 'https://www.instagram.com/p/DO6lfHEDHEk/embed',
+      title: 'Format Viral 9:16 High-CTR',
+      category: 'Viral UGC',
+      bgGradient: 'from-pink-500 via-rose-500 to-amber-500'
     }
   ];
 
-  // Vertical Reels Showcase
-  const verticalVideos = [
-    {
-      client: '@Julie_Fintech',
-      views: '1.2M',
-      bgGradient: 'from-cyan-400 to-blue-500'
-    },
-    {
-      client: '@Hugo_B2B',
-      views: '450K',
-      bgGradient: 'from-teal-400 to-emerald-500'
-    },
-    {
-      client: '@Elena_Lifestyle',
-      views: '2.8M',
-      bgGradient: 'from-amber-300 to-orange-500'
-    },
-    {
-      client: '@Docteur_Malik',
-      views: '890K',
-      bgGradient: 'from-indigo-400 to-purple-550'
-    },
-    {
-      client: '@Alice_Agency',
-      views: '1.5M',
-      bgGradient: 'from-rose-450 to-pink-500'
-    }
-  ];
-
-  // Testimonials Meta Details
+  // Testimonials Details
   const testimonials = [
     {
       avatarInitials: "JR",
@@ -188,7 +170,7 @@
   ];
 
   onMount(() => {
-    // 1. Tasteful Hero Entrance Animation (Subtle Y-slide & Fade)
+    // Hero Entrance
     const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 
     tl.fromTo('.gsap-hero-badge', 
@@ -216,7 +198,7 @@
       '-=0.4'
     );
 
-    // Helper for subtle scroll reveals with guaranteed clean layout
+    // Scroll Reveals
     function setupScrollReveal(triggerSelector: string, targetSelector: string, stagger: number = 0) {
       const triggerEl = document.querySelector(triggerSelector);
       if (!triggerEl) return;
@@ -245,18 +227,16 @@
       obs.observe(triggerEl);
     }
 
-    // 2. Section Scroll Reveals
-    setupScrollReveal('#features', '.gsap-feature-card', 0.06);
+    setupScrollReveal('#instagram-showcase', '.gsap-ig-card', 0.07);
+    setupScrollReveal('#testimonials', '.gsap-testimonial-card', 0.07);
     setupScrollReveal('#who-we-are', '.gsap-about-card', 0);
     setupScrollReveal('#who-we-are', '.gsap-about-content', 0);
-    setupScrollReveal('#testimonials', '.gsap-testimonial-card', 0.07);
-    setupScrollReveal('#portfolio', '.gsap-reel-card', 0.06);
     setupScrollReveal('#contact-form', '.gsap-form-card', 0);
   });
 </script>
 
 <svelte:head>
-  <title>BordProd | {$t('hero_badge')}</title>
+  <title>BordProd | Production Vidéo & Reels Instagram</title>
 </svelte:head>
 
 <main 
@@ -267,7 +247,7 @@
   <!-- Subtle SVG Noise Grain Overlay -->
   <div class="fixed inset-0 pointer-events-none z-0 opacity-[0.035]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
 
-  <!-- Floating background colorful gradient blur orbs -->
+  <!-- Background Orbs -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
     <div class="absolute top-[10%] left-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#ffaa00]/12 via-[#ff3366]/12 to-[#7928ca]/12 blur-[140px]"></div>
     <div class="absolute bottom-[15%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#00c6ff]/12 via-[#0072ff]/12 to-[#7928ca]/12 blur-[140px]"></div>
@@ -279,10 +259,9 @@
       <img src="/logo/logo.png" alt="BordProd Logo" class="h-9 md:h-11 object-contain" />
     </div>
     <nav class="hidden lg:flex items-center gap-8 text-sm font-bold text-zinc-600">
-      <a href="#who-we-are" class="hover:text-[#00abbd] transition-colors">{$t('nav_about')}</a>
-      <a href="#features" class="hover:text-[#00abbd] transition-colors">{$t('nav_features')}</a>
+      <a href="#instagram-showcase" class="hover:text-[#00abbd] transition-colors">{$t('nav_portfolio')}</a>
       <a href="#testimonials" class="hover:text-[#00abbd] transition-colors">{$t('nav_testimonials')}</a>
-      <a href="#portfolio" class="hover:text-[#00abbd] transition-colors">{$t('nav_portfolio')}</a>
+      <a href="#who-we-are" class="hover:text-[#00abbd] transition-colors">{$t('nav_about')}</a>
     </nav>
     <div class="flex items-center gap-4">
       <!-- Language Selector -->
@@ -307,6 +286,18 @@
         </button>
       </div>
 
+      <a 
+        href={INSTAGRAM_PROFILE}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden sm:inline-flex items-center gap-1.5 text-xs font-black px-4 py-2 rounded-full bg-gradient-to-r from-[#ff007f] via-[#7928ca] to-[#0070f3] text-white shadow-sm hover:opacity-90 transition-opacity"
+      >
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        Instagram
+      </a>
+
       <button 
         on:click={scrollToForm}
         class="text-xs font-black px-5 py-2.5 rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 transition-all shadow-md cursor-pointer"
@@ -323,7 +314,6 @@
       {$t('hero_badge')}
     </div>
     
-    <!-- Tasteful Word-by-Word Staggered Title -->
     <h1 class="gsap-hero-title text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-none text-zinc-900 max-w-4xl mb-6 flex flex-wrap justify-center gap-x-3 gap-y-1">
       {#each splitTextIntoWords($t('hero_title')) as word}
         <span class="inline-block">
@@ -350,26 +340,34 @@
         {$t('hero_cta')}
       </button>
       <a 
-        href="#portfolio"
-        class="gsap-hero-btn px-7 py-4 text-sm font-black rounded-full bg-white border border-zinc-300 text-zinc-800 hover:bg-zinc-50 active:scale-95 transition-all text-center shadow-sm"
+        href={INSTAGRAM_PROFILE}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="gsap-hero-btn px-7 py-4 text-sm font-black rounded-full bg-white border border-zinc-300 text-zinc-800 hover:bg-zinc-50 active:scale-95 transition-all text-center shadow-sm flex items-center justify-center gap-2"
       >
+        <svg class="w-4 h-4 text-[#e6005c] fill-current" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
         {$t('hero_secondary')}
       </a>
     </div>
 
-    <!-- Showreel Video Frame -->
+    <!-- Main Showreel Frame -->
     <div class="gsap-hero-video w-full max-w-4xl rounded-3xl border border-zinc-300/80 bg-white p-3.5 shadow-2xl relative group transition-shadow duration-300">
       <div class="w-full aspect-video rounded-2xl bg-zinc-950 flex flex-col items-center justify-center relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-tr from-[#004e57]/40 via-zinc-950 to-[#5c4a16]/30 opacity-85 z-0"></div>
         
-        <div class="z-10 flex flex-col items-center gap-4 cursor-pointer">
-          <div class="w-20 h-20 rounded-full bg-white/15 border border-white/30 hover:border-white/50 hover:bg-white/30 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-2xl group-hover:scale-105">
+        <button 
+          on:click={() => openReel('DOWQAHcDMQt')}
+          class="z-10 flex flex-col items-center gap-4 cursor-pointer group-hover:scale-105 transition-transform"
+        >
+          <div class="w-20 h-20 rounded-full bg-white/15 border border-white/30 hover:border-white/50 hover:bg-white/30 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-2xl">
             <svg class="w-7 h-7 text-white fill-white {$locale === 'ar' ? '-translate-x-0.5 rotate-180' : 'translate-x-0.5'}" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
           <span class="text-xs font-black tracking-widest uppercase text-zinc-300 group-hover:text-white transition-colors">{$t('hero_player_cta')}</span>
-        </div>
+        </button>
 
         <div class="absolute bottom-4 {$locale === 'ar' ? 'right-4' : 'left-4'} z-10 flex gap-2">
           <span class="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-black text-[#00abbd] border border-[#00abbd]/20">{$t('hero_player_badge')}</span>
@@ -378,68 +376,224 @@
     </div>
   </section>
 
-  <!-- Designjoy-Style Mesh Gradient Features Section -->
-  <section id="features" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
-    <div class="text-center mb-16">
-      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('features_badge')}</span>
+  <!-- SHOW DON'T TELL: Playable Instagram Videos Grid Section -->
+  <section id="instagram-showcase" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
+    
+    <!-- Profile Header Card -->
+    <div class="w-full rounded-3xl bg-white border border-zinc-200/80 p-6 md:p-8 shadow-xl mb-12 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-4 text-center md:text-left">
+        <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-[#ffaa00] via-[#ff3366] to-[#7928ca] shrink-0 shadow-md">
+          <div class="w-full h-full rounded-full bg-white p-1 flex items-center justify-center">
+            <img src="/logo/logo-icon.png" alt="BordProd Avatar" class="w-full h-full object-contain rounded-full" />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-center md:justify-start gap-2">
+            <h3 class="text-xl font-black text-zinc-900">@bord_prodagency</h3>
+            <svg class="w-5 h-5 text-[#00abbd]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <p class="text-xs text-zinc-500 font-semibold mt-1">
+            {$t('ig_subtitle')}
+          </p>
+        </div>
+      </div>
+
+      <a 
+        href={INSTAGRAM_PROFILE}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-6 py-3.5 rounded-full bg-gradient-to-r from-[#ff007f] via-[#7928ca] to-[#0070f3] text-white font-black text-xs shadow-md hover:opacity-90 active:scale-95 transition-all shrink-0 flex items-center gap-2"
+      >
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        {$t('ig_follow_btn')}
+      </a>
+    </div>
+
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('portfolio_badge')}</span>
       
-      <h2 class="text-4xl md:text-5xl font-black text-zinc-900 mt-4 mb-3">
-        {$t('features_title').split($t('features_highlight'))[0]}
-        <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] via-[#7928ca] to-[#0070f3]">{$t('features_highlight')}</span>
+      <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mt-4 mb-2">
+        {$t('portfolio_title').split($t('portfolio_highlight'))[0]}
+        <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] via-[#7928ca] to-[#0070f3]">{$t('portfolio_highlight')}</span>
+        {$t('portfolio_title').split($t('portfolio_highlight'))[1] || ''}
       </h2>
-      <p class="text-sm text-zinc-500 font-semibold max-w-lg mx-auto">
-        {$t('features_subtitle')}
+
+      <p class="text-xs text-zinc-500 font-semibold max-w-md mx-auto">
+        {$t('portfolio_subtitle')}
       </p>
     </div>
 
-    <!-- 5 Designjoy Mesh Gradient Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-      {#each featureCards as card}
-        <div class="gsap-feature-card bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-          <!-- Top Gradient Box with Icon -->
-          <div class="w-full aspect-square rounded-2xl bg-gradient-to-br {card.bgGradient} p-6 flex items-center justify-center relative overflow-hidden shadow-lg mb-4 group-hover:scale-[1.02] transition-transform">
-            <div class="absolute inset-0 bg-black/5"></div>
-            
-            <svg class="w-10 h-10 text-white drop-shadow-md z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d={card.icon} />
-            </svg>
+    <!-- Playable Instagram Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {#each instagramReels as reel}
+        <div class="gsap-ig-card group rounded-3xl bg-white border border-zinc-200/80 shadow-xl overflow-hidden flex flex-col justify-between hover:shadow-2xl transition-all duration-300">
+          
+          <!-- Embedded Playable Instagram Frame Container -->
+          <div class="w-full aspect-[9/14] bg-zinc-950 relative overflow-hidden">
+            <iframe 
+              src="{reel.embedUrl}" 
+              title={reel.title}
+              class="w-full h-full border-0" 
+              frameborder="0" 
+              scrolling="no" 
+              allowtransparency={true}
+              allow="encrypted-media"
+            ></iframe>
+
+            <!-- Quick Expand Button Overlay -->
+            <button 
+              on:click={() => openReel(reel.id)}
+              class="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-black text-white hover:bg-black transition-colors shadow-lg flex items-center gap-1.5"
+            >
+              <span>▶</span> Grand Écran
+            </button>
           </div>
 
-          <!-- Bottom Text Content -->
-          <div class="space-y-1.5 text-center sm:text-left">
-            <h3 class="text-base font-black text-zinc-900">{getCardTitle(card.keyPrefix)}</h3>
-            <p class="text-xs text-zinc-500 font-medium leading-relaxed">{getCardDesc(card.keyPrefix)}</p>
+          <!-- Bottom Card Content & Actions -->
+          <div class="p-4 bg-white flex flex-col justify-between gap-3">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#00abbd]">{reel.category}</span>
+              <h3 class="text-sm font-black text-zinc-900 leading-snug">{reel.title}</h3>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-zinc-100">
+              <button 
+                on:click={() => openReel(reel.id)}
+                class="text-xs font-bold text-zinc-900 hover:text-[#00abbd] transition-colors flex items-center gap-1"
+              >
+                <span>⚡ Jouer ici</span>
+              </button>
+              <a 
+                href={reel.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="text-[11px] font-bold text-zinc-400 hover:text-zinc-700 transition-colors"
+              >
+                Instagram ↗
+              </a>
+            </div>
           </div>
         </div>
       {/each}
     </div>
+
+    <!-- CTA Button to Form -->
+    <div class="text-center mt-12">
+      <button 
+        on:click={scrollToForm}
+        class="inline-flex items-center gap-2 text-xs font-black px-8 py-4 rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 transition-all shadow-xl cursor-pointer"
+      >
+        {$t('portfolio_cta')}
+        <svg class="w-4 h-4 {$locale === 'ar' ? 'rotate-180' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </button>
+    </div>
   </section>
 
-  <!-- Featured Designjoy Booking Card Section -->
-  <section class="w-full max-w-5xl px-6 py-12 z-10">
-    <div class="gsap-booking-card w-full rounded-3xl bg-gradient-to-br from-[#ffaa00] via-[#ff3366] to-[#7928ca] p-8 md:p-12 shadow-2xl text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-8">
-      <div class="absolute inset-0 bg-black/10"></div>
-
-      <div class="z-10 space-y-3 max-w-xl text-center md:text-left">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-black border border-white/20">
-          <span>⚡</span> {$t('booking_card_note')}
+  <!-- Interactive Fullscreen Playable Reel Modal -->
+  {#if activeReelId}
+    <div 
+      class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+      on:click={closeReel}
+    >
+      <div 
+        class="relative w-full max-w-lg bg-zinc-950 rounded-3xl overflow-hidden shadow-2xl border border-zinc-800 p-2 flex flex-col items-center"
+        on:click|stopPropagation
+      >
+        <!-- Modal Top Bar -->
+        <div class="w-full flex justify-between items-center p-3 text-white border-b border-zinc-800 mb-2">
+          <span class="text-xs font-black text-zinc-300">@bord_prodagency Reel Player</span>
+          <button 
+            on:click={closeReel}
+            class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-white font-bold text-sm transition-colors"
+          >
+            ✕
+          </button>
         </div>
-        <h3 class="text-3xl md:text-4xl font-black leading-tight drop-shadow-sm">
-          {$t('booking_card_title')}
-        </h3>
-        <p class="text-sm font-medium text-white/90 leading-relaxed">
-          {$t('booking_card_sub')}
-        </p>
-      </div>
 
-      <div class="z-10 shrink-0">
-        <button 
-          on:click={scrollToForm}
-          class="px-8 py-4 rounded-2xl bg-white text-zinc-900 hover:bg-zinc-100 font-black text-sm shadow-xl active:scale-95 transition-all cursor-pointer border border-white/20"
-        >
-          {$t('booking_card_btn')}
-        </button>
+        <!-- Embedded Instagram Reel Video Frame -->
+        <div class="w-full aspect-[9/16] bg-black rounded-2xl overflow-hidden relative">
+          <iframe 
+            src="https://www.instagram.com/p/{activeReelId}/embed" 
+            title="Instagram Reel Player"
+            class="w-full h-full border-0" 
+            frameborder="0" 
+            scrolling="no" 
+            allowtransparency={true}
+            allow="encrypted-media"
+          ></iframe>
+        </div>
+
+        <!-- Direct Instagram Action Link -->
+        <div class="w-full p-3 flex justify-between items-center gap-3">
+          <a 
+            href="https://www.instagram.com/p/{activeReelId}/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="w-full text-center py-2.5 rounded-xl bg-gradient-to-r from-[#ff007f] to-[#7928ca] text-white text-xs font-black shadow-md hover:opacity-90 transition-opacity"
+          >
+            Ouvrir sur Instagram ↗
+          </a>
+        </div>
       </div>
+    </div>
+  {/if}
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
+    <div class="text-center mb-16">
+      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('testimonials_badge')}</span>
+      
+      {#if $locale === 'ar'}
+        <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mt-4 mb-2">
+          ماذا يقول <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] to-[#7928ca]">شركاؤنا</span>
+        </h2>
+      {:else}
+        <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mt-4 mb-2">
+          {$t('testimonials_title').split($t('testimonials_highlight'))[0]}
+          <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] to-[#7928ca]">{$t('testimonials_highlight')}</span>
+          {$t('testimonials_title').split($t('testimonials_highlight'))[1] || ''}
+        </h2>
+      {/if}
+
+      <p class="text-sm text-zinc-500 font-semibold max-w-md mx-auto">
+        {$t('testimonials_subtitle')}
+      </p>
+    </div>
+
+    <!-- Testimonial Grid -->
+    <div class="gsap-testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {#each testimonials as tItem, i}
+        <div class="gsap-testimonial-card bg-white rounded-3xl border border-zinc-200/80 p-6 shadow-md flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative">
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 {tItem.bgAvatar}">
+                {tItem.avatarInitials}
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xs font-black text-zinc-900 leading-tight">{$t(`t${i+1}_author`)}</span>
+                <span class="text-[10px] text-zinc-400 font-semibold">{$t(`t${i+1}_role`)}</span>
+              </div>
+            </div>
+
+            <p class="text-xs text-zinc-600 font-semibold leading-relaxed italic">
+              "{$t(`t${i+1}_quote`)}"
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-zinc-100 self-start">
+            <span class="text-[10px] font-bold px-3 py-1.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 shadow-sm">
+              {$t(`t${i+1}_metric`)}
+            </span>
+          </div>
+        </div>
+      {/each}
     </div>
   </section>
 
@@ -487,128 +641,6 @@
     </div>
   </section>
 
-  <!-- Testimonials Section -->
-  <section id="testimonials" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
-    <div class="text-center mb-16">
-      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('testimonials_badge')}</span>
-      
-      {#if $locale === 'ar'}
-        <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mt-4 mb-2">
-          ماذا يقول <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] to-[#7928ca]">شركاؤنا</span>
-        </h2>
-      {:else}
-        <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mt-4 mb-2">
-          {$t('testimonials_title').split($t('testimonials_highlight'))[0]}
-          <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] to-[#7928ca]">{$t('testimonials_highlight')}</span>
-          {$t('testimonials_title').split($t('testimonials_highlight'))[1] || ''}
-        </h2>
-      {/if}
-
-      <p class="text-sm text-zinc-500 font-semibold max-w-md mx-auto">
-        {$t('testimonials_subtitle')}
-      </p>
-    </div>
-
-    <!-- Testimonial Grid -->
-    <div class="gsap-testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {#each testimonials as tItem, i}
-        <div class="gsap-testimonial-card bg-white rounded-3xl border border-zinc-200/80 p-6 shadow-md flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative">
-          <div class="space-y-4">
-            <!-- Author Header -->
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 {tItem.bgAvatar}">
-                {tItem.avatarInitials}
-              </div>
-              <div class="flex flex-col">
-                <span class="text-xs font-black text-zinc-900 leading-tight">{$t(`t${i+1}_author`)}</span>
-                <span class="text-[10px] text-zinc-400 font-semibold">{$t(`t${i+1}_role`)}</span>
-              </div>
-            </div>
-
-            <!-- Quote text -->
-            <p class="text-xs text-zinc-600 font-semibold leading-relaxed italic">
-              "{$t(`t${i+1}_quote`)}"
-            </p>
-          </div>
-
-          <!-- Bottom key metric pill -->
-          <div class="mt-6 pt-4 border-t border-zinc-100 self-start">
-            <span class="text-[10px] font-bold px-3 py-1.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 shadow-sm">
-              {$t(`t${i+1}_metric`)}
-            </span>
-          </div>
-        </div>
-      {/each}
-    </div>
-  </section>
-
-  <!-- Video Portfolio Section -->
-  <section id="portfolio" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
-    <div class="text-center mb-12">
-      <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">{$t('portfolio_badge')}</span>
-      
-      {#if $locale === 'ar'}
-        <h2 class="text-3xl font-black text-zinc-900 mt-4 mb-2">
-          لقد <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ffaa00] to-[#ff3366]">غيروا</span> حضورهم الرقمي
-        </h2>
-      {:else}
-        <h2 class="text-3xl font-black text-zinc-900 mt-4 mb-2">
-          {$t('portfolio_title').split($t('portfolio_highlight'))[0]}
-          <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ffaa00] to-[#ff3366]">{$t('portfolio_highlight')}</span>
-          {$t('portfolio_title').split($t('portfolio_highlight'))[1] || ''}
-        </h2>
-      {/if}
-
-      <p class="text-xs text-zinc-500 font-semibold max-w-md mx-auto">
-        {$t('portfolio_subtitle')}
-      </p>
-    </div>
-
-    <!-- Portrait 9:16 Grid of Reels -->
-    <div class="gsap-reels-grid grid grid-cols-2 md:grid-cols-5 gap-4">
-      {#each verticalVideos as video, i}
-        <div class="gsap-reel-card aspect-[9/16] rounded-3xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 cursor-pointer">
-          <div class="absolute inset-0 bg-gradient-to-tr {video.bgGradient} opacity-85 z-0"></div>
-          <div class="absolute inset-0 bg-black/10 z-0"></div>
-          
-          <!-- Top Row: Handle and Views -->
-          <div class="z-10 flex justify-between items-center text-[10px] font-bold text-white">
-            <span class="bg-black/40 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">{video.client}</span>
-            <span class="bg-white/25 px-2 py-0.5 rounded-full backdrop-blur-sm">{video.views}</span>
-          </div>
-
-          <!-- Center Play Icon -->
-          <div class="z-10 w-11 h-11 rounded-full bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center self-center opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all">
-            <svg class="w-4 h-4 text-white fill-white {$locale === 'ar' ? '-translate-x-0.5 rotate-180' : 'translate-x-0.5'}" viewBox="0 0 24 24">
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
-          </div>
-
-          <!-- Bottom: Title and Metric Badge -->
-          <div class="z-10 space-y-2">
-            <p class="text-xs font-black text-white leading-tight drop-shadow-sm">{$t(`p${i+1}_title`)}</p>
-            <div class="inline-block bg-white text-zinc-900 text-[9px] font-black px-2.5 py-1 rounded-full border border-white/10 shadow-sm">
-              {$t(`p${i+1}_metric`)}
-            </div>
-          </div>
-        </div>
-      {/each}
-    </div>
-
-    <!-- Call to action linked to form -->
-    <div class="text-center mt-12">
-      <button 
-        on:click={scrollToForm}
-        class="inline-flex items-center gap-2 text-xs font-black px-7 py-4 rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 transition-all shadow-xl cursor-pointer"
-      >
-        {$t('portfolio_cta')}
-        <svg class="w-4 h-4 {$locale === 'ar' ? 'rotate-180' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </button>
-    </div>
-  </section>
-
   <!-- Lead Capture Form Section -->
   <section id="contact-form" class="w-full max-w-3xl px-6 py-20 z-10 border-t border-zinc-200/60">
     <div class="text-center mb-10">
@@ -639,7 +671,6 @@
       {:else}
         <form on:submit={handleSubmit} class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <!-- Name -->
             <div class="space-y-1.5">
               <label for="name" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_name')}</label>
               <input 
@@ -654,7 +685,6 @@
               {/if}
             </div>
 
-            <!-- Email -->
             <div class="space-y-1.5">
               <label for="email" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_email')}</label>
               <input 
@@ -671,7 +701,6 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <!-- Phone -->
             <div class="space-y-1.5">
               <label for="phone" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_phone')}</label>
               <input 
@@ -683,7 +712,6 @@
               />
             </div>
 
-            <!-- Company -->
             <div class="space-y-1.5">
               <label for="company" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_company')}</label>
               <input 
@@ -696,7 +724,6 @@
             </div>
           </div>
 
-          <!-- Budget Range -->
           <div class="space-y-2">
             <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_budget')}</span>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -712,7 +739,6 @@
             </div>
           </div>
 
-          <!-- Project Description -->
           <div class="space-y-1.5">
             <label for="desc" class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">{$t('form_desc')}</label>
             <textarea 
@@ -733,7 +759,6 @@
             </div>
           {/if}
 
-          <!-- Submit Button -->
           <button 
             type="submit"
             disabled={loading}
@@ -758,6 +783,8 @@
       <span>&copy; 2026 BordProd. {$t('footer_copy')}</span>
     </div>
     <div class="flex items-center gap-4">
+      <a href={INSTAGRAM_PROFILE} target="_blank" rel="noopener noreferrer" class="hover:text-zinc-900">Instagram @bord_prodagency</a>
+      <span>&middot;</span>
       <a href="#showcase" class="hover:text-zinc-900">{$t('footer_legal')}</a>
       <span>&middot;</span>
       <a href="#showcase" class="hover:text-zinc-900">{$t('footer_privacy')}</a>
