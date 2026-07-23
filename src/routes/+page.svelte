@@ -1,10 +1,9 @@
 <script lang="ts">
   /**
-   * BordProd Landing Page - Internationalized (FR / EN / AR) with GSAP Animations
-   * =========================================================================
-   * Clean white theme matching the doctor inspiration.
-   * Dynamic i18n store integration with automatic RTL support.
-   * Smooth GSAP staggered entrances, reveals, and micro-interactions.
+   * BordProd Landing Page - High-End Kinetic GSAP Animations & i18n
+   * ================================================================
+   * Clean white theme with Apple / Awwwards kinetic word typography,
+   * 3D perspective tilt micro-interactions, and bulletproof scroll reveals.
    */
   import { onMount } from 'svelte';
   import { gsap } from 'gsap';
@@ -41,7 +40,6 @@
     emailError = '';
     projectDescriptionError = '';
 
-    // Validations using dynamic messages
     let isValid = true;
     if (!name.trim()) {
       nameError = $t('validation_name');
@@ -72,7 +70,6 @@
         project_description: projectDescription
       });
       success = true;
-      // Reset form
       name = '';
       email = '';
       phone = '';
@@ -80,9 +77,11 @@
       budget = '';
       projectDescription = '';
 
-      // Success animation
       setTimeout(() => {
-        gsap.from('.gsap-success-box', { opacity: 0, scale: 0.9, duration: 0.6, ease: 'back.out(1.5)' });
+        gsap.fromTo('.gsap-success-box', 
+          { opacity: 0, scale: 0.85, y: 20 }, 
+          { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)', clearProps: 'all' }
+        );
       }, 50);
     } catch (err: any) {
       console.error('Lead submission failed:', err);
@@ -97,6 +96,10 @@
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  function splitTextIntoWords(str: string) {
+    return str.split(' ').map(w => w.trim()).filter(Boolean);
   }
 
   // Vertical Reels Showcase
@@ -128,7 +131,7 @@
     }
   ];
 
-  // Testimonial Meta Details
+  // Testimonials Meta Details
   const testimonials = [
     {
       avatarInitials: "JR",
@@ -149,97 +152,134 @@
   ];
 
   onMount(() => {
-    // 1. Initial Hero Entrance Animation
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    // 1. Kinetic Hero Word Entrance Animation
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-    tl.from('.gsap-hero-badge', { opacity: 0, y: -20, duration: 0.8, delay: 0.1 })
-      .from('.gsap-hero-title', { opacity: 0, y: 30, scale: 0.98, duration: 0.9 }, '-=0.5')
-      .from('.gsap-hero-sub', { opacity: 0, y: 20, duration: 0.8 }, '-=0.6')
-      .from('.gsap-hero-btn', { opacity: 0, y: 15, stagger: 0.15, duration: 0.7, ease: 'back.out(1.6)' }, '-=0.5')
-      .from('.gsap-hero-video', { opacity: 0, y: 40, scale: 0.96, duration: 1 }, '-=0.5');
+    tl.fromTo('.gsap-hero-badge', 
+      { opacity: 0, y: -25, scale: 0.9 }, 
+      { opacity: 1, y: 0, scale: 1, duration: 0.8, clearProps: 'all' }
+    )
+    .fromTo('.gsap-word', 
+      { opacity: 0, y: 45, rotateX: -60 }, 
+      { opacity: 1, y: 0, rotateX: 0, stagger: 0.03, duration: 0.85, clearProps: 'all' },
+      '-=0.4'
+    )
+    .fromTo('.gsap-hero-sub', 
+      { opacity: 0, y: 25 }, 
+      { opacity: 1, y: 0, duration: 0.8, clearProps: 'all' }, 
+      '-=0.5'
+    )
+    .fromTo('.gsap-hero-btn', 
+      { opacity: 0, y: 20, scale: 0.9 }, 
+      { opacity: 1, y: 0, scale: 1, stagger: 0.12, duration: 0.7, ease: 'back.out(1.6)', clearProps: 'all' }, 
+      '-=0.4'
+    )
+    .fromTo('.gsap-hero-video', 
+      { opacity: 0, y: 50, scale: 0.95 }, 
+      { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out', clearProps: 'all' }, 
+      '-=0.5'
+    );
 
-    // Floating Ambient Animation for Decorative Icons
+    // 2. Ambient Floating Motion for Background SVG Elements
     gsap.to('.gsap-float-slow', {
-      y: -12,
-      duration: 3,
+      y: -15,
+      duration: 3.5,
       repeat: -1,
       yoyo: true,
       ease: 'power1.inOut'
     });
 
-    const observerOptions = { threshold: 0.15 };
+    // Helper for robust scroll reveals with guaranteed visibility (clearProps)
+    function setupScrollReveal(triggerSelector: string, targetSelector: string, fromVars: gsap.TweenVars, toVars: gsap.TweenVars) {
+      const triggerEl = document.querySelector(triggerSelector);
+      if (!triggerEl) return;
 
-    // 2. About Us Section Observer
-    const aboutEl = document.querySelector('#who-we-are');
-    if (aboutEl) {
       const obs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            gsap.from('.gsap-about-card', { opacity: 0, x: -40, duration: 1, ease: 'power3.out' });
-            gsap.from('.gsap-about-content', { opacity: 0, x: 40, duration: 1, ease: 'power3.out' });
-            obs.disconnect();
-          }
-        });
-      }, observerOptions);
-      obs.observe(aboutEl);
-    }
-
-    // 3. Testimonials Grid Observer
-    const testimonialsEl = document.querySelector('.gsap-testimonials-grid');
-    if (testimonialsEl) {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            gsap.from('.gsap-testimonial-card', {
-              opacity: 0,
-              y: 40,
-              scale: 0.93,
-              stagger: 0.12,
-              duration: 0.85,
-              ease: 'back.out(1.4)'
+            gsap.fromTo(targetSelector, fromVars, {
+              ...toVars,
+              onComplete: () => {
+                gsap.set(targetSelector, { clearProps: 'all' });
+              }
             });
             obs.disconnect();
           }
         });
-      }, observerOptions);
-      obs.observe(testimonialsEl);
+      }, { threshold: 0.02, rootMargin: '0px 0px -20px 0px' });
+
+      obs.observe(triggerEl);
     }
 
-    // 4. Portfolio / Reels Grid Observer
-    const reelsEl = document.querySelector('.gsap-reels-grid');
-    if (reelsEl) {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            gsap.from('.gsap-reel-card', {
-              opacity: 0,
-              y: 50,
-              scale: 0.9,
-              stagger: 0.1,
-              duration: 0.8,
-              ease: 'power3.out'
-            });
-            obs.disconnect();
-          }
-        });
-      }, observerOptions);
-      obs.observe(reelsEl);
-    }
+    // 3. Section Scroll Reveals
+    setupScrollReveal(
+      '#who-we-are', 
+      '.gsap-about-card', 
+      { opacity: 0, x: -45, scale: 0.95 }, 
+      { opacity: 1, x: 0, scale: 1, duration: 0.9, ease: 'power3.out' }
+    );
+    setupScrollReveal(
+      '#who-we-are', 
+      '.gsap-about-content', 
+      { opacity: 0, x: 45 }, 
+      { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' }
+    );
 
-    // 5. Contact Form Observer
-    const formEl = document.querySelector('#contact-form');
-    if (formEl) {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            gsap.from('.gsap-form-card', { opacity: 0, y: 40, scale: 0.97, duration: 0.9, ease: 'power3.out' });
-            obs.disconnect();
-          }
-        });
-      }, observerOptions);
-      obs.observe(formEl);
-    }
+    setupScrollReveal(
+      '#testimonials', 
+      '.gsap-testimonial-card', 
+      { opacity: 0, y: 45, scale: 0.93 }, 
+      { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.8, ease: 'back.out(1.4)' }
+    );
+
+    setupScrollReveal(
+      '#portfolio', 
+      '.gsap-reel-card', 
+      { opacity: 0, y: 55, scale: 0.88 }, 
+      { opacity: 1, y: 0, scale: 1, stagger: 0.08, duration: 0.75, ease: 'power3.out' }
+    );
+
+    setupScrollReveal(
+      '#contact-form', 
+      '.gsap-form-card', 
+      { opacity: 0, y: 45, scale: 0.96 }, 
+      { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: 'power3.out' }
+    );
+
+    // 4. 3D Perspective Tilt Micro-Interactions on Showreel & Reel Cards
+    init3DTilt('.gsap-hero-video');
+    init3DTilt('.gsap-reel-card');
   });
+
+  function init3DTilt(elementSelector: string) {
+    setTimeout(() => {
+      const elements = document.querySelectorAll(elementSelector);
+      elements.forEach((el) => {
+        const target = el as HTMLElement;
+        target.addEventListener('mousemove', (e) => {
+          const rect = target.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          gsap.to(target, {
+            rotateY: x / 16,
+            rotateX: -y / 16,
+            transformPerspective: 1000,
+            ease: 'power2.out',
+            duration: 0.3
+          });
+        });
+
+        target.addEventListener('mouseleave', () => {
+          gsap.to(target, {
+            rotateY: 0,
+            rotateX: 0,
+            ease: 'power2.out',
+            duration: 0.5
+          });
+        });
+      });
+    }, 100);
+  }
 </script>
 
 <svelte:head>
@@ -326,17 +366,20 @@
       {$t('hero_badge')}
     </div>
     
-    {#if $locale === 'ar'}
-      <h1 class="gsap-hero-title text-4xl md:text-6xl font-black tracking-tight leading-tight text-[#0a2f4c] max-w-4xl mb-6">
-        فيديوهات تدفع <span class="font-serif italic text-[#00abbd] font-semibold">علامتك التجارية</span> نحو القمة.
-      </h1>
-    {:else}
-      <h1 class="gsap-hero-title text-4xl md:text-6xl font-black tracking-tight leading-tight text-[#0a2f4c] max-w-4xl mb-6">
-        {$t('hero_title').split($t('hero_highlight'))[0]}
-        <span class="font-serif italic text-[#00abbd] font-semibold">{$t('hero_highlight')}</span>
-        {$t('hero_title').split($t('hero_highlight'))[1]}
-      </h1>
-    {/if}
+    <!-- Kinetic Word-by-Word Staggered Title -->
+    <h1 class="gsap-hero-title text-4xl md:text-6xl font-black tracking-tight leading-tight text-[#0a2f4c] max-w-4xl mb-6 flex flex-wrap justify-center gap-x-2.5 gap-y-1">
+      {#each splitTextIntoWords($t('hero_title')) as word}
+        <span class="inline-block overflow-hidden py-1">
+          <span class="gsap-word inline-block origin-bottom-left">
+            {#if word === $t('hero_highlight')}
+              <span class="font-serif italic text-[#00abbd] font-semibold">{word}</span>
+            {:else}
+              {word}
+            {/if}
+          </span>
+        </span>
+      {/each}
+    </h1>
 
     <p class="gsap-hero-sub text-base md:text-lg text-zinc-500 max-w-2xl font-medium leading-relaxed mb-10">
       {$t('hero_subtitle')}
@@ -356,13 +399,13 @@
       </a>
     </div>
 
-    <!-- Video Showcase frame -->
-    <div class="gsap-hero-video w-full max-w-4xl rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl relative group">
+    <!-- 3D Perspective Interactive Showreel Video Frame -->
+    <div class="gsap-hero-video w-full max-w-4xl rounded-2xl border border-zinc-200 bg-white p-3 shadow-xl relative group transition-shadow duration-300 hover:shadow-2xl">
       <div class="w-full aspect-video rounded-xl bg-zinc-950 flex flex-col items-center justify-center relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-tr from-[#004e57]/40 via-zinc-950 to-[#5c4a16]/30 opacity-80 z-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-[#004e57]/40 via-zinc-950 to-[#5c4a16]/30 opacity-85 z-0"></div>
         
         <div class="z-10 flex flex-col items-center gap-4 cursor-pointer">
-          <div class="w-20 h-20 rounded-full bg-white/10 border border-white/20 hover:border-white/40 hover:bg-white/20 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-xl group-hover:scale-110">
+          <div class="w-20 h-20 rounded-full bg-white/10 border border-white/20 hover:border-white/40 hover:bg-white/25 active:scale-95 flex items-center justify-center transition-all duration-300 shadow-2xl group-hover:scale-110">
             <svg class="w-7 h-7 text-white fill-white {$locale === 'ar' ? '-translate-x-0.5 rotate-180' : 'translate-x-0.5'}" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
@@ -446,7 +489,7 @@
     <!-- Testimonial Grid -->
     <div class="gsap-testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {#each testimonials as tItem, i}
-        <div class="gsap-testimonial-card bg-white rounded-2xl border border-zinc-200/50 p-6 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative">
+        <div class="gsap-testimonial-card bg-white rounded-2xl border border-zinc-200/50 p-6 shadow-sm flex flex-col justify-between hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 relative">
           <div class="absolute top-4 {$locale === 'ar' ? 'left-4' : 'right-4'} text-[#00abbd]/5">
             <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
               <path d="M14 17h3l2-4V7h-6v6h3M6 17h3l2-4V7H5v6h3l-2 4z" />
@@ -507,7 +550,7 @@
     <!-- Portrait 9:16 Grid of Reels -->
     <div class="gsap-reels-grid grid grid-cols-2 md:grid-cols-5 gap-4">
       {#each verticalVideos as video, i}
-        <div class="gsap-reel-card aspect-[9/16] rounded-2xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.04] hover:shadow-xl hover:border-[#00abbd]/50 transition-all duration-300 cursor-pointer">
+        <div class="gsap-reel-card aspect-[9/16] rounded-2xl bg-zinc-950 border border-zinc-200 shadow-lg relative group overflow-hidden flex flex-col justify-between p-4 hover:scale-[1.04] hover:shadow-2xl hover:border-[#00abbd]/60 transition-all duration-300 cursor-pointer">
           <div class="absolute inset-0 bg-gradient-to-tr {video.bgGradient} opacity-85 z-0"></div>
           <div class="absolute inset-0 bg-black/10 z-0"></div>
           
