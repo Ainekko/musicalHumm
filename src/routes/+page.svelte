@@ -328,7 +328,7 @@
       {#each splitTextIntoWords($t('hero_title')) as word}
         <span class="inline-block">
           <span class="gsap-word inline-block">
-            {#if word.includes('possibilités') || word.includes('possibilities') || word.includes('حصر')}
+            {#if $t('hero_highlight').includes(word.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '')) || $t('hero_highlight').includes(word)}
               <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff5500] via-[#e6005c] to-[#7928ca]">{word}</span>
             {:else}
               {word}
