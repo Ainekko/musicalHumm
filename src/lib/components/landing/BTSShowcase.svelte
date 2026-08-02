@@ -110,15 +110,14 @@
     <!-- BTS Video Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {#each btsVideos as bts}
-        <div class="gsap-bts-card group rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-2xl overflow-hidden flex flex-col justify-between hover:border-[#00abbd]/50 transition-all duration-300">
-          
-          <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <!-- svelte-ignore a11y-no-static-element-interactions -->
-          <div 
-            class="w-full aspect-[9/14] bg-black relative overflow-hidden group cursor-pointer"
-            on:click={() => openS3VideoModal({ title: bts.title, clientName: "Les Coulisses BTS", category: bts.tag, url: bts.url, badgeBg: "from-zinc-700 to-zinc-900" })}
-          >
-            <video 
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div
+          class="gsap-bts-card group rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-2xl overflow-hidden hover:border-[#00abbd]/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          on:click={() => openS3VideoModal({ title: bts.title, clientName: 'Les Coulisses BTS', category: bts.tag, url: bts.url, badgeBg: 'from-zinc-700 to-zinc-900' })}
+        >
+          <div class="w-full aspect-[9/14] bg-black relative overflow-hidden">
+            <video
               use:lazyVideo={bts.url}
               muted
               loop
@@ -126,47 +125,39 @@
               preload="none"
               on:mouseenter={handleVideoHover}
               on:mouseleave={handleVideoLeave}
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+              class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
             ></video>
 
-            <!-- BTS Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/40 p-4 flex flex-col justify-between pointer-events-none">
-              
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/50 group-hover:from-black/80 transition-colors p-5 flex flex-col justify-between pointer-events-none">
+
+              <!-- Top bar -->
               <div class="flex justify-between items-center">
-                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase text-white bg-zinc-800/80 border border-zinc-700 backdrop-blur-md">
+                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase text-white bg-black/60 backdrop-blur-md border border-white/20">
                   🎬 {bts.tag}
                 </span>
-                
-                <span class="flex items-center gap-1 text-[10px] font-bold text-red-400 bg-black/60 px-2 py-0.5 rounded-full border border-red-500/20">
+                <span class="flex items-center gap-1 text-[10px] font-bold text-red-400 bg-black/60 px-2 py-0.5 rounded-full border border-red-500/20 backdrop-blur-md">
                   <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> REC
                 </span>
               </div>
 
-              <div class="flex flex-col items-center justify-center gap-2 my-auto opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
-                <div class="w-14 h-14 rounded-full bg-[#00abbd]/20 backdrop-blur-md border border-[#00abbd]/50 flex items-center justify-center text-white shadow-2xl">
-                  <svg class="w-6 h-6 fill-[#00abbd] translate-x-0.5" viewBox="0 0 24 24">
+              <!-- Central play -->
+              <div class="my-auto flex flex-col items-center justify-center gap-2 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-2xl">
+                  <svg class="w-6 h-6 fill-white translate-x-0.5" viewBox="0 0 24 24">
                     <polygon points="5 3 19 12 5 21 5 3" />
                   </svg>
                 </div>
-                <span class="text-[10px] font-black tracking-widest text-zinc-200 uppercase bg-black/70 px-3 py-1 rounded-full border border-zinc-800">
+                <span class="text-[10px] font-black uppercase tracking-widest text-white bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
                   Voir les coulisses ⚡
                 </span>
               </div>
 
-              <div>
-                <h4 class="text-xs font-black text-white line-clamp-2 drop-shadow-md">{bts.title}</h4>
+              <!-- Bottom tag -->
+              <div class="text-white">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-white/80">BordProd BTS</p>
               </div>
             </div>
-          </div>
-
-          <div class="p-4 bg-zinc-900 flex items-center justify-between gap-2 border-t border-zinc-800/80">
-            <span class="text-[11px] font-bold text-zinc-400 truncate">{bts.title}</span>
-            <button 
-              on:click={() => openS3VideoModal({ title: bts.title, clientName: "Les Coulisses BTS", category: bts.tag, url: bts.url, badgeBg: "from-zinc-700 to-zinc-900" })}
-              class="px-3 py-1.5 rounded-xl bg-[#00abbd] hover:bg-[#0092a1] text-white text-[11px] font-black transition-colors shrink-0 shadow-sm cursor-pointer"
-            >
-              Jouer
-            </button>
           </div>
         </div>
       {/each}

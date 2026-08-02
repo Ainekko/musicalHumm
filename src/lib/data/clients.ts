@@ -77,25 +77,25 @@ export const HERO_VIDEO_URL = 'https://xander-files.s3.us-east-1.amazonaws.com/b
 export const btsVideos: BTSVideo[] = [
   {
     id: 'bts-1',
-    title: 'Backstage Tournage Studio #01',
+    title: '',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/1.MP4',
     tag: 'Coulisses Plateaux',
   },
   {
     id: 'bts-2',
-    title: 'Coulisses Production Cinema #02',
+    title: '',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/2.mp4',
     tag: 'Direction Technique',
   },
   {
     id: 'bts-3',
-    title: 'Iron Gym Shoot - Backstage Live',
+    title: '',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/iron+gym.mp4',
     tag: 'On-Set Action',
   },
   {
     id: 'bts-4',
-    title: 'Session Suhail Hadad - Directing BTS',
+    title: '',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/suhail+hadad.mp4',
     tag: 'Making Of',
   },
@@ -222,8 +222,8 @@ export const clients: Client[] = [
   // ── M Immoby ──────────────────────────────────────────────────────────────────
   {
     key: 'immoby',
-    name: 'M Immoby',
-    sector: 'Immobilier de Luxe',
+    name: 'Immoby',
+    sector: 'agence immobilière',
     igHandle: 'immoby.ma',
     badgeBg: 'from-emerald-500 to-teal-400',
     portfolioVideos: [
@@ -239,7 +239,7 @@ export const clients: Client[] = [
   {
     key: 'evapark',
     name: 'Eva Park',
-    sector: 'Résidence de Luxe',
+    sector: 'project immobilière',
     igHandle: 'evapark.marrakech', // Add their IG handle here when available
     badgeBg: 'from-teal-500 to-cyan-500',
     portfolioVideos: [
@@ -261,19 +261,19 @@ export const clients: Client[] = [
   {
     key: 'mondial',
     name: 'Mondial Media',
-    sector: 'Production Média',
+    sector: 'école audiovisuel',
     igHandle: 'mondial_media',
     badgeBg: 'from-purple-600 to-indigo-500',
     portfolioVideos: [
       {
         id: 'mondial-1',
         url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/mondial+media/01.mp4',
-        category: 'Agence & Production Média',
+        category: 'école audiovisuel',
       },
       {
         id: 'mondial-2',
         url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/mondial+media/Mondial+Media+5+modife.mp4',
-        category: 'Agence & Production Média',
+        category: 'école audiovisuel',
         badgeBg: 'from-indigo-600 to-violet-500',
       } as any,
     ],
@@ -287,6 +287,8 @@ export const feedbackVideos = [
     id: 'feedback-1',
     clientKey: 'feedback' as ClientKey,
     clientName: 'Ingénieur Fitness',
+    role: 'athlete fitness influencer',
+    igHandle: 'ingenieur.fitness',
     category: 'Avis Client 🌟',
     title: 'Témoignage Ingénieur Fitness',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/ingenieur+fitness+feed+back.mp4',
@@ -296,6 +298,8 @@ export const feedbackVideos = [
     id: 'feedback-2',
     clientKey: 'feedback' as ClientKey,
     clientName: 'Kawtar Samih',
+    role: 'Actress . Comedian',
+    igHandle: 'kawtarsamihoff',
     category: 'Avis Client 🌟',
     title: 'Témoignage Kawtar Samih',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/kawtar+samih+feed+back.mp4',
@@ -305,6 +309,8 @@ export const feedbackVideos = [
     id: 'feedback-3',
     clientKey: 'feedback' as ClientKey,
     clientName: 'Mustapha',
+    role: 'CEO of Fitness goals group',
+    igHandle: undefined,
     category: 'Avis Client 🌟',
     title: 'Témoignage Mustapha',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/mustapha+feed+back.mp4',
@@ -313,11 +319,24 @@ export const feedbackVideos = [
   {
     id: 'feedback-4',
     clientKey: 'feedback' as ClientKey,
-    clientName: 'Souhaile Haddad',
+    clientName: 'souhail haddade',
+    role: '',
+    igHandle: 'souhail.haddade',
     category: 'Avis Client 🌟',
     title: 'Témoignage Souhaile Haddad',
     url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/souhaile+haddad+feed+back.mp4',
     badgeBg: 'from-emerald-500 to-teal-600',
+  },
+  {
+    id: 'feedback-5',
+    clientKey: 'feedback' as ClientKey,
+    clientName: 'Marouan',
+    role: 'CEO of Light Deco',
+    igHandle: 'light_deco_ma',
+    category: 'Avis Client 🌟',
+    title: 'Témoignage Marouan — Light Deco',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/feedback+COMPRESSE/LIGHT+DECO+MARWAN+COMPRESSE.mp4',
+    badgeBg: 'from-violet-500 to-purple-600',
   },
 ];
 
