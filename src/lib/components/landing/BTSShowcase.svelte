@@ -1,0 +1,175 @@
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { gsap } from 'gsap';
+  import { t } from '$lib/i18n';
+
+  export let btsVideos: any[];
+  export let openS3VideoModal: (video: any) => void;
+
+  function handleVideoHover(e: MouseEvent) {
+    const video = e.currentTarget as HTMLVideoElement;
+    if (video) {
+      video.play().catch(() => {});
+    }
+  }
+
+  function handleVideoLeave(e: MouseEvent) {
+    const video = e.currentTarget as HTMLVideoElement;
+    if (video) {
+      video.pause();
+    }
+  }
+
+  // Svelte Action to lazy load videos when they enter the viewport
+  function lazyVideo(node: HTMLVideoElement, src: string) {
+    let observer: IntersectionObserver;
+
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            node.src = src;
+            node.load(); // Load the video file
+            observer.unobserve(node);
+          }
+        });
+      }, { rootMargin: '120px' });
+
+      observer.observe(node);
+    } else {
+      node.src = src;
+    }
+
+    return {
+      update(newSrc: string) {
+        src = newSrc;
+        if (node.src) {
+          node.src = src;
+          node.load();
+        }
+      },
+      destroy() {
+        if (observer) {
+          observer.unobserve(node);
+        }
+      }
+    };
+  }
+
+  onMount(() => {
+    const triggerEl = document.querySelector('#bts-showcase');
+    if (!triggerEl) return;
+
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          gsap.fromTo('.gsap-bts-card', 
+            { opacity: 0, y: 16 }, 
+            {
+              opacity: 1,
+              y: 0,
+              stagger: 0.07,
+              duration: 0.55,
+              ease: 'power2.out',
+              onComplete: () => {
+                gsap.set('.gsap-bts-card', { clearProps: 'all' });
+              }
+            }
+          );
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.01, rootMargin: '0px 0px -10px 0px' });
+
+    obs.observe(triggerEl);
+  });
+</script>
+
+<section id="bts-showcase" class="w-full bg-[#111113] text-white py-20 z-10 border-t border-zinc-800 relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,_rgba(0,171,189,0.15),transparent_60%)]"></div>
+  
+  <div class="w-full max-w-6xl mx-auto px-6">
+    
+    <!-- Section Header -->
+    <div class="text-center mb-14">
+      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-4 py-1.5 rounded-full bg-[#00abbd]/10 border border-[#00abbd]/30 shadow-sm">
+        {$t('bts_section_badge')}
+      </span>
+      
+      <h2 class="text-3xl md:text-5xl font-black text-white mt-4 mb-3">
+        {$t('bts_section_title').split($t('bts_section_highlight'))[0]}
+        <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#00abbd] via-teal-300 to-emerald-400">{$t('bts_section_highlight')}</span>
+        {$t('bts_section_title').split($t('bts_section_highlight'))[1] || ''}
+      </h2>
+
+      <p class="text-xs md:text-sm text-zinc-400 font-semibold max-w-lg mx-auto">
+        {$t('bts_section_sub')}
+      </p>
+    </div>
+
+    <!-- BTS Video Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {#each btsVideos as bts}
+        <div class="gsap-bts-card group rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-2xl overflow-hidden flex flex-col justify-between hover:border-[#00abbd]/50 transition-all duration-300">
+          
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
+          <div 
+            class="w-full aspect-[9/14] bg-black relative overflow-hidden group cursor-pointer"
+            on:click={() => openS3VideoModal({ title: bts.title, clientName: "Les Coulisses BTS", category: bts.tag, url: bts.url, badgeBg: "from-zinc-700 to-zinc-900" })}
+          >
+            <video 
+              use:lazyVideo={bts.url}
+              muted
+              loop
+              playsinline
+              preload="none"
+              on:mouseenter={handleVideoHover}
+              on:mouseleave={handleVideoLeave}
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+            ></video>
+
+            <!-- BTS Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/40 p-4 flex flex-col justify-between pointer-events-none">
+              
+              <div class="flex justify-between items-center">
+                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase text-white bg-zinc-800/80 border border-zinc-700 backdrop-blur-md">
+                  🎬 {bts.tag}
+                </span>
+                
+                <span class="flex items-center gap-1 text-[10px] font-bold text-red-400 bg-black/60 px-2 py-0.5 rounded-full border border-red-500/20">
+                  <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> REC
+                </span>
+              </div>
+
+              <div class="flex flex-col items-center justify-center gap-2 my-auto opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                <div class="w-14 h-14 rounded-full bg-[#00abbd]/20 backdrop-blur-md border border-[#00abbd]/50 flex items-center justify-center text-white shadow-2xl">
+                  <svg class="w-6 h-6 fill-[#00abbd] translate-x-0.5" viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                </div>
+                <span class="text-[10px] font-black tracking-widest text-zinc-200 uppercase bg-black/70 px-3 py-1 rounded-full border border-zinc-800">
+                  Voir les coulisses ⚡
+                </span>
+              </div>
+
+              <div>
+                <h4 class="text-xs font-black text-white line-clamp-2 drop-shadow-md">{bts.title}</h4>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-zinc-900 flex items-center justify-between gap-2 border-t border-zinc-800/80">
+            <span class="text-[11px] font-bold text-zinc-400 truncate">{bts.title}</span>
+            <button 
+              on:click={() => openS3VideoModal({ title: bts.title, clientName: "Les Coulisses BTS", category: bts.tag, url: bts.url, badgeBg: "from-zinc-700 to-zinc-900" })}
+              class="px-3 py-1.5 rounded-xl bg-[#00abbd] hover:bg-[#0092a1] text-white text-[11px] font-black transition-colors shrink-0 shadow-sm cursor-pointer"
+            >
+              Jouer
+            </button>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+</section>
