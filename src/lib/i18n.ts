@@ -21,10 +21,10 @@ export const translations = {
     nav_testimonials: "Avis Partenaires",
     nav_quote: "Devis gratuit",
     nav_cta: "Lancer un projet",
-    
-    hero_badge: "Agence de Production Vidéo Performance",
-    hero_title: "Des vidéos captivantes qui génèrent du résultat.",
-    hero_highlight: "résultat.",
+
+    hero_badge: "Partenaire créatif pour les marques en croissance",
+    hero_title: "Nous ne nous contentons pas de créer du contenu. Nous bâtissons des marques inoubliables",
+    hero_highlight: "inoubliables",
     hero_subtitle: "Nous combinons l'art de l'image de qualité cinéma et l'efficacité des stratégies d'acquisition. Donnez vie à vos projets vidéo grâce à des productions optimisées pour convertir.",
     hero_cta: "Demander ma stratégie vidéo",
     hero_secondary: "Découvrir notre Instagram",
@@ -45,19 +45,19 @@ export const translations = {
     booking_card_sub: "Discutons de vos objectifs et définissons la meilleure stratégie pour propulser votre marque.",
     booking_card_btn: "Réserver mon appel",
     booking_card_note: "Sans engagement — Plan d'action offert",
-    
+
     about_badge: "QUI SOMMES-NOUS",
     about_title: "Donner de la hauteur à votre message de marque.",
     about_p1: "Chez BordProd, nous pensons que chaque marque a une histoire qui mérite d'être racontée.",
     about_p2: "Nous combinons créativité, stratégie et production pour créer du contenu qui ne se contente pas d'être beau — il génère des résultats.",
     about_p3: "Avec plus de 3 ans d'expérience, nous avons aidé des entreprises, des créateurs et des entrepreneurs à renforcer leur image et à développer leur présence grâce à une communication visuelle professionnelle.",
     about_experience: "Années d'Expérience",
-    
+
     testimonials_badge: "TÉMOIGNAGES",
     testimonials_title: "Ce que disent nos partenaires",
     testimonials_highlight: "nos partenaires",
     testimonials_subtitle: "Plus de 30+ professionnels et créateurs nous font confiance pour développer leur image de marque.",
-    
+
     portfolio_badge: "NOS RÉALISATIONS",
     portfolio_title: "Ils ont transformé leur présence",
     portfolio_highlight: "transformé",
@@ -71,7 +71,7 @@ export const translations = {
     filter_mondial: "Mondial Media",
     filter_rein: "Rein Abayas",
     play_video: "Visionner en HD ⚡",
-    
+
     bts_section_badge: "BTS",
     bts_section_title: "Dans l'Envers du Décor",
     bts_section_highlight: "Envers du Décor",
@@ -80,11 +80,11 @@ export const translations = {
     ig_section_badge: "GRILLE INSTAGRAM OFFICIELLE",
     ig_section_title: "Découvrez notre fil Instagram",
     ig_section_sub: "Suivez nos derniers reels, stories et actualités quotidiennes sur Instagram.",
-    
+
     contact_badge: "CONTACT",
     contact_title: "Démarrez votre projet vidéo",
     contact_subtitle: "Complétez le formulaire ci-dessous. Nous analyserons vos besoins et vous recontacterons sous 24h avec un plan d'action.",
-    
+
     form_name: "Nom Complet *",
     form_name_placeholder: "Ex: Jean Dupont",
     form_email: "Adresse E-mail *",
@@ -101,13 +101,13 @@ export const translations = {
     form_success_title: "Demande enregistrée avec succès !",
     form_success_desc: "Merci de votre confiance. Vos informations ont été transmises à notre équipe dans notre CRM interne. Un conseiller BordProd va étudier votre projet et prendra contact avec vous rapidement.",
     form_success_btn: "Faire une autre demande",
-    
+
     validation_name: "Le nom est requis",
     validation_email: "L'email est requis",
     validation_email_invalid: "Veuillez entrer une adresse email valide",
     validation_desc: "Les détails du projet sont requis",
     validation_error: "Une erreur est survenue. Veuillez réessayer.",
-    
+
     footer_copy: "Tous droits réservés.",
     footer_legal: "Mentions Légales",
     footer_privacy: "Confidentialité",
@@ -150,10 +150,10 @@ export const translations = {
     nav_testimonials: "Testimonials",
     nav_quote: "Free Quote",
     nav_cta: "Start a Project",
-    
-    hero_badge: "Performance Video Production Agency",
-    hero_title: "Captivating videos engineered to convert.",
-    hero_highlight: "convert.",
+
+    hero_badge: "Creative Partner for Growing Brands",
+    hero_title: "We Don't Just Create Content. We Build Brands People Remember",
+    hero_highlight: "Remember",
     hero_subtitle: "We combine cinema-quality visual storytelling with high-converting acquisition strategies. Bring your video projects to life.",
     hero_cta: "Get My Video Strategy",
     hero_secondary: "Discover Our Instagram",
@@ -181,12 +181,12 @@ export const translations = {
     about_p2: "We combine creativity, strategy, and production to create content that doesn’t just look good—it delivers results.",
     about_p3: "With over 3 years of experience, we have helped businesses, creators, and entrepreneurs strengthen their image and grow their presence through professional visual communication.",
     about_experience: "Years of Experience",
-    
+
     testimonials_badge: "TESTIMONIALS",
     testimonials_title: "What our partners say",
     testimonials_highlight: "our partners",
     testimonials_subtitle: "Over 30+ professionals and creators trust us to develop their brand image.",
-    
+
     portfolio_badge: "OUR PORTFOLIO",
     portfolio_title: "They transformed their presence",
     portfolio_highlight: "transformed",
@@ -200,7 +200,7 @@ export const translations = {
     filter_mondial: "Mondial Media",
     filter_rein: "Rein Abayas",
     play_video: "Watch in HD ⚡",
-    
+
     bts_section_badge: "BTS",
     bts_section_title: "Behind The Scenes",
     bts_section_highlight: "Behind The Scenes",
@@ -209,11 +209,11 @@ export const translations = {
     ig_section_badge: "OFFICIAL INSTAGRAM GRID",
     ig_section_title: "Check Out Our Instagram Feed",
     ig_section_sub: "Follow our latest daily reels, behind the scenes, and updates directly on Instagram.",
-    
+
     contact_badge: "CONTACT",
     contact_title: "Start your video project",
     contact_subtitle: "Complete the form below. We will analyze your needs and get back to you within 24 hours with an action plan.",
-    
+
     form_name: "Full Name *",
     form_name_placeholder: "Ex: John Doe",
     form_email: "Email Address *",
@@ -230,13 +230,13 @@ export const translations = {
     form_success_title: "Request submitted successfully!",
     form_success_desc: "Thank you for your trust. Your information has been sent to our team in our internal CRM. A BordProd specialist will review your project and get back to you shortly.",
     form_success_btn: "Submit Another Request",
-    
+
     validation_name: "Name is required",
     validation_email: "Email is required",
     validation_email_invalid: "Please enter a valid email address",
     validation_desc: "Project details are required",
     validation_error: "An error occurred. Please try again.",
-    
+
     footer_copy: "All rights reserved.",
     footer_legal: "Legal Notice",
     footer_privacy: "Privacy Policy",
@@ -279,10 +279,10 @@ export const translations = {
     nav_testimonials: "آراء شركائنا",
     nav_quote: "طلب عرض سعر",
     nav_cta: "ابدأ مشروعاً",
-    
-    hero_badge: "وكالة إنتاج فيديو تركز على الأداء",
-    hero_title: "فيديوهات آسرة مصممة لتحقيق النتائج.",
-    hero_highlight: "النتائج.",
+
+    hero_badge: "شريك إبداعي للعلامات التجارية النامية",
+    hero_title: "نحن لا نكتفي بإنشاء المحتوى، بل نبني علامات تجارية تبقى في الذاكرة",
+    hero_highlight: "تبقى في الذاكرة",
     hero_subtitle: "نحن نجمع بين فن الصورة بجودة السينما وفعالية استراتيجيات الاستحواذ. جسد مشاريع الفيديو الخاصة بك من خلال إنتاجات محسنة للتحويل.",
     hero_cta: "اطلب استراتيجية الفيديو الخاصة بي",
     hero_secondary: "استكشف إنستغرام الخاص بنا",
@@ -310,12 +310,12 @@ export const translations = {
     about_p2: "نحن ندمج الإبداع والاستراتيجية والإنتاج لإنشاء محتوى فيديو لا يقتصر على كونه جميلاً فحسب - بل يحقق نتائج نمو حقيقية.",
     about_p3: "لأكثر من 3 سنوات، قمنا بمرافقة الشركات والمبدعين ورواد الأعمال ذوي الإمكانات العالية لتعزيز هوياتهم وتنمية حضورهم عبر وسائل التواصل البصري الاحترافي.",
     about_experience: "سنوات من الخبرة",
-    
+
     testimonials_badge: "آراء العملاء",
     testimonials_title: "ماذا يقول شركاؤنا",
     testimonials_highlight: "شركاؤنا",
     testimonials_subtitle: "أكثر من 30+ شركة ومبدع يثقون بنا لتطوير ونشر هوياتهم التجارية.",
-    
+
     portfolio_badge: "أعمالنا المميزة",
     portfolio_title: "لقد غيروا حضورهم الرقمي",
     portfolio_highlight: "غيروا",
@@ -329,7 +329,7 @@ export const translations = {
     filter_mondial: "Mondial Media",
     filter_rein: "Rein Abayas",
     play_video: "مشاهدة بجودة عالية ⚡",
-    
+
     bts_section_badge: "BTS",
     bts_section_title: "كواليس وإعداد الإنتاج",
     bts_section_highlight: "كواليس وإعداد",
@@ -338,11 +338,11 @@ export const translations = {
     ig_section_badge: "شبكة إنستغرام الرسمية",
     ig_section_title: "تابعنا على إنستغرام",
     ig_section_sub: "شاهد أحدث المقاطع واليوميات وكواليس العمل مباشرة على حسابنا الرسمي.",
-    
+
     contact_badge: "اتصل بنا",
     contact_title: "ابدأ مشروع الفيديو الخاص بك",
     contact_subtitle: "أكمل النموذج أدناه. سنقوم بتحليل احتياجاتك والاتصال بك في غضون 24 ساعة بخطة عمل واضحة.",
-    
+
     form_name: "الاسم الكامل *",
     form_name_placeholder: "مثال: أحمد محمد",
     form_email: "البريد الإلكتروني *",
@@ -359,13 +359,13 @@ export const translations = {
     form_success_title: "تم تسجيل طلبك بنجاح!",
     form_success_desc: "نشكرك على ثقتك. تم إرسال معلوماتك إلى فريق العمل في نظام الـ CRM الداخلي. سيقوم مستشار BordProd بدراسة تفاصيل مشروعك والتواصل معك قريباً.",
     form_success_btn: "تقديم طلب آخر",
-    
+
     validation_name: "الاسم الكامل مطلوب",
     validation_email: "البريد الإلكتروني مطلوب",
     validation_email_invalid: "يرجى إدخال بريد إلكتروني صحيح",
     validation_desc: "تفاصيل المشروع مطلوبة",
     validation_error: "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
-    
+
     footer_copy: "جميع الحقوق محفوظة.",
     footer_legal: "الشروط والأحكام",
     footer_privacy: "سياسة الخصوصية",

@@ -3,8 +3,17 @@
    * BordProd Landing Page - High Performance Video Production Showcase
    * =========================================================================
    * Orchestrates the segmented subcomponents for a clean, modular structure.
+   * All client/media data lives in $lib/data/clients.ts — edit there to add clients.
    */
   import { locale } from '$lib/i18n';
+  import {
+    BORDPROD_IG,
+    HERO_VIDEO_URL,
+    clientPortfolioVideos,
+    btsVideos,
+    instagramReels,
+    feedbackVideos,
+  } from '$lib/data/clients';
 
   // Import subcomponents
   import Header from '$lib/components/landing/Header.svelte';
@@ -19,250 +28,11 @@
   import S3VideoModal from '$lib/components/landing/S3VideoModal.svelte';
   import ReelModal from '$lib/components/landing/ReelModal.svelte';
 
-  // Interface Declarations
-  interface S3VideoItem {
-    id: string;
-    clientKey: 'atlas' | 'fitness' | 'iron' | 'immoby' | 'mondial' | 'rein' | 'feedback';
-    clientName: string;
-    category: string;
-    title: string;
-    url: string;
-    badgeBg: string;
-  }
-
-  interface BTSVideoItem {
-    id: string;
-    title: string;
-    url: string;
-    tag: string;
-  }
-
   // Active Modal States
-  let activeS3ModalVideo: S3VideoItem | null = null;
+  let activeS3ModalVideo: (typeof clientPortfolioVideos)[0] | null = null;
   let activeReelId: string | null = null;
 
-  const INSTAGRAM_PROFILE = "https://www.instagram.com/bord_prodagency?igsh=amxueGN3aXhiYWt6";
-  const HERO_VIDEO_URL = "https://xander-files.s3.us-east-1.amazonaws.com/brodpod/hero+video.mp4";
-
-  // Client S3 Media (Excluding BTS)
-  const clientPortfolioVideos: S3VideoItem[] = [
-    // Client 1: Rein Abayas
-    {
-      id: 'rein-1',
-      clientKey: 'rein',
-      clientName: 'Rein Abayas',
-      category: 'Mode & Couture',
-      title: 'Rein Abayas Collection #01',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/rein+abayas/rein+1.mp4',
-      badgeBg: 'from-pink-600 to-rose-400'
-    },
-    {
-      id: 'rein-2',
-      clientKey: 'rein',
-      clientName: 'Rein Abayas',
-      category: 'Mode & Couture',
-      title: 'Rein Abayas Collection #02',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/rein+abayas/rein+2.mp4',
-      badgeBg: 'from-fuchsia-500 to-pink-500'
-    },
-    // Client 2: Atlas Dental
-    {
-      id: 'atlas-1',
-      clientKey: 'atlas',
-      clientName: 'Atlas Dental',
-      category: 'Cabinet Dentaire',
-      title: 'Atlas Dental Commercial Spot',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/atlas+dental/AQPYdvtgPDs7Dm66xEvCUQFGuJM9RL6UQEtdOFx18DckwU86OThG_5BeUvZwc_KRVJQMp7cmf_X_D8dox0tPQtpmbVn3kKSW.mp4',
-      badgeBg: 'from-cyan-500 to-blue-600'
-    },
-    // Client 3: Fitness Gols
-    {
-      id: 'fitness-1',
-      clientKey: 'fitness',
-      clientName: 'Fitness Gols',
-      category: 'Coaching & Transformation',
-      title: 'Weight Loss Challenge #3',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/fitness+gols/Weight+Loss+Challenge+3.mp4',
-      badgeBg: 'from-amber-500 to-orange-500'
-    },
-    {
-      id: 'fitness-2',
-      clientKey: 'fitness',
-      clientName: 'Fitness Gols',
-      category: 'Coaching & Performance',
-      title: 'XTREM 4 Challenge',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/fitness+gols/XTREM+4+CHALLENG+modife+1.mp4',
-      badgeBg: 'from-orange-500 to-red-500'
-    },
-    // Client 4: Iron Gym
-    {
-      id: 'iron-1',
-      clientKey: 'iron',
-      clientName: 'Iron Gym',
-      category: 'Musculation & Fitness',
-      title: 'Iron Gym Exercise #01',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/iron+gym/igon+gym+Exercise+1.mp4',
-      badgeBg: 'from-red-600 to-rose-500'
-    },
-    {
-      id: 'iron-2',
-      clientKey: 'iron',
-      clientName: 'Iron Gym',
-      category: 'Musculation & Fitness',
-      title: 'Iron Gym Exercise #04',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/iron+gym/igon+gym+Exercise+4.mp4',
-      badgeBg: 'from-rose-600 to-pink-500'
-    },
-    // Client 5: M Immoby
-    {
-      id: 'immoby-1',
-      clientKey: 'immoby',
-      clientName: 'M Immoby',
-      category: 'Immobilier de Luxe',
-      title: 'M Immoby Brand Spotlight',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/m+immoby/AQOBKxV1B6WureFzOBhCOeS05uHuHwrsNSJPZ6ZO22tddEoCb9pCkI_EBl2qsRFhGaskbKLVnl0Nyp8VlYWehFlI8_G4z_yy.mp4',
-      badgeBg: 'from-emerald-500 to-teal-400'
-    },
-    {
-      id: 'immoby-2',
-      clientKey: 'immoby',
-      clientName: 'M Immoby',
-      category: 'Immobilier de Luxe',
-      title: 'Reel Eva Park Villa #01',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/m+immoby/reel+eva+park+01.mp4',
-      badgeBg: 'from-teal-500 to-cyan-500'
-    },
-    {
-      id: 'immoby-3',
-      clientKey: 'immoby',
-      clientName: 'M Immoby',
-      category: 'Immobilier de Luxe',
-      title: 'Reel Eva Park Villa #02',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/m+immoby/reel+eva+park+02.mp4',
-      badgeBg: 'from-cyan-600 to-blue-500'
-    },
-    // Client 6: Mondial Media
-    {
-      id: 'mondial-1',
-      clientKey: 'mondial',
-      clientName: 'Mondial Media',
-      category: 'Agence & Production Média',
-      title: 'Mondial Media Spot #01',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/mondial+media/01.mp4',
-      badgeBg: 'from-purple-600 to-indigo-500'
-    },
-    {
-      id: 'mondial-2',
-      clientKey: 'mondial',
-      clientName: 'Mondial Media',
-      category: 'Agence & Production Média',
-      title: 'Mondial Media Campaign #05',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/mondial+media/Mondial+Media+5+modife.mp4',
-      badgeBg: 'from-indigo-600 to-violet-500'
-    }
-  ];
-
-  // Separated Dedicated BTS / Les Coulisses Section Videos
-  const btsVideos: BTSVideoItem[] = [
-    {
-      id: 'bts-1',
-      title: 'Backstage Tournage Studio #01',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/1.MP4',
-      tag: 'Coulisses Plateaux'
-    },
-    {
-      id: 'bts-2',
-      title: 'Coulisses Production Cinema #02',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/2.mp4',
-      tag: 'Direction Technique'
-    },
-    {
-      id: 'bts-3',
-      title: 'Iron Gym Shoot - Backstage Live',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/iron+gym.mp4',
-      tag: 'On-Set Action'
-    },
-    {
-      id: 'bts-4',
-      title: 'Session Suhail Hadad - Directing BTS',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/suhail+hadad.mp4',
-      tag: 'Making Of'
-    }
-  ];
-
-  // Real Instagram Posts Grid
-  const instagramReels = [
-    {
-      id: 'DOWQAHcDMQt',
-      url: 'https://www.instagram.com/p/DOWQAHcDMQt/',
-      embedUrl: 'https://www.instagram.com/p/DOWQAHcDMQt/embed',
-      title: 'Direction Artistique & Studio',
-      category: 'Brand Pitch'
-    },
-    {
-      id: 'DOeIeUHjDcb',
-      url: 'https://www.instagram.com/p/DOeIeUHjDcb/',
-      embedUrl: 'https://www.instagram.com/p/DOeIeUHjDcb/embed',
-      title: 'Hook Publicitaire Performance',
-      category: 'Performance Ad'
-    },
-    {
-      id: 'DPzZIWNjJIw',
-      url: 'https://www.instagram.com/p/DPzZIWNjJIw/',
-      embedUrl: 'https://www.instagram.com/p/DPzZIWNjJIw/embed',
-      title: 'Reel Cinéma & Sound Design',
-      category: 'Cinema Reel'
-    },
-    {
-      id: 'DO6lfHEDHEk',
-      url: 'https://www.instagram.com/p/DO6lfHEDHEk/',
-      embedUrl: 'https://www.instagram.com/p/DO6lfHEDHEk/embed',
-      title: 'Format Viral 9:16 High-CTR',
-      category: 'Viral UGC'
-    }
-  ];
-
-  // Real Video Client Feedback / Testimonials S3 Media
-  const feedbackVideos: S3VideoItem[] = [
-    {
-      id: 'feedback-1',
-      clientKey: 'feedback',
-      clientName: 'Ingénieur Fitness',
-      category: 'Avis Client 🌟',
-      title: 'Témoignage Ingénieur Fitness',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/ingenieur+fitness+feed+back.mp4',
-      badgeBg: 'from-amber-500 to-orange-500'
-    },
-    {
-      id: 'feedback-2',
-      clientKey: 'feedback',
-      clientName: 'Kawtar Samih',
-      category: 'Avis Client 🌟',
-      title: 'Témoignage Kawtar Samih',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/kawtar+samih+feed+back.mp4',
-      badgeBg: 'from-pink-600 to-rose-400'
-    },
-    {
-      id: 'feedback-3',
-      clientKey: 'feedback',
-      clientName: 'Mustapha',
-      category: 'Avis Client 🌟',
-      title: 'Témoignage Mustapha',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/mustapha+feed+back.mp4',
-      badgeBg: 'from-blue-600 to-indigo-500'
-    },
-    {
-      id: 'feedback-4',
-      clientKey: 'feedback',
-      clientName: 'Souhaile Haddad',
-      category: 'Avis Client 🌟',
-      title: 'Témoignage Souhaile Haddad',
-      url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/souhaile+haddad+feed+back.mp4',
-      badgeBg: 'from-emerald-500 to-teal-600'
-    }
-  ];
-
-  function openS3VideoModal(video: S3VideoItem) {
+  function openS3VideoModal(video: typeof activeS3ModalVideo) {
     activeS3ModalVideo = video;
   }
 
@@ -301,7 +71,7 @@
   </div>
 
   <!-- Header Navigation -->
-  <Header {scrollToForm} instagramProfile={INSTAGRAM_PROFILE} />
+  <Header {scrollToForm} instagramProfile={BORDPROD_IG} />
 
   <!-- Hero Section -->
   <Hero {scrollToForm} heroVideoUrl={HERO_VIDEO_URL} />
@@ -321,7 +91,7 @@
 
   <!-- Instagram Grid Section -->
   <InstagramGrid 
-    instagramProfile={INSTAGRAM_PROFILE} 
+    instagramProfile={BORDPROD_IG} 
     {instagramReels} 
   />
 
@@ -338,7 +108,7 @@
   <ContactForm />
 
   <!-- Footer -->
-  <Footer instagramProfile={INSTAGRAM_PROFILE} />
+  <Footer instagramProfile={BORDPROD_IG} />
 
   <!-- Fullscreen HD Modal Player for S3 Videos -->
   <S3VideoModal 
