@@ -275,4 +275,11 @@
   :global(.animate-fade-in-up) {
     animation: fadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
+
+  video:fullscreen {
+    object-fit: contain !important;
+  }
+  video:-webkit-full-screen {
+    object-fit: contain !important;
+  }
 </style>

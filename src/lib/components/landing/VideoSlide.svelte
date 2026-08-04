@@ -55,6 +55,15 @@
     }
   }
 
+  let isLandscape = false;
+
+  function handleLoadedMetadata(event: Event) {
+    const videoEl = event.currentTarget as HTMLVideoElement;
+    if (videoEl) {
+      isLandscape = videoEl.videoWidth > videoEl.videoHeight;
+    }
+  }
+
   function handleWaiting() {
     isBuffering = true;
   }
@@ -79,7 +88,8 @@
     preload="metadata"
     on:waiting={handleWaiting}
     on:playing={handlePlaying}
-    class="w-full h-full object-cover md:object-contain bg-zinc-950 transition-opacity duration-300"
+    on:loadedmetadata={handleLoadedMetadata}
+    class="w-full h-full {isLandscape ? 'object-contain' : 'object-cover md:object-contain'} bg-zinc-950 transition-opacity duration-300"
     style="opacity: {isActive ? '1' : '0.4'};"
   ></video>
 
