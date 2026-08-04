@@ -99,9 +99,9 @@
   <h1
     class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-normal text-zinc-900 max-w-4xl mb-6 text-center flex flex-col gap-2 items-center"
   >
-    {#each splitTitle($t('hero_title')) as line, lineIdx}
+    {#each splitTitle($t('hero_title')) as line}
       {#if line}
-        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1 animate-fade-in-up" style="animation-delay: {0.15 + lineIdx * 0.08}s; opacity: 0;">
+        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1">
           {#each splitTextIntoWords(line) as word}
             <span class="inline-block">
               {#if $t('hero_highlight').includes(word.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '')) || $t('hero_highlight').includes(word)}

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { locale, t } from '$lib/i18n';
-  import { heroVideoLoaded } from '$lib/stores';
 
   export let feedbackVideos: any[];
   export let openS3VideoModal: (video: any) => void;
@@ -20,32 +19,18 @@
   // Svelte Action to lazy load videos when they enter the viewport
   function lazyVideo(node: HTMLVideoElement, src: string) {
     let observer: IntersectionObserver;
-    let unsubscribe: () => void;
 
     const loadVideo = () => {
       if (!node.src || !node.src.includes(src)) {
         node.src = src;
         node.load();
       }
-      cleanup();
-    };
-
-    const cleanup = () => {
       if (observer) {
         observer.disconnect();
-      }
-      if (unsubscribe) {
-        unsubscribe();
       }
     };
 
     if (typeof window !== 'undefined') {
-      unsubscribe = heroVideoLoaded.subscribe((loaded) => {
-        if (loaded) {
-          loadVideo();
-        }
-      });
-
       if (!node.src && 'IntersectionObserver' in window) {
         observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -53,9 +38,11 @@
               loadVideo();
             }
           });
-        }, { rootMargin: '120px' });
+        }, { rootMargin: '200px' });
 
         observer.observe(node);
+      } else {
+        node.src = src;
       }
     } else {
       node.src = src;
@@ -67,7 +54,9 @@
         if (node.src) { node.src = src; node.load(); }
       },
       destroy() {
-        cleanup();
+        if (observer) {
+          observer.disconnect();
+        }
       }
     };
   }
