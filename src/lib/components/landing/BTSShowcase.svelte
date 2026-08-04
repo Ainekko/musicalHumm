@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { gsap } from 'gsap';
   import { t } from '$lib/i18n';
+  import { heroVideoLoaded } from '$lib/stores';
 
   export let btsVideos: any[];
   export let openS3VideoModal: (video: any) => void;
+
+  let isVisible = false;
 
   function handleVideoHover(e: MouseEvent) {
     const video = e.currentTarget as HTMLVideoElement;
@@ -23,19 +25,43 @@
   // Svelte Action to lazy load videos when they enter the viewport
   function lazyVideo(node: HTMLVideoElement, src: string) {
     let observer: IntersectionObserver;
+    let unsubscribe: () => void;
 
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            node.src = src;
-            node.load(); // Load the video file
-            observer.unobserve(node);
-          }
-        });
-      }, { rootMargin: '120px' });
+    const loadVideo = () => {
+      if (!node.src || !node.src.includes(src)) {
+        node.src = src;
+        node.load();
+      }
+      cleanup();
+    };
 
-      observer.observe(node);
+    const cleanup = () => {
+      if (observer) {
+        observer.disconnect();
+      }
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      unsubscribe = heroVideoLoaded.subscribe((loaded) => {
+        if (loaded) {
+          loadVideo();
+        }
+      });
+
+      if (!node.src && 'IntersectionObserver' in window) {
+        observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              loadVideo();
+            }
+          });
+        }, { rootMargin: '120px' });
+
+        observer.observe(node);
+      }
     } else {
       node.src = src;
     }
@@ -49,9 +75,7 @@
         }
       },
       destroy() {
-        if (observer) {
-          observer.unobserve(node);
-        }
+        cleanup();
       }
     };
   }
@@ -63,19 +87,7 @@
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          gsap.fromTo('.gsap-bts-card', 
-            { opacity: 0, y: 16 }, 
-            {
-              opacity: 1,
-              y: 0,
-              stagger: 0.07,
-              duration: 0.55,
-              ease: 'power2.out',
-              onComplete: () => {
-                gsap.set('.gsap-bts-card', { clearProps: 'all' });
-              }
-            }
-          );
+          isVisible = true;
           obs.disconnect();
         }
       });
@@ -109,11 +121,13 @@
 
     <!-- BTS Video Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {#each btsVideos as bts}
+      {#each btsVideos as bts, idx}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
-          class="gsap-bts-card group rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-2xl overflow-hidden hover:border-[#00abbd]/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          class="group rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-2xl overflow-hidden hover:border-[#00abbd]/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          class:animate-fade-in-up={isVisible}
+          style="animation-delay: {idx * 0.07}s; opacity: {isVisible ? '1' : '0'};"
           on:click={() => openS3VideoModal({ title: bts.title, clientName: 'Les Coulisses BTS', category: bts.tag, url: bts.url, badgeBg: 'from-zinc-700 to-zinc-900' })}
         >
           <div class="w-full aspect-[9/14] bg-black relative overflow-hidden">
@@ -164,3 +178,20 @@
     </div>
   </div>
 </section>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>

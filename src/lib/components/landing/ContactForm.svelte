@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { gsap } from 'gsap';
   import { api } from '$lib/api/base';
   import Spinner from '$lib/components/ui/Spinner.svelte';
   import { t } from '$lib/i18n';
@@ -15,6 +14,7 @@
   let loading = false;
   let success = false;
   let errorMessage = '';
+  let isVisible = false;
 
   let nameError = '';
   let emailError = '';
@@ -68,13 +68,6 @@
       company = '';
       budget = '';
       projectDescription = '';
-
-      setTimeout(() => {
-        gsap.fromTo('.gsap-success-box', 
-          { opacity: 0, y: 15 }, 
-          { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', clearProps: 'all' }
-        );
-      }, 50);
     } catch (err: any) {
       console.error('Lead submission failed:', err);
       errorMessage = err.message || $t('validation_error');
@@ -90,18 +83,7 @@
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          gsap.fromTo('.gsap-form-card', 
-            { opacity: 0, y: 16 }, 
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.55,
-              ease: 'power2.out',
-              onComplete: () => {
-                gsap.set('.gsap-form-card', { clearProps: 'all' });
-              }
-            }
-          );
+          isVisible = true;
           obs.disconnect();
         }
       });
@@ -118,9 +100,13 @@
     <p class="text-xs text-zinc-500 font-semibold max-w-sm mx-auto">{$t('contact_subtitle')}</p>
   </div>
 
-  <div class="gsap-form-card rounded-3xl border border-zinc-200/80 bg-white p-6 md:p-10 shadow-xl">
+  <div 
+    class="rounded-3xl border border-zinc-200/80 bg-white p-6 md:p-10 shadow-xl"
+    class:animate-fade-in-up={isVisible}
+    style="opacity: {isVisible ? '1' : '0'};"
+  >
     {#if success}
-      <div class="gsap-success-box text-center py-12 space-y-4">
+      <div class="text-center py-12 space-y-4 animate-fade-in-up">
         <div class="w-16 h-16 rounded-full bg-[#e8f5e9] text-[#2e7d32] border border-[#2e7d32]/20 flex items-center justify-center mx-auto">
           <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -244,3 +230,20 @@
     {/if}
   </div>
 </section>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>

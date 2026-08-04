@@ -12,3 +12,5 @@ export {
     currentUser,
     checkAuth,
 } from './authStore';
+
+export { heroVideoLoaded } from './videoStore';

@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { gsap } from 'gsap';
   import { t } from '$lib/i18n';
 
   export let instagramProfile: string;
   export let instagramReels: any[];
+
+  let isVisible = false;
 
   onMount(() => {
     const triggerEl = document.querySelector('#instagram-showcase');
@@ -13,19 +14,7 @@
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          gsap.fromTo('.gsap-ig-card', 
-            { opacity: 0, y: 16 }, 
-            {
-              opacity: 1,
-              y: 0,
-              stagger: 0.07,
-              duration: 0.55,
-              ease: 'power2.out',
-              onComplete: () => {
-                gsap.set('.gsap-ig-card', { clearProps: 'all' });
-              }
-            }
-          );
+          isVisible = true;
           obs.disconnect();
         }
       });
@@ -78,8 +67,12 @@
 
   <!-- Native Instagram 9:16 Reel Embed Cards Grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    {#each instagramReels as reel}
-      <div class="gsap-ig-card group rounded-3xl bg-white border border-zinc-200/80 shadow-xl overflow-hidden flex flex-col justify-between hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative">
+    {#each instagramReels as reel, idx}
+      <div 
+        class="group rounded-3xl bg-white border border-zinc-200/80 shadow-xl overflow-hidden flex flex-col justify-between hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative"
+        class:animate-fade-in-up={isVisible}
+        style="animation-delay: {idx * 0.07}s; opacity: {isVisible ? '1' : '0'};"
+      >
         
         <!-- Native Instagram Embed Container -->
         <div class="w-full aspect-[9/16] bg-zinc-950 relative overflow-hidden flex flex-col justify-between">
@@ -111,3 +104,20 @@
     {/each}
   </div>
 </section>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>

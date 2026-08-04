@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { gsap } from 'gsap';
   import { t } from '$lib/i18n';
+  import { heroVideoLoaded } from '$lib/stores';
 
   export let scrollToForm: () => void;
   export let heroVideoUrl: string;
@@ -76,68 +76,42 @@
     return [title, ''];
   }
 
-  onMount(() => {
-    // Hero Entrance Animation
-    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+  function markHeroLoaded() {
+    heroVideoLoaded.set(true);
+  }
 
-    tl.fromTo(
-      '.gsap-hero-badge',
-      { opacity: 0, y: -10 },
-      { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' }
-    )
-      .fromTo(
-        '.gsap-word',
-        { opacity: 0, y: 14 },
-        { opacity: 1, y: 0, stagger: 0.035, duration: 0.55, clearProps: 'all' },
-        '-=0.3'
-      )
-      .fromTo(
-        '.gsap-hero-sub',
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.5, clearProps: 'all' },
-        '-=0.4'
-      )
-      .fromTo(
-        '.gsap-hero-btn',
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, clearProps: 'all' },
-        '-=0.3'
-      )
-      .fromTo(
-        '.gsap-hero-video',
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6, clearProps: 'all' },
-        '-=0.4'
-      );
+  onMount(() => {
+    if (heroVideoRef && heroVideoRef.readyState >= 2) {
+      markHeroLoaded();
+    }
   });
 </script>
 
 <section class="w-full max-w-5xl px-6 pt-14 pb-12 text-center z-10 flex flex-col items-center">
   <div
-    class="gsap-hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-zinc-200 text-xs text-zinc-800 font-bold mb-6 shadow-sm"
+    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-zinc-200 text-xs text-zinc-800 font-bold mb-6 shadow-sm animate-fade-in-up"
+    style="animation-delay: 0.05s; opacity: 0;"
   >
     <span class="w-2.5 h-2.5 rounded-full bg-[#00abbd] animate-pulse"></span>
     {$t('hero_badge')}
   </div>
 
   <h1
-    class="gsap-hero-title text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-normal text-zinc-900 max-w-4xl mb-6 text-center flex flex-col gap-2 items-center"
+    class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-normal text-zinc-900 max-w-4xl mb-6 text-center flex flex-col gap-2 items-center"
   >
-    {#each splitTitle($t('hero_title')) as line}
+    {#each splitTitle($t('hero_title')) as line, lineIdx}
       {#if line}
-        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1">
+        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1 animate-fade-in-up" style="animation-delay: {0.15 + lineIdx * 0.08}s; opacity: 0;">
           {#each splitTextIntoWords(line) as word}
             <span class="inline-block">
-              <span class="gsap-word inline-block">
-                {#if $t('hero_highlight').includes(word.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '')) || $t('hero_highlight').includes(word)}
-                  <span
-                    class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff5500] via-[#e6005c] to-[#7928ca]"
-                    >{word}</span
-                  >
-                {:else}
-                  {word}
-                {/if}
-              </span>
+              {#if $t('hero_highlight').includes(word.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '')) || $t('hero_highlight').includes(word)}
+                <span
+                  class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff5500] via-[#e6005c] to-[#7928ca]"
+                  >{word}</span
+                >
+              {:else}
+                {word}
+              {/if}
             </span>
           {/each}
         </div>
@@ -146,21 +120,22 @@
   </h1>
 
   <p
-    class="gsap-hero-sub text-base md:text-lg text-zinc-600 max-w-2xl font-medium leading-relaxed mb-10"
+    class="text-base md:text-lg text-zinc-600 max-w-2xl font-medium leading-relaxed mb-10 animate-fade-in-up"
+    style="animation-delay: 0.3s; opacity: 0;"
   >
     {$t('hero_subtitle')}
   </p>
 
-  <div class="flex flex-col sm:flex-row gap-4 mb-14">
+  <div class="flex flex-col sm:flex-row gap-4 mb-14 animate-fade-in-up" style="animation-delay: 0.4s; opacity: 0;">
     <button
       on:click={scrollToForm}
-      class="gsap-hero-btn px-7 py-4 text-sm font-black rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-xl transition-all cursor-pointer"
+      class="px-7 py-4 text-sm font-black rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-xl transition-all cursor-pointer"
     >
       {$t('hero_cta')}
     </button>
     <a
       href="#portfolio-showcase"
-      class="gsap-hero-btn px-7 py-4 text-sm font-black rounded-full bg-white border border-zinc-300 text-zinc-800 hover:bg-zinc-50 active:scale-95 transition-all text-center shadow-sm flex items-center justify-center gap-2"
+      class="px-7 py-4 text-sm font-black rounded-full bg-white border border-zinc-300 text-zinc-800 hover:bg-zinc-50 active:scale-95 transition-all text-center shadow-sm flex items-center justify-center gap-2"
     >
       <span>🎬 Voir les réalisations</span>
     </a>
@@ -168,7 +143,8 @@
 
   <!-- Main Hero Showreel Video Player (Plays S3 hero video directly) -->
   <div
-    class="gsap-hero-video w-full max-w-4xl rounded-3xl border border-zinc-300/80 bg-white p-3.5 shadow-2xl relative group transition-shadow duration-300"
+    class="w-full max-w-4xl rounded-3xl border border-zinc-300/80 bg-white p-3.5 shadow-2xl relative group transition-shadow duration-300 animate-fade-in-up"
+    style="animation-delay: 0.5s; opacity: 0;"
   >
     <div
       class="w-full aspect-video rounded-2xl bg-zinc-950 flex flex-col items-center justify-center relative overflow-hidden group"
@@ -180,6 +156,9 @@
         muted
         loop
         playsinline
+        on:loadeddata={markHeroLoaded}
+        on:play={markHeroLoaded}
+        on:canplay={markHeroLoaded}
         class="w-full h-full object-cover rounded-2xl"
       ></video>
 
@@ -280,3 +259,20 @@
     </div>
   </div>
 </section>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  :global(.animate-fade-in-up) {
+    animation: fadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>

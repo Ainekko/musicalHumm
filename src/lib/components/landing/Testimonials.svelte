@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { gsap } from 'gsap';
   import { locale, t } from '$lib/i18n';
+  import { heroVideoLoaded } from '$lib/stores';
 
   export let feedbackVideos: any[];
   export let openS3VideoModal: (video: any) => void;
 
   let carouselRef: HTMLDivElement | null = null;
+  let isVisible = false;
 
   function scrollLeft() {
     carouselRef?.scrollBy({ left: -320, behavior: 'smooth' });
@@ -19,19 +20,43 @@
   // Svelte Action to lazy load videos when they enter the viewport
   function lazyVideo(node: HTMLVideoElement, src: string) {
     let observer: IntersectionObserver;
+    let unsubscribe: () => void;
 
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            node.src = src;
-            node.load();
-            observer.unobserve(node);
-          }
-        });
-      }, { rootMargin: '120px' });
+    const loadVideo = () => {
+      if (!node.src || !node.src.includes(src)) {
+        node.src = src;
+        node.load();
+      }
+      cleanup();
+    };
 
-      observer.observe(node);
+    const cleanup = () => {
+      if (observer) {
+        observer.disconnect();
+      }
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      unsubscribe = heroVideoLoaded.subscribe((loaded) => {
+        if (loaded) {
+          loadVideo();
+        }
+      });
+
+      if (!node.src && 'IntersectionObserver' in window) {
+        observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              loadVideo();
+            }
+          });
+        }, { rootMargin: '120px' });
+
+        observer.observe(node);
+      }
     } else {
       node.src = src;
     }
@@ -42,7 +67,7 @@
         if (node.src) { node.src = src; node.load(); }
       },
       destroy() {
-        if (observer) observer.unobserve(node);
+        cleanup();
       }
     };
   }
@@ -54,11 +79,7 @@
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          gsap.fromTo('.gsap-testimonial-card',
-            { opacity: 0, y: 16 },
-            { opacity: 1, y: 0, stagger: 0.07, duration: 0.55, ease: 'power2.out',
-              onComplete: () => gsap.set('.gsap-testimonial-card', { clearProps: 'all' }) }
-          );
+          isVisible = true;
           obs.disconnect();
         }
       });
@@ -134,11 +155,13 @@
       class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 px-6 md:px-16 no-scrollbar select-none"
       style="scrollbar-width: none; -ms-overflow-style: none;"
     >
-      {#each feedbackVideos as video (video.id)}
+      {#each feedbackVideos as video, idx (video.id)}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
-          class="gsap-testimonial-card group w-[290px] sm:w-[340px] md:w-[360px] shrink-0 snap-start rounded-3xl bg-white border border-zinc-200/80 shadow-xl overflow-hidden flex flex-col justify-between hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          class="group w-[290px] sm:w-[340px] md:w-[360px] shrink-0 snap-start rounded-3xl bg-white border border-zinc-200/80 shadow-xl overflow-hidden flex flex-col justify-between hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          class:animate-fade-in-up={isVisible}
+          style="animation-delay: {idx * 0.07}s; opacity: {isVisible ? '1' : '0'};"
           on:click={() => openS3VideoModal(video)}
         >
           <!-- 9:14 Video Container -->
@@ -207,4 +230,21 @@
     </div>
   </div>
 </section>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>
 

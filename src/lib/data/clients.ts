@@ -70,7 +70,7 @@ export interface IGReel {
 // ─── Global Config ────────────────────────────────────────────────────────────
 
 export const BORDPROD_IG = 'https://www.instagram.com/bord_prodagency?igsh=amxueGN3aXhiYWt6';
-export const HERO_VIDEO_URL = 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/hero+video.mp4';
+export const HERO_VIDEO_URL = 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/Vd+Landing+Page+compresse.mp4';
 
 // ─── BTS / Coulisses (global, not per-client) ─────────────────────────────────
 
@@ -78,25 +78,25 @@ export const btsVideos: BTSVideo[] = [
   {
     id: 'bts-1',
     title: '',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/1.MP4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/les+coulisses+COMPRESSE/1+COMPRESSE.mp4',
     tag: 'Coulisses Plateaux',
   },
   {
     id: 'bts-2',
     title: '',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/2.mp4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/les+coulisses+COMPRESSE/2+COMPRESSE.mp4',
     tag: 'Direction Technique',
   },
   {
     id: 'bts-3',
     title: '',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/iron+gym.mp4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/les+coulisses+COMPRESSE/Iron+Gym+COMPRESSE.mp4',
     tag: 'On-Set Action',
   },
   {
     id: 'bts-4',
     title: '',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/les+coulisses+BTS/suhail+hadad.mp4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/les+coulisses+COMPRESSE/Suhail+Hadad+COMPRESSE.mp4',
     tag: 'Making Of',
   },
 ];
@@ -147,12 +147,12 @@ export const clients: Client[] = [
     portfolioVideos: [
       {
         id: 'rein-1',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/rein+abayas/rein+1.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/rein+abayas+COMPRESSE/Rein+1+COMPRESSE.mp4',
         category: 'Mode & Couture',
       },
       {
         id: 'rein-2',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/rein+abayas/rein+2.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/rein+abayas+COMPRESSE/Rein+2+COMPRESSE.mp4',
         category: 'Mode & Couture',
         badgeBg: 'from-fuchsia-500 to-pink-500',
       } as any,
@@ -169,7 +169,7 @@ export const clients: Client[] = [
     portfolioVideos: [
       {
         id: 'atlas-1',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/atlas+dental/AQPYdvtgPDs7Dm66xEvCUQFGuJM9RL6UQEtdOFx18DckwU86OThG_5BeUvZwc_KRVJQMp7cmf_X_D8dox0tPQtpmbVn3kKSW.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/atlas+dental+COMPRESSE/01+COMPRESSE.mp4',
         category: 'Cabinet Dentaire',
       },
     ],
@@ -185,12 +185,12 @@ export const clients: Client[] = [
     portfolioVideos: [
       {
         id: 'fitness-1',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/fitness+gols/Weight+Loss+Challenge+3.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/fitness+gols+COMPESSE/Weight+Loss+Challenge+3+COMPESSE.mp4',
         category: 'Coaching & Transformation',
       },
       {
         id: 'fitness-2',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/fitness+gols/XTREM+4+CHALLENG+modife+1.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/fitness+gols+COMPESSE/Xtrem+4+Challeng+Modife+COMPESSE.mp4',
         category: 'Coaching & Performance',
         badgeBg: 'from-orange-500 to-red-500',
       } as any,
@@ -207,12 +207,12 @@ export const clients: Client[] = [
     portfolioVideos: [
       {
         id: 'iron-1',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/iron+gym/igon+gym+Exercise+1.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/iron+gym+COMPRESSE/Igon+Gym+Exercise+1+COMPRESSE.mp4',
         category: 'Musculation & Fitness',
       },
       {
         id: 'iron-2',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/iron+gym/igon+gym+Exercise+4.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/iron+gym+COMPRESSE/Igon+Gym+Exercise+4+COMPRESSE.mp4',
         category: 'Musculation & Fitness',
         badgeBg: 'from-rose-600 to-pink-500',
       } as any,
@@ -229,7 +229,7 @@ export const clients: Client[] = [
     portfolioVideos: [
       {
         id: 'immoby-1',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/m+immoby/AQOBKxV1B6WureFzOBhCOeS05uHuHwrsNSJPZ6ZO22tddEoCb9pCkI_EBl2qsRFhGaskbKLVnl0Nyp8VlYWehFlI8_G4z_yy.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/m+immoby+COMPRESSE/01+COMPRESSE.mp4',
         category: 'Immobilier de Luxe',
       },
     ],
@@ -245,12 +245,12 @@ export const clients: Client[] = [
     portfolioVideos: [
       {
         id: 'evapark-1',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/m+immoby/reel+eva+park+01.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/m+immoby+COMPRESSE/Eva+Park+01+COMPRESSE.mp4',
         category: 'Résidence de Luxe',
       },
       {
         id: 'evapark-2',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/m+immoby/reel+eva+park+02.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/m+immoby+COMPRESSE/Eva+Park+02+COMPRESSE.mp4',
         category: 'Résidence de Luxe',
         badgeBg: 'from-cyan-600 to-blue-500',
       } as any,
@@ -267,12 +267,12 @@ export const clients: Client[] = [
     portfolioVideos: [
       {
         id: 'mondial-1',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/mondial+media/01.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/mondial+media+COMPRESSE/01+COMPRESSE.mp4',
         category: 'école audiovisuel',
       },
       {
         id: 'mondial-2',
-        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/mondial+media/Mondial+Media+5+modife.mp4',
+        url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/mondial+media+COMPRESSE/02+COMPRESSE.mp4',
         category: 'école audiovisuel',
         badgeBg: 'from-indigo-600 to-violet-500',
       } as any,
@@ -291,7 +291,7 @@ export const feedbackVideos = [
     igHandle: 'ingenieur.fitness',
     category: 'Avis Client 🌟',
     title: 'Témoignage Ingénieur Fitness',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/ingenieur+fitness+feed+back.mp4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/feedback+COMPRESSE/Ingenieur+Fitness+Feed+Back+COMPRESSE.mp4',
     badgeBg: 'from-amber-500 to-orange-500',
   },
   {
@@ -302,7 +302,7 @@ export const feedbackVideos = [
     igHandle: 'kawtarsamihoff',
     category: 'Avis Client 🌟',
     title: 'Témoignage Kawtar Samih',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/kawtar+samih+feed+back.mp4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/feedback+COMPRESSE/Kawtar+Samih+Feed+Back+COMPRESSE.mp4',
     badgeBg: 'from-pink-600 to-rose-400',
   },
   {
@@ -313,7 +313,7 @@ export const feedbackVideos = [
     igHandle: undefined,
     category: 'Avis Client 🌟',
     title: 'Témoignage Mustapha',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/mustapha+feed+back.mp4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/feedback+COMPRESSE/Mustapha+Feed+Back+COMPRESSE.mp4',
     badgeBg: 'from-blue-600 to-indigo-500',
   },
   {
@@ -324,7 +324,7 @@ export const feedbackVideos = [
     igHandle: 'souhail.haddade',
     category: 'Avis Client 🌟',
     title: 'Témoignage Souhaile Haddad',
-    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/feedback/souhaile+haddad+feed+back.mp4',
+    url: 'https://xander-files.s3.us-east-1.amazonaws.com/brodpod/compressed/feedback+COMPRESSE/Souhaile+Haddad+Feed+Back+COMPRESSE.mp4',
     badgeBg: 'from-emerald-500 to-teal-600',
   },
   {

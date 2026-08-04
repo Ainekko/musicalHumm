@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { gsap } from 'gsap';
   import { locale, t } from '$lib/i18n';
 
   let countYears = 0;
@@ -9,6 +8,7 @@
   let countSatisfaction = 0;
   let statsAnimated = false;
   let statsContainerRef: HTMLDivElement | null = null;
+  let isVisible = false;
 
   function animateCounters() {
     if (statsAnimated) return;
@@ -47,30 +47,7 @@
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          gsap.fromTo('.gsap-about-card', 
-            { opacity: 0, y: 16 }, 
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.55,
-              ease: 'power2.out',
-              onComplete: () => {
-                gsap.set('.gsap-about-card', { clearProps: 'all' });
-              }
-            }
-          );
-          gsap.fromTo('.gsap-about-content', 
-            { opacity: 0, y: 16 }, 
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.55,
-              ease: 'power2.out',
-              onComplete: () => {
-                gsap.set('.gsap-about-content', { clearProps: 'all' });
-              }
-            }
-          );
+          isVisible = true;
           obs.disconnect();
         }
       });
@@ -98,7 +75,11 @@
 <section id="who-we-are" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
     <!-- Left Experience Card -->
-    <div class="gsap-about-card lg:col-span-5 relative flex justify-center">
+    <div 
+      class="lg:col-span-5 relative flex justify-center"
+      class:animate-fade-in-up={isVisible}
+      style="opacity: {isVisible ? '1' : '0'};"
+    >
       <div class="w-72 h-72 rounded-3xl bg-gradient-to-tr from-[#ffaa00] via-[#ff3366] to-[#7928ca] p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
         <div class="absolute inset-0 bg-black/10"></div>
         <div class="z-10 w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30">
@@ -113,7 +94,11 @@
     </div>
 
     <!-- Right Content -->
-    <div class="gsap-about-content lg:col-span-7 space-y-6 {$locale === 'ar' ? 'text-right' : 'text-left'}">
+    <div 
+      class="lg:col-span-7 space-y-6 {$locale === 'ar' ? 'text-right' : 'text-left'}"
+      class:animate-fade-in-up={isVisible}
+      style="animation-delay: 0.15s; opacity: {isVisible ? '1' : '0'};"
+    >
       <div>
         <span class="text-xs font-black text-zinc-600 uppercase tracking-widest px-3.5 py-1 bg-white rounded-full border border-zinc-200 shadow-sm">{$t('about_badge')}</span>
       </div>
@@ -157,3 +142,20 @@
     </div>
   </div>
 </section>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>
