@@ -65,11 +65,16 @@
   async function fetchLeads(pwdToTry: string) {
     loading = true;
     error = '';
+    passwordError = '';
     try {
+      // First, verify the password against the backend
+      await api.post('/leads/verify', { password: pwdToTry });
+
+      // Then fetch the leads with password in the headers
       leads = await api.get<Lead[]>('/leads', {
-        params: { 
-          token: uuid,
-          password: pwdToTry
+        params: { token: uuid },
+        headers: {
+          'X-Dashboard-Password': pwdToTry
         }
       });
       // Succeeded! Save to localStorage and close modal
@@ -77,11 +82,9 @@
       showPasswordModal = false;
     } catch (err: any) {
       console.error('Failed to fetch leads:', err);
-      const isPasswordError = err.status === 401 && 
-        (err.message?.toLowerCase().includes('password') || 
-         String(err.data?.detail)?.toLowerCase().includes('password'));
       
-      if (isPasswordError) {
+      // Treat any 401 as a password/auth error
+      if (err.status === 401) {
         localStorage.removeItem('dashboard_password');
         passwordError = 'Bruh, wrong key. 💀 Try again!';
         showPasswordModal = true;
@@ -100,9 +103,9 @@
       const updatedLead = await api.patch<Lead>(`/leads/${leadId}`, {
         status: newStatus
       }, {
-        params: { 
-          token: uuid,
-          password: pwd
+        params: { token: uuid },
+        headers: {
+          'X-Dashboard-Password': pwd
         }
       });
       leads = leads.map(l => l.id === leadId ? updatedLead : l);
@@ -118,9 +121,9 @@
     const pwd = localStorage.getItem('dashboard_password') || '';
     try {
       await api.delete(`/leads/${leadId}`, {
-        params: { 
-          token: uuid,
-          password: pwd
+        params: { token: uuid },
+        headers: {
+          'X-Dashboard-Password': pwd
         }
       });
       leads = leads.filter(l => l.id !== leadId);
@@ -388,7 +391,7 @@
           <button 
             on:click={exportToCSV} 
             disabled={leads.length === 0}
-            class="px-5 py-3 text-xs font-black rounded-full bg-zinc-100 text-zinc-955 hover:bg-white active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer flex items-center gap-2 shadow-md"
+            class="px-5 py-3 text-xs font-black rounded-full bg-zinc-100 text-zinc-950 hover:bg-white active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer flex items-center gap-2 shadow-md"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
