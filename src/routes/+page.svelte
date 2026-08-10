@@ -135,7 +135,7 @@
     {closeReel} 
   />
 
-  <!-- Floating Sticky CTA Button -->
+  <!-- Floating Sticky CTA Button - Deploy Trigger -->
   {#if showSticky}
     <div 
       class="fixed bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 sm:translate-x-0 z-40 animate-fade-in-up"
