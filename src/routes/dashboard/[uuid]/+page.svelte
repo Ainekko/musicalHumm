@@ -391,7 +391,7 @@
           <button 
             on:click={exportToCSV} 
             disabled={leads.length === 0}
-            class="px-5 py-3 text-xs font-black rounded-full bg-zinc-100 text-zinc-950 hover:bg-white active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer flex items-center gap-2 shadow-md"
+            class="px-5 py-3 text-xs font-black rounded-full bg-gradient-to-r from-[#e6005c] to-[#ff5500] text-white hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer flex items-center gap-2 shadow-md"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
