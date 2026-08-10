@@ -137,9 +137,7 @@
 
   <!-- Floating Sticky CTA Button - Deploy Trigger -->
   {#if showSticky}
-    <div 
-      class="fixed bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 sm:translate-x-0 z-40 animate-fade-in-up"
-    >
+    <div class="sticky-cta-container animate-fade-in-up z-40">
       <button
         on:click={scrollToForm}
         class="px-7 py-4 text-xs md:text-sm font-black rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-2xl border border-white/10 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap group"
@@ -158,3 +156,20 @@
     </div>
   {/if}
 </main>
+
+<style>
+  .sticky-cta-container {
+    position: fixed;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  @media (min-width: 640px) {
+    .sticky-cta-container {
+      left: auto;
+      right: 2rem;
+      transform: none;
+    }
+  }
+</style>
