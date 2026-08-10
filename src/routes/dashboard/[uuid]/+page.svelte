@@ -8,6 +8,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { api } from '$lib/api/base';
+  import LeadsDonutChart from '$lib/components/charts/LeadsDonutChart.svelte';
   
   const uuid = $page.params.uuid;
 
@@ -40,6 +41,8 @@
   $: newLeadsCount = leads.filter(l => l.status === 'new').length;
   $: contactedLeadsCount = leads.filter(l => l.status === 'contacted').length;
   $: qualifiedLeadsCount = leads.filter(l => l.status === 'qualified').length;
+  $: lostLeadsCount = leads.filter(l => l.status === 'lost').length;
+  $: closedLeadsCount = leads.filter(l => l.status === 'closed').length;
 
   onMount(async () => {
     const storedPwd = localStorage.getItem('dashboard_password');
@@ -351,31 +354,46 @@
     <!-- Main Dashboard Content -->
     <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-10 z-10 relative space-y-10">
       
-      <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Total Leads</h3>
-          <p class="text-3xl font-black text-white tracking-tight">{totalLeads}</p>
+      <!-- Dashboard Top Section (Chart & Stats) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Chart Column -->
+        <div class="lg:col-span-1 bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl p-6 shadow-xl flex flex-col items-center justify-center min-h-[300px]">
+          <h3 class="text-xs font-black text-zinc-500 uppercase tracking-widest w-full text-center mb-6">Répartition des Leads</h3>
+          <LeadsDonutChart 
+            newLeads={newLeadsCount}
+            contacted={contactedLeadsCount}
+            qualified={qualifiedLeadsCount}
+            lost={lostLeadsCount}
+            closed={closedLeadsCount}
+          />
         </div>
-        
-        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Nouveaux Leads</h3>
-          <div class="flex items-baseline gap-2">
-            <p class="text-3xl font-black text-white tracking-tight">{newLeadsCount}</p>
-            {#if newLeadsCount > 0}
-              <span class="text-[9px] font-extrabold px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 animate-pulse">Action</span>
-            {/if}
+
+        <!-- Stats Grid Column -->
+        <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+            <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Total Leads</h3>
+            <p class="text-4xl font-black text-white tracking-tight">{totalLeads}</p>
           </div>
-        </div>
+          
+          <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+            <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Nouveaux Leads</h3>
+            <div class="flex items-baseline gap-2">
+              <p class="text-4xl font-black text-white tracking-tight">{newLeadsCount}</p>
+              {#if newLeadsCount > 0}
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 animate-pulse">Action requise</span>
+              {/if}
+            </div>
+          </div>
 
-        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Contactés</h3>
-          <p class="text-3xl font-black text-white tracking-tight">{contactedLeadsCount}</p>
-        </div>
+          <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+            <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Contactés</h3>
+            <p class="text-4xl font-black text-white tracking-tight">{contactedLeadsCount}</p>
+          </div>
 
-        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
-          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Qualifiés</h3>
-          <p class="text-3xl font-black text-emerald-450 tracking-tight">{qualifiedLeadsCount}</p>
+          <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+            <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Qualifiés</h3>
+            <p class="text-4xl font-black text-emerald-450 tracking-tight">{qualifiedLeadsCount}</p>
+          </div>
         </div>
       </div>
 
