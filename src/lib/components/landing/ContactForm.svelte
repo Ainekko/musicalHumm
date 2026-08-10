@@ -62,6 +62,15 @@
         project_description: projectDescription
       });
       success = true;
+
+      // Track lead event via Meta Pixel
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'Lead', {
+          content_name: 'Contact Inquiry',
+          content_category: 'Lead Generation'
+        });
+      }
+
       name = '';
       email = '';
       phone = '';
@@ -107,10 +116,8 @@
   >
     {#if success}
       <div class="text-center py-12 space-y-4 animate-fade-in-up">
-        <div class="w-16 h-16 rounded-full bg-[#e8f5e9] text-[#2e7d32] border border-[#2e7d32]/20 flex items-center justify-center mx-auto">
-          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+        <div class="w-20 h-20 rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center mx-auto shadow-inner animate-smile-pulse">
+          <span class="text-4xl filter drop-shadow-sm select-none">😊</span>
         </div>
         <h4 class="text-lg font-bold text-zinc-900">{$t('form_success_title')}</h4>
         <p class="text-xs text-zinc-500 max-w-md mx-auto leading-relaxed font-semibold">
@@ -243,7 +250,25 @@
     }
   }
   
+  @keyframes smilePulse {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.12);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
   .animate-fade-in-up {
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-smile-pulse {
+    animation: smilePulse 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 </style>

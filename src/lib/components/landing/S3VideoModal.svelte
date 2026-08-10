@@ -103,9 +103,32 @@
     initialScrollDone = false;
     activeIndex = 0;
   }
+
+  let didPushState = false;
+
+  function handlePopState(event: PopStateEvent) {
+    if (activeS3ModalVideo) {
+      didPushState = false;
+      closeS3VideoModal();
+    }
+  }
+
+  $: if (activeS3ModalVideo) {
+    if (typeof window !== 'undefined' && !didPushState) {
+      window.history.pushState({ modalOpen: true }, '', '');
+      didPushState = true;
+    }
+  } else {
+    if (typeof window !== 'undefined' && didPushState) {
+      didPushState = false;
+      if (window.history.state && window.history.state.modalOpen) {
+        window.history.back();
+      }
+    }
+  }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} on:popstate={handlePopState} />
 
 {#if activeS3ModalVideo}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
