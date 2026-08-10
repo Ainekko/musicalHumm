@@ -44,15 +44,46 @@
     await fetchLeads();
   });
 
+  function getPassword(): string {
+    if (typeof window === 'undefined') return '';
+    let pwd = localStorage.getItem('dashboard_password');
+    if (!pwd) {
+      pwd = prompt('Veuillez saisir le mot de passe du dashboard :');
+      if (pwd) {
+        localStorage.setItem('dashboard_password', pwd);
+      }
+    }
+    return pwd || '';
+  }
+
   async function fetchLeads() {
     loading = true;
     error = '';
+    const pwd = getPassword();
+    if (!pwd) {
+      error = 'Mot de passe requis pour accéder au dashboard.';
+      loading = false;
+      return;
+    }
     try {
       leads = await api.get<Lead[]>('/leads', {
-        params: { token: uuid }
+        params: { 
+          token: uuid,
+          password: pwd
+        }
       });
     } catch (err: any) {
       console.error('Failed to fetch leads:', err);
+      const isPasswordError = err.status === 401 && 
+        (err.message?.toLowerCase().includes('password') || 
+         String(err.data?.detail)?.toLowerCase().includes('password'));
+      
+      if (isPasswordError) {
+        localStorage.removeItem('dashboard_password');
+        alert('Mot de passe incorrect.');
+        await fetchLeads();
+        return;
+      }
       error = err.message || 'Impossible de charger les leads. Veuillez vérifier votre clé secrète.';
     } finally {
       loading = false;
@@ -61,11 +92,15 @@
 
   async function updateStatus(leadId: string, newStatus: string) {
     statusUpdatingId = leadId;
+    const pwd = localStorage.getItem('dashboard_password') || '';
     try {
       const updatedLead = await api.patch<Lead>(`/leads/${leadId}`, {
         status: newStatus
       }, {
-        params: { token: uuid }
+        params: { 
+          token: uuid,
+          password: pwd
+        }
       });
       leads = leads.map(l => l.id === leadId ? updatedLead : l);
     } catch (err: any) {
@@ -77,9 +112,13 @@
 
   async function deleteLead(leadId: string) {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce lead ?')) return;
+    const pwd = localStorage.getItem('dashboard_password') || '';
     try {
       await api.delete(`/leads/${leadId}`, {
-        params: { token: uuid }
+        params: { 
+          token: uuid,
+          password: pwd
+        }
       });
       leads = leads.filter(l => l.id !== leadId);
       if (expandedLeadId === leadId) expandedLeadId = null;
