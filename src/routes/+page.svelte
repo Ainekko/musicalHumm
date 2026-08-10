@@ -137,10 +137,10 @@
 
   <!-- Floating Sticky CTA Button - Deploy Trigger -->
   {#if showSticky}
-    <div class="sticky-cta-container animate-fade-in-up z-40">
+    <div class="sticky-cta-container z-40">
       <button
         on:click={scrollToForm}
-        class="px-7 py-4 text-xs md:text-sm font-black rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-2xl border border-white/10 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap group"
+        class="animate-fade-in-up px-7 py-4 text-xs md:text-sm font-black rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-2xl border border-white/10 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap group"
       >
         <span>{$t('hero_cta')}</span>
         <svg 
