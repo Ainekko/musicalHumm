@@ -1,5 +1,8 @@
 import { json } from '@sveltejs/kit';
 
+
+// just to keep the server alive and a deployment on vercels
+
 export async function GET() {
   try {
     const res = await fetch('https://mhr-sms-xi2w.onrender.com/health');
