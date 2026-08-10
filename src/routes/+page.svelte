@@ -5,7 +5,7 @@
    * Orchestrates the segmented subcomponents for a clean, modular structure.
    * All client/media data lives in $lib/data/clients.ts — edit there to add clients.
    */
-  import { locale } from '$lib/i18n';
+  import { locale, t } from '$lib/i18n';
   import {
     BORDPROD_IG,
     HERO_VIDEO_URL,
@@ -50,7 +50,19 @@
       el.scrollIntoView({ behavior: 'smooth' });
     }
   }
+
+  let scrollY = 0;
+  let showSticky = false;
+
+  $: if (typeof window !== 'undefined') {
+    const docHeight = document.documentElement.scrollHeight;
+    const winHeight = window.innerHeight;
+    const distToBottom = docHeight - scrollY - winHeight;
+    showSticky = scrollY > 500 && distToBottom > 650;
+  }
 </script>
+
+<svelte:window bind:scrollY />
 
 <svelte:head>
   <title>BordProd | Production Vidéo High-End & Performance</title>
@@ -122,4 +134,27 @@
     {activeReelId} 
     {closeReel} 
   />
+
+  <!-- Floating Sticky CTA Button -->
+  {#if showSticky}
+    <div 
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 sm:translate-x-0 z-40 animate-fade-in-up"
+    >
+      <button
+        on:click={scrollToForm}
+        class="px-7 py-4 text-xs md:text-sm font-black rounded-full bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-2xl border border-white/10 transition-all cursor-pointer flex items-center gap-2.5 whitespace-nowrap group"
+      >
+        <span>{$t('hero_cta')}</span>
+        <svg 
+          class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor" 
+          stroke-width="2.5"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </button>
+    </div>
+  {/if}
 </main>
