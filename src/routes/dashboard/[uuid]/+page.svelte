@@ -3,16 +3,12 @@
    * Lead CRM Dashboard Page - BordProd
    * ==================================
    * CRM dashboard to view and manage leads.
-   * Branded for BordProd and localized in French.
+   * Branded for BordProd and stylized in Dark Mode with a Gen Z password lock screen.
    */
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { api } from '$lib/api/base';
-  import Card from '$lib/components/ui/Card.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import Spinner from '$lib/components/ui/Spinner.svelte';
-
+  
   const uuid = $page.params.uuid;
 
   interface Lead {
@@ -29,10 +25,15 @@
   }
 
   let leads: Lead[] = [];
-  let loading = true;
+  let loading = false;
   let error = '';
   let expandedLeadId: string | null = null;
   let statusUpdatingId: string | null = null;
+
+  // Password Modal State
+  let showPasswordModal = false;
+  let passwordInput = '';
+  let passwordError = '';
 
   // Stats
   $: totalLeads = leads.length;
@@ -41,37 +42,39 @@
   $: qualifiedLeadsCount = leads.filter(l => l.status === 'qualified').length;
 
   onMount(async () => {
-    await fetchLeads();
+    const storedPwd = localStorage.getItem('dashboard_password');
+    if (storedPwd) {
+      await fetchLeads(storedPwd);
+    } else {
+      showPasswordModal = true;
+    }
   });
 
-  function getPassword(): string {
-    if (typeof window === 'undefined') return '';
-    let pwd = localStorage.getItem('dashboard_password');
-    if (!pwd) {
-      pwd = prompt('Veuillez saisir le mot de passe du dashboard :');
-      if (pwd) {
-        localStorage.setItem('dashboard_password', pwd);
-      }
-    }
-    return pwd || '';
-  }
-
-  async function fetchLeads() {
-    loading = true;
-    error = '';
-    const pwd = getPassword();
-    if (!pwd) {
-      error = 'Mot de passe requis pour accéder au dashboard.';
-      loading = false;
+  async function handlePasswordSubmit(e?: Event) {
+    if (e) e.preventDefault();
+    passwordError = '';
+    
+    if (!passwordInput) {
+      passwordError = 'Enter the code, bestie. 💅';
       return;
     }
+    
+    await fetchLeads(passwordInput);
+  }
+
+  async function fetchLeads(pwdToTry: string) {
+    loading = true;
+    error = '';
     try {
       leads = await api.get<Lead[]>('/leads', {
         params: { 
           token: uuid,
-          password: pwd
+          password: pwdToTry
         }
       });
+      // Succeeded! Save to localStorage and close modal
+      localStorage.setItem('dashboard_password', pwdToTry);
+      showPasswordModal = false;
     } catch (err: any) {
       console.error('Failed to fetch leads:', err);
       const isPasswordError = err.status === 401 && 
@@ -80,11 +83,11 @@
       
       if (isPasswordError) {
         localStorage.removeItem('dashboard_password');
-        alert('Mot de passe incorrect.');
-        await fetchLeads();
-        return;
+        passwordError = 'Bruh, wrong key. 💀 Try again!';
+        showPasswordModal = true;
+      } else {
+        error = err.message || 'Failed to load leads. Please check your configuration.';
       }
-      error = err.message || 'Impossible de charger les leads. Veuillez vérifier votre clé secrète.';
     } finally {
       loading = false;
     }
@@ -169,20 +172,21 @@
     }
   }
 
-  function getStatusVariant(status: string): 'success' | 'warning' | 'info' | 'error' | 'neutral' {
+  function getStatusClasses(status: string): string {
     switch (status.toLowerCase()) {
       case 'new':
-        return 'info';
+        return 'bg-blue-500/10 text-blue-400 border border-blue-500/25';
       case 'contacted':
-        return 'warning';
+        return 'bg-amber-500/10 text-amber-400 border border-amber-500/25';
       case 'qualified':
-        return 'success';
+        return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25';
       case 'lost':
-        return 'error';
+        return 'bg-rose-500/10 text-rose-400 border border-rose-500/25';
       default:
-        return 'neutral';
+        return 'bg-zinc-500/10 text-zinc-400 border border-zinc-500/25';
     }
   }
+
   function exportToCSV() {
     if (!leads || leads.length === 0) {
       alert('Aucun lead à exporter.');
@@ -215,246 +219,334 @@
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
+
+  function handleLogout() {
+    localStorage.removeItem('dashboard_password');
+    passwordInput = '';
+    passwordError = '';
+    showPasswordModal = true;
+  }
 </script>
 
 <svelte:head>
   <title>BordProd CRM | Gestion des Leads</title>
 </svelte:head>
 
-<div class="min-h-screen bg-white flex flex-col font-sans">
+<div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans relative overflow-hidden">
+  
+  <!-- Sleek neon backing glows -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-zinc-900/30 via-zinc-950 to-zinc-950 pointer-events-none z-0"></div>
+  <div class="absolute -top-[30%] -right-[10%] w-[60%] aspect-square rounded-full bg-gradient-to-br from-[#7928ca]/10 via-[#e6005c]/5 to-transparent blur-[120px] pointer-events-none z-0"></div>
+  <div class="absolute -bottom-[20%] -left-[10%] w-[50%] aspect-square rounded-full bg-gradient-to-tr from-[#ff5500]/5 to-transparent blur-[120px] pointer-events-none z-0"></div>
+
   <!-- Header -->
-  <header class="sticky top-0 z-50 bg-white border-b border-zinc-150">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+  <header class="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 relative">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="/logo/logo-icon.png" alt="BordProd Icon" class="h-8 object-contain" />
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#ff5500] via-[#e6005c] to-[#7928ca] p-[1.5px] flex items-center justify-center">
+          <div class="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
+            <span class="text-xs font-black bg-gradient-to-r from-[#ff5500] to-[#7928ca] bg-clip-text text-transparent">BP</span>
+          </div>
+        </div>
         <div class="flex flex-col">
-          <span class="text-sm font-black text-zinc-900 tracking-tight">BordProd CRM</span>
-          <span class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Gestion des Leads</span>
+          <span class="text-base font-black text-white tracking-tight">BordProd CRM</span>
+          <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Dashboard Client</span>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <Badge variant="success" dot={true}>Base connectée</Badge>
-      </div>
+      
+      {#if !showPasswordModal && leads.length > 0}
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-xs text-emerald-450 font-semibold shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Sync active
+          </span>
+          <button 
+            on:click={handleLogout} 
+            class="px-3.5 py-1.5 text-xs font-black text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800 rounded-full hover:bg-zinc-800 active:scale-95 transition-all cursor-pointer"
+            title="Log out from dashboard"
+          >
+            🔒 Verrouiller
+          </button>
+        </div>
+      {/if}
     </div>
   </header>
 
-  {#if loading}
-    <div class="flex-1 flex flex-col items-center justify-center py-24">
-      <Spinner size="lg" />
-      <span class="mt-4 text-sm text-zinc-500 font-medium animate-pulse">Chargement des leads...</span>
+  {#if showPasswordModal}
+    <!-- GEN Z Custom Password Lock Modal -->
+    <div class="flex-1 flex items-center justify-center p-6 z-10 relative">
+      <div class="w-full max-w-md bg-zinc-900/60 backdrop-blur-2xl border border-zinc-800 rounded-3xl p-8 shadow-2xl text-center space-y-6 animate-fade-in-up">
+        <div class="relative w-20 h-20 bg-zinc-950 border border-zinc-800 rounded-2xl flex items-center justify-center mx-auto shadow-inner group overflow-hidden">
+          <span class="text-4xl transform group-hover:scale-125 transition-transform duration-300">🔒</span>
+        </div>
+        <div class="space-y-2">
+          <h2 class="text-2xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+            Hold up! Who goes there? 🛑
+          </h2>
+          <p class="text-sm text-zinc-450 font-medium">
+            This dashboard is locked, bestie. Drop the secret key to view the lead database. 💅✨
+          </p>
+        </div>
+
+        <form on:submit={handlePasswordSubmit} class="space-y-4 text-left">
+          <div class="space-y-1.5">
+            <label for="password" class="text-xs font-bold text-zinc-500 uppercase tracking-wider pl-1">Secret Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              bind:value={passwordInput} 
+              placeholder="Type it here, no cap... 🤫"
+              class="w-full px-5 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl text-white text-sm font-semibold focus:outline-none focus:border-[#e6005c] focus:ring-4 focus:ring-[#e6005c]/10 transition-all placeholder-zinc-700"
+            />
+          </div>
+
+          {#if passwordError}
+            <p class="text-xs font-bold text-rose-450 animate-pulse pl-1 flex items-center gap-1.5">
+              <span>💀</span> {passwordError}
+            </p>
+          {/if}
+
+          <button
+            type="submit"
+            disabled={loading}
+            class="w-full py-4 text-sm font-black rounded-2xl bg-gradient-to-r from-[#ff5500] via-[#e6005c] to-[#7928ca] text-white hover:opacity-90 active:scale-98 shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            {#if loading}
+              <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>Checking vlc...</span>
+            {:else}
+              <span>Unlock Dashboard 🚀</span>
+            {/if}
+          </button>
+        </form>
+      </div>
+    </div>
+  {:else if loading && leads.length === 0}
+    <!-- Loading spinner page -->
+    <div class="flex-1 flex flex-col items-center justify-center z-10 relative">
+      <div class="w-12 h-12 border-[3px] border-zinc-800 border-t-[#e6005c] rounded-full animate-spin"></div>
+      <span class="mt-4 text-sm text-zinc-455 font-bold tracking-tight animate-pulse">Retrieving submissions... 🔥</span>
     </div>
   {:else if error}
-    <div class="flex-1 max-w-xl mx-auto px-6 py-20 flex flex-col items-center justify-center text-center">
-      <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-6 border border-red-100">
+    <!-- Error Page -->
+    <div class="flex-1 max-w-xl mx-auto px-6 py-20 flex flex-col items-center justify-center text-center z-10 relative">
+      <div class="w-16 h-16 bg-rose-500/10 text-rose-450 rounded-2xl flex items-center justify-center mb-6 border border-rose-500/25">
         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
       </div>
-      <h2 class="text-xl font-bold text-zinc-900 mb-2">Accès Refusé / Connexion Échouée</h2>
-      <p class="text-sm text-zinc-500 mb-6 max-w-sm">{error}</p>
-      <Button variant="secondary" on:click={fetchLeads}>
-        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.2" />
-        </svg>
-        Réessayer la connexion
-      </Button>
+      <h2 class="text-2xl font-black text-white mb-2">Build Failed / Connection Error</h2>
+      <p class="text-sm text-zinc-450 mb-6 max-w-sm">{error}</p>
+      <button 
+        on:click={() => fetchLeads(localStorage.getItem('dashboard_password') || '')}
+        class="px-6 py-3.5 text-xs font-black rounded-full bg-white text-zinc-950 hover:bg-zinc-100 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+      >
+        🔄 Retry Connection
+      </button>
     </div>
   {:else}
-    <!-- Main Content -->
-    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8">
+    <!-- Main Dashboard Content -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-10 z-10 relative space-y-10">
+      
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card padding="p-5">
-          <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Total Leads</h3>
-          <p class="text-3xl font-black text-zinc-900">{totalLeads}</p>
-        </Card>
-        <Card padding="p-5">
-          <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Nouveaux leads</h3>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Total Leads</h3>
+          <p class="text-3xl font-black text-white tracking-tight">{totalLeads}</p>
+        </div>
+        
+        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Nouveaux Leads</h3>
           <div class="flex items-baseline gap-2">
-            <p class="text-3xl font-black text-zinc-900">{newLeadsCount}</p>
+            <p class="text-3xl font-black text-white tracking-tight">{newLeadsCount}</p>
             {#if newLeadsCount > 0}
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700 animate-pulse">Action Requise</span>
+              <span class="text-[9px] font-extrabold px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 animate-pulse">Action</span>
             {/if}
           </div>
-        </Card>
-        <Card padding="p-5">
-          <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Contactés</h3>
-          <p class="text-3xl font-black text-zinc-900">{contactedLeadsCount}</p>
-        </Card>
-        <Card padding="p-5">
-          <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Qualifiés (Gagnés)</h3>
-          <p class="text-3xl font-black text-emerald-600">{qualifiedLeadsCount}</p>
-        </Card>
+        </div>
+
+        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Contactés</h3>
+          <p class="text-3xl font-black text-white tracking-tight">{contactedLeadsCount}</p>
+        </div>
+
+        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 shadow-xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+          <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">Qualifiés</h3>
+          <p class="text-3xl font-black text-emerald-450 tracking-tight">{qualifiedLeadsCount}</p>
+        </div>
       </div>
 
-      <!-- Leads List Card -->
-      <Card padding="p-0">
-        <div class="px-6 py-5 border-b border-zinc-100 flex items-center justify-between bg-white flex-wrap gap-3">
+      <!-- Leads Table Container -->
+      <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl overflow-hidden shadow-2xl">
+        <div class="px-8 py-6 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-900/20 flex-wrap gap-4">
           <div class="flex items-center gap-3">
-            <h3 class="text-sm font-bold text-zinc-700">Registre des Contacts</h3>
-            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-150 text-zinc-650">{leads.length} soumissions</span>
+            <h3 class="text-base font-black text-white tracking-tight">Registre des Contacts</h3>
+            <span class="text-[10px] font-extrabold px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-350">
+              {leads.length} soumissions
+            </span>
           </div>
-          <Button variant="secondary" size="sm" on:click={exportToCSV} disabled={leads.length === 0}>
-            <svg class="w-4 h-4 mr-2 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <button 
+            on:click={exportToCSV} 
+            disabled={leads.length === 0}
+            class="px-5 py-3 text-xs font-black rounded-full bg-zinc-100 text-zinc-955 hover:bg-white active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer flex items-center gap-2 shadow-md"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
             Exporter en CSV
-          </Button>
+          </button>
         </div>
 
         {#if leads.length === 0}
-          <div class="text-center py-20 px-6 text-zinc-400">
-            <div class="w-12 h-12 rounded-full bg-zinc-50 flex items-center justify-center mx-auto mb-4 border border-zinc-200/50">
-              <svg class="w-6 h-6 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11h-6m-9.074 2.166l-.1.1A2 2 0 002.583 15.2l.4.4a2 2 0 002.93 0l.1-.1a2 2 0 011.666-.6h1.074a2 2 0 011.666.6l.1.1a2 2 0 002.93 0l.4-.4a2 2 0 000-2.93l-.1-.1a2 2 0 01-.6-1.666V10a2 2 0 01.6-1.666l.1-.1a2 2 0 000-2.93l-.4-.4a2 2 0 00-2.93 0l-.1.1a2 2 0 01-1.666.6H7.583a2 2 0 01-1.666-.6l-.1-.1a2 2 0 00-2.93 0l-.4.4a2 2 0 000 2.93l.1.1a2 2 0 01.6 1.666v1.074a2 2 0 01-.6 1.666z" />
-              </svg>
-            </div>
-            <h4 class="text-sm font-bold text-zinc-700 mb-1">Aucun Lead Trouvé</h4>
-            <p class="text-xs text-zinc-500 max-w-xs mx-auto">Dès que vos clients rempliront le formulaire sur la landing page, ils apparaîtront ici instantanément.</p>
+          <div class="text-center py-24 px-6 text-zinc-500">
+            <span class="text-4xl mb-4 block">📭</span>
+            <h4 class="text-sm font-black text-zinc-300 mb-1">Aucun Lead Trouvé</h4>
+            <p class="text-xs text-zinc-500 max-w-xs mx-auto">Dès que vos clients rempliront le formulaire de stratégie sur la landing page, ils apparaîtront ici.</p>
           </div>
         {:else}
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="text-xs font-bold text-[#008ba3] uppercase tracking-wider bg-[#e0f7f8]/30 border-b border-zinc-100">
-                  <th class="px-6 py-4 w-5"></th>
-                  <th class="px-6 py-4">Client</th>
-                  <th class="px-6 py-4">Entreprise</th>
-                  <th class="px-6 py-4">Budget</th>
-                  <th class="px-6 py-4">Statut</th>
-                  <th class="px-6 py-4">Soumis</th>
-                  <th class="px-6 py-4 text-right">Actions</th>
+                <tr class="text-[10px] font-black text-zinc-450 uppercase tracking-widest bg-zinc-900/40 border-b border-zinc-850">
+                  <th class="px-6 py-4.5 w-5"></th>
+                  <th class="px-6 py-4.5">Client</th>
+                  <th class="px-6 py-4.5">Entreprise</th>
+                  <th class="px-6 py-4.5">Budget</th>
+                  <th class="px-6 py-4.5">Statut</th>
+                  <th class="px-6 py-4.5">Soumis</th>
+                  <th class="px-6 py-4.5 text-right pr-8">Actions</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-zinc-100">
+              <tbody class="divide-y divide-zinc-900">
                 {#each leads as lead (lead.id)}
                   {@const isExpanded = expandedLeadId === lead.id}
                   
-                  <tr class="hover:bg-zinc-50/30 transition-colors cursor-pointer group" on:click={() => toggleExpand(lead.id)}>
-                    <td class="pl-6 pr-0 py-4.5">
+                  <tr class="hover:bg-zinc-800/30 transition-colors cursor-pointer group" on:click={() => toggleExpand(lead.id)}>
+                    <td class="pl-6 pr-0 py-5">
                       <svg
-                        class="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition-transform duration-200 {isExpanded ? 'rotate-90' : ''}"
+                        class="w-4 h-4 text-zinc-500 group-hover:text-white transition-transform duration-200 {isExpanded ? 'rotate-90 text-white' : ''}"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        stroke-width="2"
+                        stroke-width="2.5"
                       >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                       </svg>
                     </td>
-                    <td class="px-6 py-4.5">
+                    <td class="px-6 py-5">
                       <div class="flex flex-col">
-                        <span class="text-sm font-bold text-zinc-950">{lead.name}</span>
-                        <span class="text-xs text-zinc-500 font-medium">{lead.email}</span>
+                        <span class="text-sm font-black text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#e6005c] transition-all duration-200">{lead.name}</span>
+                        <span class="text-xs text-zinc-400 font-semibold mt-0.5">{lead.email}</span>
                       </div>
                     </td>
-                    <td class="px-6 py-4.5 text-sm text-zinc-600 font-medium">
+                    <td class="px-6 py-5 text-sm text-zinc-350 font-medium">
                       {lead.company || '--'}
                     </td>
-                    <td class="px-6 py-4.5 text-sm text-zinc-600 font-mono">
+                    <td class="px-6 py-5 text-sm text-zinc-300 font-mono font-bold">
                       {lead.budget || '--'}
                     </td>
-                    <td class="px-6 py-4.5">
-                      <Badge variant={getStatusVariant(lead.status)}>
+                    <td class="px-6 py-5">
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-extrabold {getStatusClasses(lead.status)}">
                         {translateStatus(lead.status)}
-                      </Badge>
+                      </span>
                     </td>
-                    <td class="px-6 py-4.5 text-xs text-zinc-400 font-medium whitespace-nowrap">
+                    <td class="px-6 py-5 text-xs text-zinc-450 font-semibold whitespace-nowrap">
                       {formatTime(lead.created_at)}
                     </td>
-                    <td class="px-6 py-4.5 text-right" on:click|stopPropagation>
-                      <div class="flex items-center justify-end gap-2">
-                        <Button variant="ghost" size="sm" on:click={() => toggleExpand(lead.id)}>
+                    <td class="px-6 py-5 text-right pr-8" on:click|stopPropagation>
+                      <div class="flex items-center justify-end gap-2.5">
+                        <button 
+                          on:click={() => toggleExpand(lead.id)}
+                          class="px-4 py-2 text-xs font-black text-zinc-350 hover:text-white hover:bg-zinc-800 rounded-lg border border-zinc-800 transition-all cursor-pointer"
+                        >
                           Détails
-                        </Button>
-                        <Button variant="danger" size="sm" on:click={() => deleteLead(lead.id)}>
+                        </button>
+                        <button 
+                          on:click={() => deleteLead(lead.id)}
+                          class="px-4 py-2 text-xs font-black text-rose-450 hover:text-white hover:bg-rose-950/40 rounded-lg border border-rose-900/30 transition-all cursor-pointer"
+                        >
                           Supprimer
-                        </Button>
+                        </button>
                       </div>
                     </td>
                   </tr>
 
                   <!-- Detail Panel Expansion -->
                   {#if isExpanded}
-                    <tr class="bg-[#f8fcfe]/80">
-                      <td colspan="7" class="p-0 border-t border-zinc-100">
-                        <div class="px-8 py-6 border-b border-zinc-100 space-y-6">
+                    <tr class="bg-zinc-900/20">
+                      <td colspan="7" class="p-0 border-t border-zinc-850">
+                        <div class="px-8 py-8 border-b border-zinc-850 space-y-6">
                           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            
                             <!-- Contact Details Card -->
-                            <div class="bg-white rounded-xl border border-zinc-200/50 p-5 shadow-sm space-y-3.5">
-                              <h4 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Coordonnées</h4>
-                              <div class="space-y-2.5 text-sm">
-                                <div class="flex items-center gap-2.5 text-zinc-600">
-                                  <svg class="w-4.5 h-4.5 text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                  </svg>
+                            <div class="bg-zinc-950 border border-zinc-850 rounded-2xl p-5 shadow-inner space-y-4">
+                              <h4 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Coordonnées</h4>
+                              <div class="space-y-3 text-sm">
+                                <div class="flex items-center gap-2.5 text-zinc-305 font-semibold">
+                                  <span class="text-zinc-500 text-base">👤</span>
                                   <span>{lead.name}</span>
                                 </div>
-                                <div class="flex items-center gap-2.5 text-zinc-600">
-                                  <svg class="w-4.5 h-4.5 text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                  </svg>
-                                  <a href="mailto:{lead.email}" class="hover:underline hover:text-cyan-600">{lead.email}</a>
+                                <div class="flex items-center gap-2.5 text-zinc-305 font-semibold">
+                                  <span class="text-zinc-500 text-base">✉️</span>
+                                  <a href="mailto:{lead.email}" class="hover:underline hover:text-[#e6005c]">{lead.email}</a>
                                 </div>
-                                <div class="flex items-center gap-2.5 text-zinc-600">
-                                  <svg class="w-4.5 h-4.5 text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                  </svg>
+                                <div class="flex items-center gap-2.5 text-zinc-305 font-semibold">
+                                  <span class="text-zinc-500 text-base">📞</span>
                                   {#if lead.phone}
-                                    <a href="tel:{lead.phone}" class="font-mono hover:underline hover:text-cyan-600">{lead.phone}</a>
+                                    <a href="tel:{lead.phone}" class="font-mono hover:underline hover:text-[#e6005c]">{lead.phone}</a>
                                   {:else}
-                                    <span class="italic text-zinc-400">Aucun téléphone fourni</span>
+                                    <span class="italic text-zinc-500 font-medium">Aucun téléphone</span>
                                   {/if}
                                 </div>
                               </div>
                             </div>
 
                             <!-- Meta Details Card -->
-                            <div class="bg-white rounded-xl border border-zinc-200/50 p-5 shadow-sm space-y-3.5">
-                              <h4 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Cadrage Projet</h4>
-                              <div class="space-y-2 text-sm">
-                                <div class="flex justify-between">
-                                  <span class="text-zinc-400 font-medium">Entreprise</span>
-                                  <span class="text-zinc-800 font-bold">{lead.company || '--'}</span>
+                            <div class="bg-zinc-950 border border-zinc-850 rounded-2xl p-5 shadow-inner space-y-4">
+                              <h4 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Cadrage Projet</h4>
+                              <div class="space-y-2.5 text-sm">
+                                <div class="flex justify-between border-b border-zinc-850 pb-1.5">
+                                  <span class="text-zinc-450 font-medium">Entreprise</span>
+                                  <span class="text-white font-bold">{lead.company || '--'}</span>
+                                </div>
+                                <div class="flex justify-between border-b border-zinc-850 pb-1.5">
+                                  <span class="text-zinc-450 font-medium">Budget Target</span>
+                                  <span class="text-white font-bold">{lead.budget || '--'}</span>
                                 </div>
                                 <div class="flex justify-between">
-                                  <span class="text-zinc-400 font-medium">Budget Target</span>
-                                  <span class="text-zinc-800 font-bold">{lead.budget || '--'}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                  <span class="text-zinc-400 font-medium">Date d'envoi</span>
-                                  <span class="text-zinc-600 font-medium text-xs">{formatDate(lead.created_at)}</span>
+                                  <span class="text-zinc-455 font-medium">Date d'envoi</span>
+                                  <span class="text-zinc-450 font-bold text-xs">{formatDate(lead.created_at)}</span>
                                 </div>
                               </div>
                             </div>
 
                             <!-- Status update Selector -->
-                            <div class="bg-white rounded-xl border border-zinc-200/50 p-5 shadow-sm space-y-3.5">
-                              <h4 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Statut du Pipe</h4>
+                            <div class="bg-zinc-950 border border-zinc-850 rounded-2xl p-5 shadow-inner space-y-4">
+                              <h4 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Statut du Pipe</h4>
                               <div class="grid grid-cols-2 gap-2">
                                 <button
-                                  class="px-3 py-2 text-xs font-bold rounded-lg border transition-all text-center {lead.status === 'new' ? 'bg-blue-50 text-blue-700 border-blue-200 ring-2 ring-blue-500/20' : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'}"
+                                  class="px-3 py-2.5 text-xs font-bold rounded-xl border transition-all text-center cursor-pointer {lead.status === 'new' ? 'bg-blue-500/10 text-blue-450 border-blue-500/30 ring-2 ring-blue-500/15' : 'bg-zinc-900/60 text-zinc-450 border-zinc-800 hover:bg-zinc-850'}"
                                   on:click={() => updateStatus(lead.id, 'new')}
                                   disabled={statusUpdatingId === lead.id}
                                 >
                                   Nouveau
                                 </button>
                                 <button
-                                  class="px-3 py-2 text-xs font-bold rounded-lg border transition-all text-center {lead.status === 'contacted' ? 'bg-amber-50 text-amber-700 border-amber-200 ring-2 ring-amber-500/20' : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'}"
+                                  class="px-3 py-2.5 text-xs font-bold rounded-xl border transition-all text-center cursor-pointer {lead.status === 'contacted' ? 'bg-amber-500/10 text-amber-450 border-amber-500/30 ring-2 ring-amber-500/15' : 'bg-zinc-900/60 text-zinc-455 border-zinc-800 hover:bg-zinc-850'}"
                                   on:click={() => updateStatus(lead.id, 'contacted')}
                                   disabled={statusUpdatingId === lead.id}
                                 >
                                   Contacté
                                 </button>
                                 <button
-                                  class="px-3 py-2 text-xs font-bold rounded-lg border transition-all text-center {lead.status === 'qualified' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-2 ring-emerald-500/20' : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'}"
+                                  class="px-3 py-2.5 text-xs font-bold rounded-xl border transition-all text-center cursor-pointer {lead.status === 'qualified' ? 'bg-emerald-500/10 text-emerald-450 border-emerald-500/30 ring-2 ring-emerald-500/15' : 'bg-zinc-900/60 text-zinc-450 border-zinc-800 hover:bg-zinc-850'}"
                                   on:click={() => updateStatus(lead.id, 'qualified')}
                                   disabled={statusUpdatingId === lead.id}
                                 >
                                   Qualifié
                                 </button>
                                 <button
-                                  class="px-3 py-2 text-xs font-bold rounded-lg border transition-all text-center {lead.status === 'lost' ? 'bg-red-50 text-red-700 border-red-200 ring-2 ring-red-500/20' : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50'}"
+                                  class="px-3 py-2.5 text-xs font-bold rounded-xl border transition-all text-center cursor-pointer {lead.status === 'lost' ? 'bg-rose-500/10 text-rose-450 border-rose-500/30 ring-2 ring-rose-500/15' : 'bg-zinc-900/60 text-zinc-455 border-zinc-800 hover:bg-zinc-850'}"
                                   on:click={() => updateStatus(lead.id, 'lost')}
                                   disabled={statusUpdatingId === lead.id}
                                 >
@@ -465,9 +557,9 @@
                           </div>
 
                           <!-- Project Description -->
-                          <div class="bg-white rounded-xl border border-zinc-200/50 p-5 shadow-sm space-y-2">
-                            <h4 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Objectifs & Besoins Détaillés</h4>
-                            <p class="text-sm text-zinc-700 leading-relaxed whitespace-pre-wrap">
+                          <div class="bg-zinc-950 border border-zinc-850 rounded-2xl p-6 shadow-inner space-y-2.5">
+                            <h4 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Objectifs & Besoins Détaillés</h4>
+                            <p class="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap font-medium">
                               {lead.project_description || 'Aucun détail fourni.'}
                             </p>
                           </div>
@@ -480,14 +572,14 @@
             </table>
           </div>
         {/if}
-      </Card>
+      </div>
     </main>
   {/if}
 </div>
 
 <style>
-  /* Chevron rotation animation */
+  /* Custom smooth slide-down transitions and chevrons */
   tr :global(svg) {
-    transition: transform 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s;
   }
 </style>
