@@ -3,7 +3,6 @@
   import { t } from '$lib/i18n';
 
   export let instagramProfile: string;
-  export let instagramReels: any[];
 
   let isVisible = false;
 
@@ -24,84 +23,41 @@
   });
 </script>
 
-<section id="instagram-showcase" class="w-full max-w-6xl px-6 py-20 z-10 border-t border-zinc-200/60">
-  
-  <!-- Section Header Bar -->
-  <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
-    <div class="text-center md:text-left space-y-2">
+<section id="instagram-showcase" class="w-full max-w-4xl px-6 py-24 md:py-28 z-10 border-t border-zinc-200/60 mx-auto text-center">
+  <div 
+    class="space-y-8 max-w-2xl mx-auto"
+    class:animate-fade-in-up={isVisible}
+    style="opacity: {isVisible ? '1' : '0'};"
+  >
+    <div class="flex flex-col items-center gap-3">
       <span class="text-xs font-black text-zinc-500 uppercase tracking-widest px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 shadow-sm">
         {$t('ig_section_badge')}
       </span>
       <h3 class="text-3xl md:text-4xl font-black text-zinc-900">
-        Suivez notre fil <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] via-[#7928ca] to-[#0070f3]">Instagram</span>
+        {$t('ig_section_title').split('Instagram')[0]}
+        <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#ff007f] via-[#7928ca] to-[#0070f3]">Instagram</span>
+        {$t('ig_section_title').split('Instagram')[1] || ''}
       </h3>
-      <p class="text-xs text-zinc-500 font-semibold">
-        @bord_prodagency &middot; Nouveaux reels, coulisses et direct response ads au quotidien.
+      <p class="text-xs md:text-sm text-zinc-500 font-semibold max-w-md">
+        {$t('ig_section_sub')}
       </p>
     </div>
 
-    <!-- Instagram Follow Action Card -->
-    <a 
-      href={instagramProfile}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="group px-6 py-3.5 rounded-full bg-white border border-zinc-200/80 shadow-md hover:shadow-xl transition-all duration-300 flex items-center gap-3 shrink-0"
-    >
-      <div class="w-9 h-9 rounded-full p-0.5 bg-gradient-to-tr from-[#ffaa00] via-[#ff3366] to-[#7928ca] group-hover:scale-110 transition-transform">
-        <div class="w-full h-full rounded-full bg-white p-0.5 flex items-center justify-center">
-          <img src="/logo/logo-icon.png" alt="BordProd" class="w-full h-full object-contain rounded-full" />
-        </div>
-      </div>
-
-      <div class="text-left">
-        <div class="flex items-center gap-1">
-          <span class="text-xs font-black text-zinc-900">@bord_prodagency</span>
-          <svg class="w-3.5 h-3.5 text-[#00abbd]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-          </svg>
-        </div>
-        <span class="text-[10px] text-zinc-400 font-bold">Rejoindre sur Instagram ↗</span>
-      </div>
-    </a>
-  </div>
-
-  <!-- Native Instagram 9:16 Reel Embed Cards Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    {#each instagramReels as reel, idx}
-      <div 
-        class="group rounded-3xl bg-white border border-zinc-200/80 shadow-xl overflow-hidden flex flex-col justify-between hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative"
-        class:animate-fade-in-up={isVisible}
-        style="animation-delay: {idx * 0.07}s; opacity: {isVisible ? '1' : '0'};"
+    <!-- Instagram Follow Button -->
+    <div class="flex justify-center pt-4">
+      <a 
+        href={instagramProfile}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group inline-flex items-center gap-3 px-10 py-4 rounded-full bg-gradient-to-r from-[#ffaa00] via-[#ff3366] to-[#7928ca] text-white font-black text-sm shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 relative overflow-hidden"
       >
-        
-        <!-- Native Instagram Embed Container -->
-        <div class="w-full aspect-[9/16] bg-zinc-950 relative overflow-hidden flex flex-col justify-between">
-          <iframe 
-            src={reel.embedUrl} 
-            title={reel.title}
-            class="w-full h-full border-0" 
-            frameborder="0" 
-            scrolling="no" 
-            allowtransparency={true}
-            allow="encrypted-media"
-          ></iframe>
-        </div>
-
-        <!-- Card Footer Action -->
-        <a 
-          href={reel.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="p-4 bg-white flex items-center justify-between border-t border-zinc-100 hover:bg-zinc-50 transition-colors"
-        >
-          <div>
-            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{reel.category}</span>
-            <h5 class="text-xs font-black text-zinc-900 truncate max-w-[190px]">{reel.title}</h5>
-          </div>
-          <span class="text-xs text-[#00abbd] font-black group-hover:translate-x-1 transition-transform">↗</span>
-        </a>
-      </div>
-    {/each}
+        <span class="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+        </svg>
+        <span>{$t('ig_follow_btn')}</span>
+      </a>
+    </div>
   </div>
 </section>
 

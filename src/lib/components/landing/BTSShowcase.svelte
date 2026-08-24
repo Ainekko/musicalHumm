@@ -6,6 +6,7 @@
   export let openS3VideoModal: (video: any) => void;
 
   let isVisible = false;
+  let btsCarouselRef: HTMLDivElement | null = null;
 
   function handleVideoHover(e: MouseEvent) {
     const video = e.currentTarget as HTMLVideoElement;
@@ -18,6 +19,18 @@
     const video = e.currentTarget as HTMLVideoElement;
     if (video) {
       video.pause();
+    }
+  }
+
+  function scrollBTSLeft() {
+    if (btsCarouselRef) {
+      btsCarouselRef.scrollBy({ left: -320, behavior: 'smooth' });
+    }
+  }
+
+  function scrollBTSRight() {
+    if (btsCarouselRef) {
+      btsCarouselRef.scrollBy({ left: 320, behavior: 'smooth' });
     }
   }
 
@@ -91,30 +104,85 @@
   
   <div class="w-full max-w-6xl mx-auto px-6">
     
-    <!-- Section Header -->
-    <div class="text-center mb-14">
-      <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-4 py-1.5 rounded-full bg-[#00abbd]/10 border border-[#00abbd]/30 shadow-sm">
-        {$t('bts_section_badge')}
-      </span>
-      
-      <h2 class="text-3xl md:text-5xl font-black text-white mt-4 mb-3">
-        {$t('bts_section_title').split($t('bts_section_highlight'))[0]}
-        <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#00abbd] via-teal-300 to-emerald-400">{$t('bts_section_highlight')}</span>
-        {$t('bts_section_title').split($t('bts_section_highlight'))[1] || ''}
-      </h2>
+    <!-- Section Header with Arrows -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-14">
+      <div class="text-center md:text-left">
+        <span class="text-xs font-black text-[#00abbd] uppercase tracking-widest px-4 py-1.5 rounded-full bg-[#00abbd]/10 border border-[#00abbd]/30 shadow-sm">
+          {$t('bts_section_badge')}
+        </span>
+        
+        <h2 class="text-3xl md:text-5xl font-black text-white mt-4 mb-3">
+          {$t('bts_section_title').split($t('bts_section_highlight'))[0]}
+          <span class="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#00abbd] via-teal-300 to-emerald-400">{$t('bts_section_highlight')}</span>
+          {$t('bts_section_title').split($t('bts_section_highlight'))[1] || ''}
+        </h2>
 
-      <p class="text-xs md:text-sm text-zinc-400 font-semibold max-w-lg mx-auto">
-        {$t('bts_section_sub')}
-      </p>
+        <p class="text-xs md:text-sm text-zinc-400 font-semibold max-w-lg">
+          {$t('bts_section_sub')}
+        </p>
+      </div>
+
+      <!-- Top Header Arrow Indicators -->
+      <div class="flex items-center gap-3 shrink-0">
+        <button
+          on:click={scrollBTSLeft}
+          aria-label="Previous Slide"
+          class="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 shadow-md hover:bg-white hover:text-zinc-900 active:scale-95 transition-all flex items-center justify-center text-lg text-white cursor-pointer"
+        >
+          ←
+        </button>
+        <button
+          on:click={scrollBTSRight}
+          aria-label="Next Slide"
+          class="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 shadow-md hover:bg-white hover:text-zinc-900 active:scale-95 transition-all flex items-center justify-center text-lg text-white cursor-pointer"
+        >
+          →
+        </button>
+      </div>
     </div>
+  </div>
 
-    <!-- BTS Video Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <!-- Full-Width Slider Container with Floating Side Arrow Indicators -->
+  <div class="relative w-full">
+    <!-- Floating Left Side Arrow Button -->
+    <button
+      on:click={scrollBTSLeft}
+      aria-label="Scroll Left"
+      class="absolute left-3 md:left-8 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-zinc-950/80 hover:bg-black text-white backdrop-blur-md shadow-2xl border border-white/20 hover:scale-110 active:scale-95 transition-all flex items-center justify-center cursor-pointer group"
+    >
+      <svg
+        class="w-6 h-6 fill-none stroke-current stroke-[2.5] group-hover:-translate-x-0.5 transition-transform"
+        viewBox="0 0 24 24"
+      >
+        <path d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Floating Right Side Arrow Button -->
+    <button
+      on:click={scrollBTSRight}
+      aria-label="Scroll Right"
+      class="absolute right-3 md:right-8 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-zinc-950/80 hover:bg-black text-white backdrop-blur-md shadow-2xl border border-white/20 hover:scale-110 active:scale-95 transition-all flex items-center justify-center cursor-pointer group"
+    >
+      <svg
+        class="w-6 h-6 fill-none stroke-current stroke-[2.5] group-hover:translate-x-0.5 transition-transform"
+        viewBox="0 0 24 24"
+      >
+        <path d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Full Bleed Edge-to-Edge Carousel Tracks -->
+    <div
+      bind:this={btsCarouselRef}
+      class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 px-6 md:px-16 no-scrollbar select-none"
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+    >
       {#each btsVideos as bts, idx}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
-          class="group rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-2xl overflow-hidden hover:border-[#00abbd]/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          class="group w-[290px] sm:w-[340px] md:w-[360px] shrink-0 snap-start rounded-3xl bg-zinc-900/90 border border-zinc-800 shadow-2xl overflow-hidden hover:border-[#00abbd]/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
           class:animate-fade-in-up={isVisible}
           style="animation-delay: {idx * 0.07}s; opacity: {isVisible ? '1' : '0'};"
           on:click={() => openS3VideoModal({ title: bts.title, clientName: 'Les Coulisses BTS', category: bts.tag, url: bts.url, badgeBg: 'from-zinc-700 to-zinc-900' })}
@@ -158,7 +226,8 @@
 
               <!-- Bottom tag -->
               <div class="text-white">
-                <p class="text-[10px] font-bold uppercase tracking-wider text-white/80">BordProd BTS</p>
+                <h4 class="text-sm font-black drop-shadow-md leading-snug">{bts.title}</h4>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-white/40 mt-1">BordProd BTS</p>
               </div>
             </div>
           </div>
@@ -182,5 +251,9 @@
   
   .animate-fade-in-up {
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 </style>

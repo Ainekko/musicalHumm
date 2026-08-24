@@ -23,8 +23,8 @@ export const translations = {
     nav_cta: "Lancer un projet",
 
     hero_badge: "Partenaire créatif pour les marques en croissance",
-    hero_title: "Nous ne nous contentons pas de créer du contenu. Nous bâtissons des marques inoubliables",
-    hero_highlight: "inoubliables",
+    hero_title: "Nous ne nous contentons pas de créer du contenu, nous façonnons un impact",
+    hero_highlight: "impact",
     hero_subtitle: "Nous combinons l'art de l'image de qualité cinéma et l'efficacité des stratégies d'acquisition. Donnez vie à vos projets vidéo grâce à des productions optimisées pour convertir.",
     hero_cta: "Demander ma stratégie vidéo",
     hero_secondary: "Découvrir notre Instagram",
@@ -152,8 +152,8 @@ export const translations = {
     nav_cta: "Start a Project",
 
     hero_badge: "Creative Partner for Growing Brands",
-    hero_title: "We Don't Just Create Content. We Build Brands People Remember",
-    hero_highlight: "Remember",
+    hero_title: "We don’t just create content, we craft impact.",
+    hero_highlight: "impact",
     hero_subtitle: "We combine cinema-quality visual storytelling with high-converting acquisition strategies. Bring your video projects to life.",
     hero_cta: "Get My Video Strategy",
     hero_secondary: "Discover Our Instagram",
@@ -281,8 +281,8 @@ export const translations = {
     nav_cta: "ابدأ مشروعاً",
 
     hero_badge: "شريك إبداعي للعلامات التجارية النامية",
-    hero_title: "نحن لا نكتفي بإنشاء المحتوى، بل نبني علامات تجارية تبقى في الذاكرة",
-    hero_highlight: "تبقى في الذاكرة",
+    hero_title: "نحن لا نكتفي بإنشاء المحتوى، بل نصنع التأثير",
+    hero_highlight: "التأثير",
     hero_subtitle: "نحن نجمع بين فن الصورة بجودة السينما وفعالية استراتيجيات الاستحواذ. جسد مشاريع الفيديو الخاصة بك من خلال إنتاجات محسنة للتحويل.",
     hero_cta: "اطلب استراتيجية الفيديو الخاصة بي",
     hero_secondary: "استكشف إنستغرام الخاص بنا",

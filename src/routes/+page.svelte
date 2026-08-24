@@ -11,7 +11,6 @@
     HERO_VIDEO_URL,
     clientPortfolioVideos,
     btsVideos,
-    instagramReels,
     feedbackVideos,
   } from '$lib/data/clients';
 
@@ -88,6 +87,15 @@
   <!-- Hero Section -->
   <Hero {scrollToForm} heroVideoUrl={HERO_VIDEO_URL} />
 
+  <!-- Testimonials Section (Directly after Hero) -->
+  <Testimonials 
+    {feedbackVideos} 
+    {openS3VideoModal} 
+  />
+
+  <!-- Lead Capture Form Section (Below Testimonials) -->
+  <ContactForm />
+
   <!-- Portfolio Section -->
   <PortfolioCarousel 
     {clientPortfolioVideos} 
@@ -95,22 +103,15 @@
     {scrollToForm} 
   />
 
-  <!-- BTS Showcase Section -->
+  <!-- BTS Showcase Section (As Carousel below Portfolio/Form) -->
   <BTSShowcase 
     {btsVideos} 
     {openS3VideoModal} 
   />
 
-  <!-- Instagram Grid Section -->
+  <!-- Instagram Section (Only Go to Instagram Button) -->
   <InstagramGrid 
     instagramProfile={BORDPROD_IG} 
-    {instagramReels} 
-  />
-
-  <!-- Testimonials Section -->
-  <Testimonials 
-    {feedbackVideos} 
-    {openS3VideoModal} 
   />
 
   <!-- About Us Section -->
